@@ -1,0 +1,154 @@
+<style>
+  #efLegend { font-size:12px; color:var(--muted); display:flex; gap:14px; flex-wrap:wrap; margin:2px 0 6px; }
+  .efDot { display:inline-block; width:10px; height:10px; border-radius:50%; vertical-align:-1px; margin-inline-end:4px; }
+  .efGroupBlock { margin-bottom:10px; }
+  .efGroupBlock h4 { margin:0 0 3px; font-size:13.5px; color:var(--ink); font-weight:600; }
+  .efStripWrap { background:#0a0f1c; border-radius:8px; padding:4px; }
+  .efAxis { display:flex; justify-content:space-between; font-size:10.5px; color:var(--muted); padding:0 6px; }
+  table.efMat { border-collapse:collapse; margin-top:5px; font-size:11.5px; }
+  table.efMat td { border:1px solid rgba(255,255,255,0.09); padding:3px 7px; text-align:center; font-variant-numeric:tabular-nums; }
+  td.efMh { color:var(--muted); font-size:10.5px; }
+  td.efTP { background:rgba(124,227,139,0.16); color:#c7f5cf; } td.efTN { background:rgba(124,227,139,0.10); color:#c7f5cf; }
+  td.efFP { background:rgba(248,113,113,0.16); color:#ffc9c9; } td.efFN { background:rgba(248,113,113,0.10); color:#ffc9c9; }
+  table.efMetrics { width:100%; border-collapse:collapse; font-size:12px; margin-top:4px; }
+  table.efMetrics th, table.efMetrics td { text-align:center; padding:3px 5px; border-bottom:1px solid rgba(255,255,255,0.06); font-variant-numeric:tabular-nums; }
+  table.efMetrics th { color:var(--muted); font-weight:600; font-size:11px; }
+  td.efMl { text-align:start !important; color:var(--ink); }
+  .efEn { color:var(--muted); font-size:10px; }
+  .efGap { color:#ffb259; font-weight:600; } .efOk { color:#7ce38b; }
+  .efLamps { display:flex; flex-direction:column; gap:5px; margin-top:4px; }
+  .efLamp { display:flex; align-items:center; gap:7px; padding:5px 9px; border-radius:8px; font-size:12.5px; border:1px solid transparent; }
+  .efLampOn { background:rgba(124,227,139,0.12); border-color:rgba(124,227,139,0.4); color:#c7f5cf; }
+  .efLampOff { background:rgba(248,113,113,0.10); border-color:rgba(248,113,113,0.35); color:#ffc9c9; }
+  .efLdot { width:9px; height:9px; border-radius:50%; flex:none; }
+  .efLampOn .efLdot { background:#7ce38b; } .efLampOff .efLdot { background:#f87171; }
+  .efLtxt { flex:1; } .efLval { font-variant-numeric:tabular-nums; font-weight:600; }
+  #efIdentity { font-size:11.5px; color:var(--muted); margin-top:7px; line-height:1.55; }
+  #efIdentity b { color:#9fdcff; font-variant-numeric:tabular-nums; }
+  .efCond { background:#0a0f1c; border:1px solid rgba(255,255,255,0.07); border-radius:9px; padding:8px 10px; margin-bottom:8px; }
+  .efCondT { font-size:13px; font-weight:600; color:var(--ink); margin-bottom:5px; }
+  .efBarRow { display:flex; align-items:center; gap:8px; margin:3px 0; }
+  .efGrpL { font-size:11px; color:var(--muted); width:58px; flex:none; }
+  .efBarWrap { flex:1; background:rgba(255,255,255,0.06); border-radius:5px; height:16px; position:relative; }
+  .efBar { height:100%; border-radius:5px; min-width:2px; }
+  .efBarA { background:#4fc8f8; } .efBarB { background:#ffb259; }
+  .efBarVal { position:absolute; right:6px; top:0; font-size:10.5px; line-height:16px; color:var(--ink); font-variant-numeric:tabular-nums; }
+  .efDI { margin-top:5px; font-size:12px; padding:3px 6px; border-radius:6px; }
+  .efDI b { font-variant-numeric:tabular-nums; }
+  .efDIok { background:rgba(124,227,139,0.10); color:#c7f5cf; } .efDIbad { background:rgba(248,113,113,0.12); color:#ffc9c9; }
+  #efAux { font-size:12.5px; color:var(--ink); margin-top:4px; line-height:1.6; } #efAux b { color:#ffb259; }
+  #efDeserved, #efBaseNote { font-size:11.5px; color:var(--muted); margin-top:6px; line-height:1.5; }
+  .efToggleRow { display:flex; align-items:center; gap:7px; font-size:12.5px; color:var(--ink); margin:4px 0; }
+  .efLampNote { font-size:11px; color:var(--muted); margin-top:6px; line-height:1.5; }
+  .efTrivialWarn { font-size:11.5px; color:#ffd9a8; background:rgba(255,178,89,0.12); border:1px solid rgba(255,178,89,0.4); border-radius:8px; padding:6px 9px; margin-top:6px; line-height:1.55; }
+  .efLampsVacuous { opacity:0.45; }
+</style>
+<div id="lab" dir="rtl" role="dialog" aria-label="مختبر العدالة والتحيز">
+  <div id="labHead">
+    <div>
+      <h2>🔬 مختبر العدالة والتحيز</h2>
+      <div class="labsub">حساب حقيقي يجري في متصفحك على بيانات اصطناعية للتوضيح — مصفوفات التباس ومصنفات تتدرب فعلا، بلا نتائج معدة سلفا.</div>
+    </div>
+    <div id="labTabs">
+      <button id="efTab0" type="button" class="on">استحالة العدالة <span class="hen">Impossibility</span></button>
+      <button id="efTab1" type="button">التمييز بالوكالة <span class="hen">Proxy bias</span></button>
+    </div>
+    <button id="labClose" type="button">✕ عودة للخريطة</button>
+  </div>
+  <div id="labBody">
+
+    <!-- ================= التبويب 1: استحالة العدالة ================= -->
+    <section id="efScene0" class="labScene on">
+      <div class="labCols" style="align-items:flex-start">
+        <div class="labPanel" style="max-width:none; flex:none">
+          <div class="labBox">
+            <h3>مصنف مخاطر على مجموعتين <span class="hen">Two groups, one score</span></h3>
+            <div id="efLegend">
+              <span><span class="efDot" style="background:#4fc8f8"></span>لم يعتقل ثانية فعليا</span>
+              <span><span class="efDot" style="background:#ff8c5a"></span>أعيد اعتقاله فعليا</span>
+              <span>| كل نقطة تمثل فردا اصطناعيا واحدا · اليمين = صنف «خطر مرتفع»</span>
+            </div>
+            <div class="efGroupBlock">
+              <h4>المجموعة أ</h4>
+              <div class="efStripWrap"><canvas id="efCanvasA"></canvas></div>
+              <div class="efAxis"><span>درجة 0</span><span>درجة 1</span></div>
+              <div id="efMatA"></div>
+            </div>
+            <div class="efGroupBlock">
+              <h4>المجموعة ب</h4>
+              <div class="efStripWrap"><canvas id="efCanvasB"></canvas></div>
+              <div class="efAxis"><span>درجة 0</span><span>درجة 1</span></div>
+              <div id="efMatB"></div>
+            </div>
+            <div id="efBaseNote"></div>
+          </div>
+        </div>
+        <div class="labPanel">
+          <div class="labBox">
+            <h3>حرك العتبتين <span class="hen">Per-group thresholds</span></h3>
+            <div class="sliderRow"><label>عتبة المجموعة أ<span class="slen">τ&#8202;A</span></label><input type="range" id="efTauA" min="1" max="99" value="50"><span class="val" id="efTauAVal"></span></div>
+            <div class="sliderRow"><label>عتبة المجموعة ب<span class="slen">τ&#8202;B</span></label><input type="range" id="efTauB" min="1" max="99" value="50"><span class="val" id="efTauBVal"></span></div>
+            <div class="labBtnRow">
+              <button id="efEqErr" type="button">فخ: ساو معدلات الخطا</button>
+              <button id="efEqPrec" type="button">فخ: ساو الدقة</button>
+              <button id="efReset1" type="button">تصفير</button>
+            </div>
+            <div class="efToggleRow"><input type="checkbox" id="efEqualBase"><label for="efEqualBase">اجعل معدل الاساس متساويا (يذيب التعارض)</label></div>
+            <div class="efToggleRow"><input type="checkbox" id="efPerfect"><label for="efPerfect">مصنف مثالي (فصل تام)</label></div>
+          </div>
+          <div class="labBox">
+            <h3>مقاييس العدالة الاربعة <span class="hen">Fairness lamps</span></h3>
+            <div class="efLamps">
+              <div class="efLamp" id="efLampDP"></div>
+              <div class="efLamp" id="efLampEQO"></div>
+              <div class="efLamp" id="efLampEOD"></div>
+              <div class="efLamp" id="efLampPP"></div>
+            </div>
+            <div class="efLampNote">«غير متحقق» يعني ان المقياس غير مطابق عند هذه العتبات — لا انه «الاعدل» ولا ان خرقه ظلم؛ بعض المقاييس لا يفترض تحققها اصلا حين تختلف معدلات الاساس.</div>
+            <div id="efTrivialWarn" class="efTrivialWarn" style="display:none">تحذير: عند هذه العتبات المتطرفة يصنف النظام شبه لا احد (او شبه الجميع) — مصنف تافه تقترب فيه القيمة التنبئية من 1 لكلتا المجموعتين، فتضيء كل المقاييس «متحققة» زيفا. هذا مخرج انحلالي (مثل تساوي معدل الاساس والمصنف المثالي) لا حل حقيقي.</div>
+            <div id="efMetricsBox"></div>
+            <div id="efIdentity"></div>
+          </div>
+          <div class="labBox">
+            <details class="rules">
+              <summary>ما هذا المختبر بالضبط؟ (الصدق العلمي اولا)</summary>
+              <div style="margin-top:6px">مجموعتان لهما <b>معدل اساس مختلف</b> ودرجات من <b>نفس</b> التوزيعين المشروطين بالفئة (فالمصنف متساوي الدقة لكل فئة). حرك العتبتين: عند عتبة موحدة غير متطرفة يتحقق <b>تكافو الاحتمالات</b> بينما يتباعد <b>تكافو التنبؤ</b> — وهذه نظرية استحالة برهنها شولديتشوفا 2017 (Big Data 5(2)، arXiv:1703.00056) وكلاينبرغ وملاينثن وراغافان 2016/2017 (arXiv:1609.05807): حين تختلف معدلات الاساس ويكون المصنف <b>غير مثالي وغير تافه</b> (يختار نسبة معتبرة من كل مجموعة، لا شبه الجميع ولا شبه لا احد)، لا يمكن تحقيق تكافو التنبؤ وتكافو الاحتمالات معا. اما عند عتبة متطرفة جدا فيصير المصنف تافها وتقترب القيمة التنبئية من 1 للمجموعتين فيذوب التعارض — مخرج انحلالي لا حل. المختبر <b>وصفي لا معياري</b>: اي مقياس «الاصح» قرار قيمي لا رياضي — ولا يوجد زر «الاعدل». وحين تختلف معدلات الاساس فعلا فان اختلاف معدلات الاختيار بين المجموعتين متوقع ولا يعد بذاته ظلما، وقد يدخل فرض التكافو الديموغرافي ظلما جديدا (بخلاف التبويب الثاني حيث تتساوى الجدارة بالبناء فيصير تساوي الاختيار هو الهدف الصحيح). الاسماء والدرجات هنا اصطناعية للتوضيح، لا بيانات COMPAS. المقايضة نفسها كانت جوهر جدل بروبابليكا-نورث بوينت حول COMPAS: <b>كلا الطرفين كان محقا حسابيا</b>.</div>
+            </details>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= التبويب 2: التمييز بالوكالة ================= -->
+    <section id="efScene1" class="labScene">
+      <div class="labCols" style="align-items:flex-start">
+        <div class="labPanel" style="max-width:none; flex:none">
+          <div class="labBox">
+            <h3>هل يكفي «حذف» العرق أو الجنس؟ <span class="hen">Fairness through blindness?</span></h3>
+            <div class="labNote" style="margin-bottom:8px">مجموعتان متساويتان في الجدارة تماما، لكن تصنيفات التدريب متحيزة تاريخيا. ندرب المصنف نفسه في ثلاث حالات ونقيس <b>نسبة الاثر المتفاوت</b> (قاعدة اربعة اخماس: نسبة دون 0.80 مؤشر تحيز، لا حكم قاطع):</div>
+            <div id="efCondWith"></div>
+            <div id="efCondBlind"></div>
+            <div id="efCondMerit"></div>
+          </div>
+        </div>
+        <div class="labPanel">
+          <div class="labBox">
+            <h3>قوة الوكلاء <span class="hen">Proxy leakage</span></h3>
+            <div class="sliderRow"><label>تشويش الوكيل<span class="slen">ε flip</span></label><input type="range" id="efEps" min="0" max="45" value="18"><span class="val" id="efEpsVal"></span></div>
+            <div class="labNote">تشويش اقل = وكلاء اقوى (يعيدون بناء الخاصية الحساسة اكثر). حركه ثم:</div>
+            <div class="labBtnRow"><button id="efRetrain" type="button">اعد التدريب</button></div>
+            <div id="efAux"></div>
+            <div id="efDeserved"></div>
+          </div>
+          <div class="labBox">
+            <details class="rules">
+              <summary>ما هذا المختبر بالضبط؟ (الصدق العلمي اولا)</summary>
+              <div style="margin-top:6px">بيانات <b>اصطناعية</b>: الجدارة M مستقلة عن الخاصية الحساسة A (المجموعتان متساويتان)، لكن تصنيف التدريب يحاسب مجموعة بمعيار اعلى (تحيز تاريخي). خمسة «وكلاء» كل منها نسخة مشوشة من A. ندرب انحدارا لوجستيا حقيقيا: <b>(1)</b> بكل الميزات، <b>(2)</b> بحذف A مع ابقاء الوكلاء، <b>(3)</b> بالجدارة وحدها. النتيجة المتوقعة، وهي مثبتة في الادبيات: حذف A وحده <b>لا يزيل</b> التحيز لان الوكلاء يعيدون ترميزه (تمييز بالوكالة / الترميز المتكرر — باروكاس وسيلبست 2016؛ دوورك وزملاؤه 2012؛ فيلدمان وزملاؤه 2015). ما يزيله هنا هو ازالة الوكلاء انفسهم، لكن في الواقع نادرا ما يكون هذا نظيفا: الوكلاء كثيرون ومتغلغلون، وقد ترتبط سمات الجدارة نفسها بالخاصية الحساسة — وهنا فصلناها بالبناء للتوضيح. تحذير: تكافو الاختيار عدالة هنا <b>فقط</b> لان المجموعتين متساويتان بالبناء — بخلاف التبويب الاول حيث تختلف معدلات الاساس فلا يلزم تساوي الاختيار.</div>
+            </details>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</div>

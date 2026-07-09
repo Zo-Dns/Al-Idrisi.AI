@@ -1,0 +1,175 @@
+// محتوى خريطة «تطبيقات الذكاء الاصطناعي» — عالم متخصص يغوص من عقدة «التطبيقات» في الخريطة الام (#apps)
+// زاويته: اين يستخدم الذكاء الاصطناعي (انظمة حقيقية منشورة) لا كيف يعمل · صممه مجلس خبراء التطبيقات بمصادر رسمية
+
+export const GROUPS = [
+  { name: "الرؤية الحاسوبية",   color: "#4fc8f8" },
+  { name: "اللغة والكلام",       color: "#7ce38b" },
+  { name: "الوسائط التوليدية",   color: "#a78bfa" },
+  { name: "الطب وعلوم الحياة",   color: "#ff7fa8" },
+  { name: "الاستقلالية والروبوتات", color: "#ffb259" },
+  { name: "الاعمال والتوصية",    color: "#d8c98b" },
+  { name: "الوكلاء والانتاجية",  color: "#f87171" },
+  { name: "هندسة الذكاء ونشره",  color: "#8ca3c3" },
+  { name: "العلوم الفيزيائية والرياضية", color: "#2dd4bf" },
+];
+
+export const NODES = [
+  { k: "root", n: "تطبيقات الذكاء الاصطناعي", e: "AI Applications", p: null, g: -1, h: true,
+    d: "اين يقابلك الذكاء الاصطناعي في العالم الحقيقي — انظمة منشورة تغير الرؤية واللغة والعلوم والصناعة والاعمال. هذا العالم عن «اين يستخدم» لا «كيف يعمل». مرر على اي عقدة لشرحها، وانقرها لبطاقة كاملة." },
+
+  /* ================= الرؤية الحاسوبية ================= */
+  { k: "vision-apps", n: "تطبيقات الرؤية الحاسوبية", e: "Computer Vision Applications (CV)", p: "root", g: 0, h: true,
+    d: "تعليم الالة رؤية الصور والفيديو وفهمها؛ انطلقت موجته الحديثة بفوز شبكة AlexNet في مسابقة ImageNet 2012 بفارق كبير." },
+  { k: "object-detection", n: "كشف الاجسام وتتبعها", e: "Object Detection & Tracking (YOLO)", p: "vision-apps", g: 0,
+    d: "تحديد مواقع الاجسام واصنافها لحظيا داخل الصورة؛ تستخدمه عائلة YOLO في المراقبة والبيع بالتجزئة والقيادة والرياضة." },
+  { k: "facial-recognition", n: "التعرف على الوجوه", e: "Facial Recognition", p: "vision-apps", g: 0,
+    d: "مطابقة الوجه لهوية للتحقق او التعرف؛ منتشر في فتح الهواتف مثل Apple Face ID وضبط الحدود، ويثير جدلا حول الخصوصية والتحيز." },
+  { k: "ocr-document-ai", n: "التعرف الضوئي ومعالجة المستندات", e: "OCR & Document AI", p: "vision-apps", g: 0,
+    d: "استخراج النص والحقول المنظمة من الصور والمستندات كالفواتير والوصفات؛ تقدمه خدمات مثل Google Document AI وAWS Textract." },
+  { k: "visual-search", n: "البحث المرئي", e: "Visual Search", p: "vision-apps", g: 0,
+    d: "البحث انطلاقا من صورة بدل نص لتحديد منتج او نبتة او معلم؛ مثاله Google Lens وPinterest Lens." },
+  { k: "remote-sensing", n: "الاستشعار عن بعد", e: "Satellite & Aerial Remote Sensing", p: "vision-apps", g: 0,
+    d: "تحليل صور الاقمار والطائرات لمتابعة المحاصيل وازالة الغابات والاستجابة للكوارث ورسم الخرائط." },
+  { k: "industrial-inspection", n: "الفحص الصناعي البصري", e: "Industrial Visual Inspection", p: "vision-apps", g: 0,
+    d: "كشف العيوب في خطوط الانتاج بدقة اعلى وثبات اكبر من الفحص اليدوي، في المصانع والالكترونيات." },
+
+  /* ================= اللغة والكلام ================= */
+  { k: "language-apps", n: "تطبيقات اللغة والكلام", e: "Language & Speech Applications (NLP/ASR)", p: "root", g: 1, h: true,
+    d: "تطبيقات فهم اللغة الطبيعية وتوليدها نصا وصوتا؛ قفزت جودتها بعد بنية المحول عام 2017." },
+  { k: "machine-translation", n: "الترجمة الالية", e: "Machine Translation (NMT)", p: "language-apps", g: 1,
+    d: "ترجمة النص بين اللغات؛ خفض نظام Google العصبي GNMT عام 2016 الاخطاء بنحو 60% عن سابقه، وتشتهر DeepL بترجمة اوروبية طبيعية." },
+  { k: "conversational-assistants", n: "المساعدون المحادثون", e: "Conversational Assistants (LLM Chatbots)", p: "language-apps", g: 1,
+    d: "مساعدات حوارية تجيب وتكتب وتلخص؛ ChatGPT الذي اطلق نوفمبر 2022 تجاوز مئات الملايين من المستخدمين الاسبوعيين." },
+  { k: "speech-recognition-asr", n: "التعرف على الكلام", e: "Automatic Speech Recognition (ASR)", p: "language-apps", g: 1,
+    d: "تحويل الكلام الى نص للتفريغ والاوامر الصوتية والترجمة؛ نموذج Whisper المفتوح من OpenAI عام 2022 درب على مئات الاف الساعات ويدعم عشرات اللغات." },
+  { k: "text-to-speech", n: "تحويل النص الى كلام", e: "Text-to-Speech (TTS)", p: "language-apps", g: 1,
+    d: "توليد صوت بشري طبيعي من نص للمساعدات والكتب الصوتية واتاحة الوصول؛ خدمات مثل ElevenLabs تستنسخ صوتا من عينة قصيرة." },
+  { k: "semantic-search", n: "البحث الدلالي", e: "Semantic Search & Ranking", p: "language-apps", g: 1,
+    d: "فهم قصد الاستعلام لا مجرد مطابقة الكلمات؛ ادخلت Google نموذج BERT في بحثها عام 2019 فتحسن فهم معظم الاستعلامات." },
+  { k: "content-moderation", n: "الاشراف على المحتوى", e: "Content Moderation", p: "language-apps", g: 1,
+    d: "كشف خطاب الكراهية والبريد المزعج والمحتوى الضار على المنصات لحظيا وعلى نطاق واسع، غالبا كخط دفاع اول قبل المراجع البشري." },
+
+  /* ================= الوسائط التوليدية ================= */
+  { k: "genmedia-apps", n: "الوسائط التوليدية", e: "Generative Media", p: "root", g: 2, h: true,
+    d: "انتاج صور وفيديو وصوت جديد من وصف نصي؛ اعتمدت موجته على نماذج الانتشار منذ 2022." },
+  { k: "text-to-image", n: "توليد الصور من النص", e: "Text-to-Image", p: "genmedia-apps", g: 2,
+    d: "انشاء صور من وصف نصي؛ ابرزها Stable Diffusion المفتوح وDALL-E من OpenAI وMidjourney." },
+  { k: "text-to-video", n: "توليد الفيديو من النص", e: "Text-to-Video", p: "genmedia-apps", g: 2,
+    d: "توليد مقاطع فيديو من نص او صورة؛ نموذج Sora من OpenAI اضاف لاحقا صوتا متزامنا مع الفيديو." },
+  { k: "music-generation", n: "توليد الموسيقى والصوت", e: "Music & Audio Generation", p: "genmedia-apps", g: 2,
+    d: "تاليف اغاني ومقطوعات كاملة من وصف نصي عبر خدمات مثل Suno وUdio، مع نقاشات حقوق نشر جارية." },
+  { k: "generative-editing", n: "التحرير التوليدي للصور", e: "Generative Image Editing & Inpainting", p: "genmedia-apps", g: 2,
+    d: "تعديل الصور بالذكاء الاصطناعي كالتعبئة التوليدية في Photoshop ونموذج Adobe Firefly لملء الصور وتوسيعها وازالة عناصرها." },
+  { k: "synthetic-media-deepfakes", n: "الوسائط المركبة والتزييف العميق", e: "Synthetic Media & Deepfakes", p: "genmedia-apps", g: 2,
+    d: "تركيب وجوه واصوات واقعية لاشخاص حقيقيين؛ يفتح تطبيقات في الدبلجة والترفيه لكنه خطر تضليل يستوجب العلامات المائية وكشف التزييف." },
+
+  /* ================= العلوم والطب ================= */
+  { k: "science-health-apps", n: "الطب وعلوم الحياة", e: "AI in Healthcare & Life Sciences", p: "root", g: 3, h: true,
+    d: "توظيف الذكاء الاصطناعي في التشخيص والعلاج واكتشاف الادوية وعلوم الحياة — من صور الاشعة الى بنية البروتين والجينوم." },
+  { k: "protein-structure", n: "التنبؤ ببنية البروتين", e: "Protein Structure Prediction (AlphaFold)", p: "science-health-apps", g: 3,
+    d: "التنبؤ بالشكل ثلاثي الابعاد للبروتين من تسلسله؛ AlphaFold2 من DeepMind حقق قفزة الدقة عام 2020، ثم اتاحت قاعدته بنية اكثر من 200 مليون بروتين عام 2022، ونال مطوراه نوبل الكيمياء 2024." },
+  { k: "protein-design", n: "تصميم البروتينات", e: "De Novo Protein Design (RFdiffusion)", p: "science-health-apps", g: 3,
+    d: "تصميم بروتينات جديدة كليا لوظائف مطلوبة كالارتباط بدواء؛ نموذج RFdiffusion من مختبر بيكر عام 2023 يستعمل الانتشار لتوليد بنى بروتينية." },
+  { k: "drug-discovery", n: "اكتشاف الادوية", e: "AI Drug Discovery", p: "science-health-apps", g: 3,
+    d: "استخدام الذكاء الاصطناعي لايجاد اهداف دوائية وتصميم جزيئات؛ اول دواء صممه ذكاء توليدي لتليف الرئة بلغ المرحلة السريرية الثانية عام 2025." },
+  { k: "medical-imaging", n: "التشخيص بالصور الطبية", e: "Medical Imaging Diagnostics", p: "science-health-apps", g: 3,
+    d: "كشف الامراض في الاشعة والصور؛ نظام IDx-DR عام 2018 اول ذكاء اصطناعي مستقل توافق عليه FDA لتشخيص اعتلال الشبكية السكري." },
+  { k: "genomics-ai", n: "الذكاء الاصطناعي في علم الجينوم", e: "Genomics & Variant Effect Prediction", p: "science-health-apps", g: 3,
+    d: "تحليل الجينوم لقراءة المتغيرات وتصنيف خطورتها؛ DeepVariant من جوجل لقراءة المتغيرات وAlphaMissense من DeepMind لتقدير اثر الطفرات." },
+  /* ================= العلوم الفيزيائية والرياضية ================= */
+  { k: "physical-science-apps", n: "العلوم الفيزيائية والرياضية", e: "AI for Physical Science & Mathematics", p: "root", g: 8, h: true,
+    d: "تسخير الذكاء الاصطناعي للاكتشاف في الفيزياء والمناخ والمواد والرياضيات — يختصر محاكاة تكلف شهورا الى دقائق ويقترح فرضيات جديدة." },
+
+  { k: "weather-climate", n: "التنبؤ بالطقس والمناخ", e: "AI Weather Forecasting", p: "physical-science-apps", g: 8,
+    d: "تنبؤ بالطقس اسرع وادق من المحاكاة الفيزيائية؛ GraphCast من DeepMind عام 2023 يتنبأ حتى عشرة ايام، وGenCast يتفوق على افضل المجموعات التقليدية." },
+  { k: "materials-discovery", n: "اكتشاف المواد", e: "Materials Discovery (GNoME)", p: "physical-science-apps", g: 8,
+    d: "التنبؤ ببلورات مستقرة جديدة للبطاريات واشباه الموصلات؛ نموذج GNoME من DeepMind عام 2023 اكتشف نحو 380 الف مادة مستقرة." },
+  { k: "math-science-reasoning", n: "الاستدلال الرياضي والعلمي", e: "Mathematical & Scientific Reasoning", p: "physical-science-apps", g: 8,
+    d: "حل مسائل رياضية على مستوى النخبة؛ بلغ AlphaProof وAlphaGeometry من DeepMind عام 2024 مستوى الميدالية الفضية في اولمبياد الرياضيات الدولي." },
+
+  /* ================= الاستقلالية والروبوتات ================= */
+  { k: "autonomy-apps", n: "الاستقلالية والروبوتات", e: "Autonomy & Robotics", p: "root", g: 4, h: true,
+    d: "انظمة تدرك محيطها وتقرر وتتحرك فيه؛ تجمع الرؤية والتخطيط والتعلم المعزز في العالم المادي." },
+  { k: "self-driving-cars", n: "السيارات ذاتية القيادة", e: "Self-Driving Cars & Robotaxis", p: "autonomy-apps", g: 4,
+    d: "مركبات تقود نفسها بدرجات مختلفة؛ Waymo يشغل روبوتاكسي بلا سائق في عدة مدن بمئات الاف الرحلات اسبوعيا، وTesla تشغل خدمة تحت الاشراف." },
+  { k: "warehouse-robots", n: "روبوتات المستودعات واللوجستيات", e: "Warehouse & Logistics Robots", p: "autonomy-apps", g: 4,
+    d: "روبوتات تنقل وتفرز وتخزن البضائع؛ نشرت Amazon اكثر من مليون روبوت في مستودعاتها لتسريع التجهيز." },
+  { k: "autonomous-drones", n: "الطائرات المسيرة المستقلة", e: "Autonomous Drones (UAV)", p: "autonomy-apps", g: 4,
+    d: "طائرات مسيرة تنقل وتصور وتفحص ذاتيا؛ اوصلت Zipline اكثر من مليون شحنة طبية تجارية وقلصت زمن توصيل الدم كثيرا." },
+  { k: "humanoid-robots", n: "الروبوتات البشرية الشكل", e: "Humanoid Robots", p: "autonomy-apps", g: 4,
+    d: "روبوتات بهيئة الانسان للعمل في بيئات مصممة للبشر؛ نماذج مثل Figure وTesla Optimus في مراحل تجارب مصنعية مبكرة." },
+  { k: "game-playing-agents", n: "عملاء الالعاب والقرار", e: "Game-Playing & Decision Agents", p: "autonomy-apps", g: 4,
+    d: "انظمة تعلم معزز تتفوق في الالعاب المعقدة وتنقل تقنياتها للتحكم واللوجستيات؛ AlphaGo هزم بطل Go لي سيدول 4-1 عام 2016." },
+
+  /* ================= الاعمال والتوصية ================= */
+  { k: "business-apps", n: "الذكاء الاصطناعي في الاعمال", e: "AI in Business & Finance", p: "root", g: 5, h: true,
+    d: "توظيف الذكاء الاصطناعي في القرارات التجارية والمالية من التوصية الى ادارة المخاطر." },
+  { k: "recommendation-engines", n: "محركات التوصية", e: "Recommendation Engines", p: "business-apps", g: 5,
+    d: "ترتيب المحتوى والمنتجات لكل مستخدم؛ اكثر من 80% مما يشاهده مستخدمو Netflix ياتي من التوصيات، وكذلك معظم مشاهدات YouTube." },
+  { k: "computational-advertising", n: "الاعلانات الحسابية", e: "Computational Advertising & Ad Ranking", p: "business-apps", g: 5,
+    d: "مطابقة الاعلان بالمستخدم والتنبؤ باحتمال النقر وتسعير المزادات لحظيا — عصب ايرادات Google وMeta." },
+  { k: "fraud-detection", n: "كشف الاحتيال", e: "Fraud Detection", p: "business-apps", g: 5,
+    d: "رصد المعاملات المشبوهة لحظيا خلال اجزاء من الثانية؛ تعتمده شبكات الدفع والبنوك لخفض الاحتيال والانذارات الكاذبة معا." },
+  { k: "demand-forecasting", n: "التنبؤ بالطلب وسلاسل الامداد", e: "Demand Forecasting & Supply Chain", p: "business-apps", g: 5,
+    d: "التنبؤ بالطلب وتحسين المخزون والتسعير والتوجيه؛ يقلص الهدر والنفاد لدى كبار تجار التجزئة." },
+  { k: "customer-support-automation", n: "اتمتة خدمة العملاء", e: "Customer Support Automation", p: "business-apps", g: 5,
+    d: "مساعدات ذكاء اصطناعي تحل استفسارات العملاء؛ تولى مساعد Klarna عام 2024 ثلثي المحادثات وخفض زمن الحل من 11 دقيقة الى دقيقتين." },
+
+  /* ================= الوكلاء والانتاجية ================= */
+  { k: "agents-apps", n: "الوكلاء والانتاجية", e: "AI Agents & Productivity", p: "root", g: 6, h: true,
+    d: "مساعدات تنجز مهام معرفية متعددة الخطوات باستعمال الادوات، لا مجرد اجابة واحدة." },
+  { k: "coding-assistants", n: "مساعدو البرمجة", e: "AI Coding Assistants", p: "agents-apps", g: 6,
+    d: "اكمال وكتابة الشيفرة داخل المحرر؛ GitHub Copilot المبني على نموذج OpenAI فتح فئة الزميل المبرمج عام 2021، وتبعه Cursor." },
+  { k: "agentic-coding", n: "البرمجة بالوكلاء", e: "Agentic Software Engineering", p: "agents-apps", g: 6,
+    d: "وكلاء ينفذون مهام برمجية كاملة عبر الملفات والطرفية والاختبارات؛ امثلته Claude Code وDevin، وبها وصفت 2026 بمرحلة هندسة الوكلاء." },
+  { k: "office-copilots", n: "مساعدو الانتاجية المكتبية", e: "Office & Productivity Copilots", p: "agents-apps", g: 6,
+    d: "دمج المساعد في ادوات العمل اليومية؛ Microsoft 365 Copilot يعمل داخل Word وExcel وOutlook، ويقابله Gemini في Google Workspace." },
+  { k: "ai-agents-tool-use", n: "الوكلاء واستخدام الادوات", e: "AI Agents & Tool Use", p: "agents-apps", g: 6,
+    d: "منح النموذج القدرة على استدعاء ادوات وواجهات وتنفيذ اجراءات عبر استدعاء الدوال وبروتوكولات مثل MCP واستخدام الحاسوب." },
+  { k: "rag-knowledge-assistants", n: "مساعدو المعرفة بالاسترجاع", e: "RAG Knowledge Assistants", p: "agents-apps", g: 6,
+    d: "الاجابة استنادا الى مستندات المؤسسة عبر الاسترجاع المعزز للتوليد، لتقليل الهلوسة وتحديث المعرفة دون اعادة تدريب." },
+
+  /* ================= البنية والنشر ================= */
+  { k: "deploy-apps", n: "هندسة الذكاء ونشره", e: "AI Engineering & Deployment", p: "root", g: 7, h: true,
+    d: "دورة حياة تحويل النموذج الى منتج موثوق: بيانات، تكييف، خدمة، تقييم، ومراقبة." },
+  { k: "foundation-model-apis", n: "النماذج الاساسية وواجهاتها", e: "Foundation Models & APIs", p: "deploy-apps", g: 7,
+    d: "البناء فوق نماذج اساسية جاهزة عبر واجهات برمجية (نموذج كخدمة) بدل التدريب من الصفر، فتنخفض الكلفة وزمن الوصول للسوق." },
+  { k: "data-labeling", n: "بيانات التدريب ووسمها", e: "Data Pipelines & Labeling", p: "deploy-apps", g: 7,
+    d: "جمع البيانات وتنظيفها ووسمها هو الوقود الحقيقي للتطبيق وغالبا اكبر كلفة فيه؛ خدمات مثل Scale AI توفر الوسم البشري." },
+  { k: "model-adaptation", n: "تكييف النموذج للمهمة", e: "Model Adaptation (Prompt vs RAG vs Fine-tune)", p: "deploy-apps", g: 7,
+    d: "اختيار اسلوب تخصيص النموذج للمهمة: توجيه بالموجهات، ام استرجاع، ام ضبط دقيق كـLoRA — قرار يوازن الدقة والكلفة والصيانة." },
+  { k: "inference-serving", n: "خدمة الاستدلال وتوسيعها", e: "Inference Serving & Scaling", p: "deploy-apps", g: 7,
+    d: "تشغيل النموذج في الانتاج على مسرعات مع ضبط زمن الاستجابة والانتاجية والكلفة عبر محركات خدمة متخصصة." },
+  { k: "evaluation-monitoring", n: "التقييم والمراقبة والحواجز", e: "Evaluation, Monitoring & Guardrails", p: "deploy-apps", g: 7,
+    d: "قياس جودة المخرجات باختبارات ووضع حواجز امان قبل الاطلاق، ثم مراقبة الانحراف والفشل والهلوسة في الانتاج." },
+  { k: "edge-on-device", n: "الذكاء على الطرف والجهاز", e: "On-Device / Edge AI", p: "deploy-apps", g: 7,
+    d: "تشغيل النماذج محليا على الهاتف او الجهاز عبر التكميم والتقطير، لتقليل الكمون والكلفة وحفظ الخصوصية دون ارسال البيانات للسحابة." },
+];
+
+/* رحلة عالم التطبيقات: جولة في «اين يستخدم الذكاء الاصطناعي» عبر مجالاته التسعة،
+   مرتبة على قوس القدرات من الادراك الى الفعل ثم هندسة النشر
+   (اطار مستلهم من تقرير مؤشر الذكاء الاصطناعي 2025 من ستانفورد ومن نضج التعلم
+   العميق حسب النمط: رؤية 2012، لغة 2017، توليد 2022)
+   rel: المفاهيم والانظمة العاملة خلف كل خطوة */
+export const JOURNEY = [
+  { k: "root", rel: ["vision-apps", "deploy-apps"],
+    t: "تبدا الجولة من قمة العالم: خريطة اين يستخدم الذكاء الاصطناعي لا كيف يعمل، مرتبة من ادراك العالم الى تغييره ثم الى هندسة نشره." },
+  { k: "vision-apps", rel: ["object-detection", "facial-recognition"],
+    t: "المحطة الاولى الرؤية الحاسوبية: منذ فوز AlexNet عام 2012 تعلمت الالة ان ترى، فتكشف الاجسام وتطابق الوجوه وتقرا المستندات." },
+  { k: "language-apps", rel: ["conversational-assistants", "machine-translation"],
+    t: "ثم اللغة والكلام: بعد بنية المحول عام 2017 تفهم الالة النص وتترجمه وتحاوره، وابرز تجلياتها ChatGPT عام 2022." },
+  { k: "genmedia-apps", rel: ["text-to-image", "text-to-video"],
+    t: "من الفهم الى الخلق: مع نماذج الانتشار منذ 2022 تولد الالة صورا وفيديو وصوتا جديدا من مجرد وصف نصي." },
+  { k: "science-health-apps", rel: ["protein-structure", "drug-discovery"],
+    t: "ثم الاكتشاف العلمي في الطب وعلوم الحياة: حقق AlphaFold قفزة دقة عام 2020، ثم اتاح بنية اكثر من 200 مليون بروتين عام 2022، ونال مطوراه نوبل الكيمياء 2024." },
+  { k: "physical-science-apps", rel: ["weather-climate", "materials-discovery"],
+    t: "ويمتد الاكتشاف الى العلوم الفيزيائية والرياضية: يتنبأ GraphCast بالطقس، ويكتشف GNoME مواد مستقرة، ويبلغ AlphaProof مستوى اولمبياد الرياضيات." },
+  { k: "autonomy-apps", rel: ["self-driving-cars", "warehouse-robots"],
+    t: "من الادراك الى الفعل في العالم المادي: تقود سيارات Waymo نفسها بلا سائق، وتشغل Amazon اكثر من مليون روبوت في مستودعاتها." },
+  { k: "business-apps", rel: ["recommendation-engines", "fraud-detection"],
+    t: "ثم الفعل الاقتصادي في الاعمال والمال، من اقدم تطبيقات الذكاء الاصطناعي واوسعها انتشارا: ترتب محركات التوصية ما نشاهده ونشتريه، وترصد انظمة كشف الاحتيال المعاملات المشبوهة لحظيا." },
+  { k: "agents-apps", rel: ["agentic-coding", "ai-agents-tool-use"],
+    t: "واحدث الموجات الوكلاء والانتاجية: لا يجيب النموذج فحسب بل ينفذ مهام عمل متعددة الخطوات بالادوات، من GitHub Copilot الى وكلاء البرمجة مثل Claude Code." },
+  { k: "deploy-apps", rel: ["foundation-model-apis", "model-adaptation", "evaluation-monitoring"],
+    t: "اخيرا محطة «كيف» بين محطات «اين»: مجال الهندسة الذي يحول اي تطبيق مما سبق الى منتج موثوق عبر دورة حياة واحدة — بناء فوق نموذج اساسي، ثم تكييف وتقييم وخدمة ومراقبة." },
+];

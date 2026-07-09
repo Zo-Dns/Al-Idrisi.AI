@@ -1,0 +1,101 @@
+<style>
+  #appCurveWrap { background:#070b15; border-radius:10px; padding:8px; display:inline-block; max-width:100%; overflow:auto; }
+  #appCurve { display:block; max-width:100%; }
+  .appTopGrid { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:8px; margin-top:8px; }
+  .appKpi { background:rgba(255,255,255,0.045); border:1px solid var(--panel-border); border-radius:8px; padding:8px 10px; }
+  .appKpi span { display:block; color:var(--muted); font-size:11px; }
+  .appKpi b { display:block; margin-top:2px; color:var(--ink); font-size:17px; font-variant-numeric:tabular-nums; }
+  .appEn { color:var(--muted); font-family:var(--mono); font-size:10px; direction:ltr; }
+  #appConfusion { display:grid; grid-template-columns:repeat(2, minmax(130px,1fr)); gap:7px; }
+  .appCmCell { border-radius:8px; padding:8px 10px; border:1px solid rgba(255,255,255,0.08); background:#0a0f1c; }
+  .appCmCell span { display:flex; justify-content:space-between; gap:8px; color:var(--muted); font-size:11px; }
+  .appCmCell b { display:block; margin-top:4px; color:var(--ink); font-size:19px; font-variant-numeric:tabular-nums; }
+  .appCmCell.tp { border-color:rgba(124,227,139,0.45); } .appCmCell.tn { border-color:rgba(79,200,248,0.35); }
+  .appCmCell.fp, .appCmCell.fn { border-color:rgba(248,113,113,0.40); }
+  table.appMetricTbl { width:100%; border-collapse:collapse; font-size:12px; }
+  table.appMetricTbl td { padding:5px 4px; border-bottom:1px solid rgba(255,255,255,0.06); }
+  table.appMetricTbl td:last-child { text-align:left; font-variant-numeric:tabular-nums; color:var(--ink); font-weight:700; }
+  .appCostHot { color:#ffd166 !important; }
+  #appReadout { font-size:12.5px; color:var(--muted); line-height:1.65; margin-top:8px; }
+  #appReadout b { color:#ffd166; font-variant-numeric:tabular-nums; }
+  .appOps { display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:7px; }
+  .appOp { background:rgba(255,255,255,0.04); border:1px solid var(--panel-border); border-radius:8px; padding:7px 9px; font-size:11.5px; color:var(--muted); }
+  .appOp b { display:block; color:var(--ink); margin-top:2px; font-size:13px; }
+  @media (max-width: 820px) { .appOps { grid-template-columns:1fr 1fr; } #appConfusion { grid-template-columns:1fr; } }
+  @media (max-width: 520px) { .appTopGrid, .appOps { grid-template-columns:1fr; } }
+</style>
+<div id="lab" dir="rtl" role="dialog" aria-label="مختبر قرار التطبيق والنشر">
+  <div id="labHead">
+    <div>
+      <h2>🔬 مختبر قرار التطبيق والنشر</h2>
+      <div class="labsub">نفس الدرجة الاحتمالية تصبح قرارات مختلفة حسب المجال، كلفة الخطا، وقيود التشغيل. الحسابات حية ومختبرة آليا.</div>
+    </div>
+    <div id="labTabs">
+      <button id="appTab0" type="button" class="on">عتبة وكلفة <span class="hen">Decision threshold</span></button>
+    </div>
+    <button id="labClose" type="button">✕ عودة للخريطة</button>
+  </div>
+  <div id="labBody">
+    <section id="appScene0" class="labScene on">
+      <div class="labCols" style="align-items:flex-start">
+        <div class="labPanel" style="max-width:none; flex:1.25">
+          <div class="labBox">
+            <h3>منحنى القرار <span class="hen">Cost vs threshold</span></h3>
+            <div id="appCurveWrap"><canvas id="appCurve"></canvas></div>
+            <div class="labNote" style="margin-top:8px">الذهبي = الكلفة المتوقعة لكل 1000 حالة. الازرق = خطا الدقة. الخطوط العمودية تقارن العتبة الحالية، عتبة اقل كلفة، وعتبة اعلى دقة.</div>
+          </div>
+          <div class="labBox">
+            <h3>مصفوفة الالتباس المتوقعة <span class="hen">Expected confusion matrix</span></h3>
+            <div id="appConfusion"></div>
+            <div class="labNote" style="margin-top:8px">الاعداد متوقعة من سكان صناعيين بحجم 10000 حالة. عند الانحراف، تتغير علاقة الدرجة بالحقيقة فيحاكي ذلك فشل المعايرة او تغير الانتاج.</div>
+          </div>
+        </div>
+        <div class="labPanel">
+          <div class="labBox">
+            <h3 id="appDomainTitle">فرز طبي <span class="appEn">Medical triage</span></h3>
+            <div class="sliderRow"><label>المجال<span class="slen">Domain</span></label><select id="appDomain"></select></div>
+            <div class="sliderRow"><label>عتبة الفعل<span class="slen">Threshold</span></label><input type="range" id="appThreshold" min="0" max="100" value="5"><span class="val" id="appThresholdVal"></span></div>
+            <div class="sliderRow"><label>انحراف الانتاج<span class="slen">Drift</span></label><input type="range" id="appDrift" min="-70" max="70" value="0"><span class="val" id="appDriftVal"></span></div>
+            <div class="labBtnRow">
+              <button id="appUseCost" type="button" class="gold">استخدم عتبة اقل كلفة</button>
+              <button id="appUseAcc" type="button">استخدم عتبة اعلى دقة</button>
+              <button id="appResetDrift" type="button">صفر الانحراف</button>
+            </div>
+            <div id="appDomainNote" class="labNote" style="margin-top:8px"></div>
+          </div>
+          <div class="labBox">
+            <h3>ملخص المجال <span class="hen">Domain assumptions</span></h3>
+            <div class="appTopGrid">
+              <div class="appKpi"><span>معدل الاساس</span><b id="appBase">—</b></div>
+              <div class="appKpi"><span>كلفة FP</span><b id="appCostFP">—</b></div>
+              <div class="appKpi"><span>كلفة FN</span><b id="appCostFN">—</b></div>
+              <div class="appKpi"><span>عتبة Bayes</span><b id="appTheory">—</b></div>
+              <div class="appKpi"><span>اقل كلفة</span><b id="appCostBest">—</b></div>
+              <div class="appKpi"><span>اعلى دقة</span><b id="appAccBest">—</b></div>
+            </div>
+          </div>
+          <div class="labBox">
+            <h3>قيود تشغيل مبسطة <span class="hen">Operational constraints</span></h3>
+            <div class="appOps">
+              <div class="appOp">زمن تقريبي للاستدلال <b id="appLatency">—</b></div>
+              <div class="appOp">كلفة استدلال لكل 1000 <b id="appInferCost">—</b></div>
+              <div class="appOp">نمط الخصوصية <b id="appPrivacy">—</b></div>
+            </div>
+            <div class="labNote" style="margin-top:8px">هذه القيود تعليمية مبسطة وليست قياس بنية تحتية حقيقية. الغرض هو ربط القرار بعقد النشر: الخدمة، المراقبة، والطرف.</div>
+          </div>
+          <div class="labBox">
+            <h3>المقاييس <span class="hen">Metrics</span></h3>
+            <table class="appMetricTbl" id="appMetrics"></table>
+            <div id="appReadout"></div>
+          </div>
+          <div class="labBox">
+            <details class="rules">
+              <summary>ما هذا المختبر بالضبط؟ (الصدق العلمي اولا)</summary>
+              <div style="margin-top:6px">المختبر لا يدعي ان كل تطبيق ذكاء اصطناعي ثنائي. هو يختزل قرارا شائعا في المنتجات: متى نصعد الحالة الى فعل او مراجعة؟ في الوضع الافتراضي الدرجة هي احتمال بعدي معاير P(Y=1|x)، لذلك عتبة Bayes مع كلفة FP/FN فقط هي costFP/(costFP+costFN). عند الانحراف لا تعود هذه الضمانة كافية، ولهذا تظهر اهمية التقييم والمراقبة. الامثلة والقيم تعليمية لا وصف طبي او قانوني. تطبيقات النماذج اللغوية لا تعطى عادة «ثقة» معايرة للجواب الكامل؛ يمكن استعمال هذا المختبر معها فقط عندما تكون الدرجة من مقيم خارجي او حارس امان او بوابة مراجعة بشرية.</div>
+            </details>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>

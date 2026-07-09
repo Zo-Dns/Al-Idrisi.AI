@@ -1,0 +1,58 @@
+<style>
+  #rlCanvasWrap { background:#070b15; border-radius:10px; padding:6px; display:inline-block; }
+  #rlStats { font-size:13px; color:var(--muted); margin-top:8px; font-variant-numeric:tabular-nums; }
+  #rlStats b { color:var(--ink); }
+  #rlOracleNote { font-size:12px; color:var(--muted); margin-top:6px; line-height:1.55; }
+  .rlToggleRow { display:flex; align-items:center; gap:7px; font-size:12.5px; color:var(--ink); margin:6px 0; }
+</style>
+<div id="lab" dir="rtl" role="dialog" aria-label="مختبر التعلم المعزز">
+  <div id="labHead">
+    <div>
+      <h2>🔬 مختبر التعلم المعزز</h2>
+      <div class="labsub">وكيل يتعلم Q من التجربة والخطا — ويطابق الحل الذي يحسبه التخطيط (تكرار القيمة) الى دقة الآلة.</div>
+    </div>
+    <div id="labTabs">
+      <button id="rlTab0" type="button" class="on">ساحة تعلم Q <span class="hen">Q-learning</span></button>
+    </div>
+    <button id="labClose" type="button">✕ عودة للخريطة</button>
+  </div>
+  <div id="labBody">
+    <section id="rlScene0" class="labScene on">
+      <div class="labCols" style="align-items:flex-start">
+        <div class="labPanel" style="max-width:none; flex:none">
+          <div class="labBox">
+            <h3>عالم الشبكة <span class="hen">Gridworld</span></h3>
+            <div class="labNote" style="margin-bottom:6px">اللون = قيمة الحالة V (اخضر اعلى)، والسهم = افضل فعل تعلمه الوكيل. الهدف G(+10)، الحفرة P(-10)، الجدار #.</div>
+            <div id="rlCanvasWrap"><canvas id="rlCanvas"></canvas></div>
+            <div id="rlStats"></div>
+            <div id="rlOracleNote"></div>
+          </div>
+        </div>
+        <div class="labPanel">
+          <div class="labBox">
+            <h3>درب الوكيل <span class="hen">Train</span></h3>
+            <div class="labBtnRow">
+              <button id="rlRun" type="button">درب 200 حلقة</button>
+              <button id="rlRun5k" type="button">درب 5000 حلقة</button>
+              <button id="rlReset" type="button">تصفير</button>
+            </div>
+            <div class="rlToggleRow"><input type="checkbox" id="rlOracle"><label for="rlOracle">اعرض الحل المثالي (عراف تكرار القيمة Q*)</label></div>
+          </div>
+          <div class="labBox">
+            <h3>المعاملات الفائقة <span class="hen">Hyperparameters</span></h3>
+            <div class="sliderRow"><label>معدل التعلم<span class="slen">α</span></label><input type="range" id="rlAlpha" min="1" max="100" value="50"><span class="val" id="rlAlphaVal"></span></div>
+            <div class="sliderRow"><label>عامل الخصم<span class="slen">γ</span></label><input type="range" id="rlGamma" min="0" max="99" value="90"><span class="val" id="rlGammaVal"></span></div>
+            <div class="sliderRow"><label>الاستكشاف<span class="slen">ε</span></label><input type="range" id="rlEps" min="0" max="100" value="30"><span class="val" id="rlEpsVal"></span></div>
+            <div class="labNote">غيرها ثم صفر ودرب لترى اثرها. (القيم الافتراضية 0.5 · 0.9 · 0.3 هي المختبرة.)</div>
+          </div>
+          <div class="labBox">
+            <details class="rules">
+              <summary>ما هذا المختبر بالضبط؟ (الصدق العلمي اولا)</summary>
+              <div style="margin-top:6px">وكيل <b>حقيقي</b> يتعلم بتعلم Q الجدولي: يجرب افعالا (بابسيلون-الجشعة)، ويحدث تقديره Q بقاعدة الفرق الزمني خارج السياسة. البرهان: بعد تدريب كاف يطابق ما تعلمه من <b>التجربة</b> ما يحسبه <b>تكرار القيمة</b> (التخطيط بالنموذج المعلوم) — البعد max|Q-Q*| يهبط الى نحو 10⁻¹⁵ (دقة الآلة). هذا تجسيد لنظرية تقارب تعلم Q (وتكنز وديان 1992): التعلم من التجربة يعيد انتاج التخطيط بالضبط. المسار الجشع الامثل يتفادى الحفرة ويصل في 5 خطوات. كل الارقام مبرهنة آليا ضد حساب يدوي (V*(S)=3.122، العملية الصغيرة V*=[8،10،0])." <b>ملاحظة صدق:</b> التعلم المعزز نهم للعينات وهش امام سوء تصميم المكافأة — وهذا عالم صغير مثالي، لا الواقع.</div>
+            </details>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>

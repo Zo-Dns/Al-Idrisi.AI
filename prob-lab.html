@@ -1,0 +1,105 @@
+<style>
+  #pbWrap { background:#070b15; border-radius:10px; padding:10px; display:inline-block; }
+  #pbNet { display:block; max-width:100%; height:auto; }
+  .pbNode { cursor:pointer; }
+  .pbNode rect.pbBox { fill:#101a30; stroke:#2b3b58; stroke-width:1.5; transition:stroke .2s, fill .2s; }
+  .pbNode:hover rect.pbBox { stroke:#4fc8f8; }
+  .pbNode.evT rect.pbBox { stroke:#4ccf7a; stroke-width:3; fill:#12251a; }
+  .pbNode.evF rect.pbBox { stroke:#d06666; stroke-width:3; fill:#251414; }
+  .pbNode text { font-family:var(--font); }
+  .pbName { font-size:15px; font-weight:700; fill:var(--ink); }
+  .pbEn { font-size:10.5px; fill:var(--muted); }
+  .pbProb { font-size:12px; fill:var(--muted); font-variant-numeric:tabular-nums; }
+  .pbBarBg { fill:#060b16; stroke:#22314c; stroke-width:1; }
+  .pbBar { fill:#4fc8f8; transition:width .25s; }
+  .pbEdge { stroke:#3a4d70; stroke-width:2; fill:none; }
+  #pbReadout { font-size:13px; color:var(--muted); margin-top:8px; line-height:1.7; font-variant-numeric:tabular-nums; }
+  #pbReadout b { color:var(--ink); }
+  #pbNote { font-size:12px; color:#9fdcff; margin-top:6px; line-height:1.55; min-height:1.2em; }
+  .pbHint { font-size:12px; color:var(--muted); margin-bottom:6px; line-height:1.5; }
+</style>
+<div id="lab" dir="rtl" role="dialog" aria-label="مختبر الذكاء الاحتمالي">
+  <div id="labHead">
+    <div>
+      <h2>🔬 مختبر الشبكة البايزية</h2>
+      <div class="labsub">استدلال دقيق حي على شبكة الرشاش الكلاسيكية: ثبت ادلة، وشاهد كل الاحتمالات البعدية تتحدث بقاعدة بايز — تعداد كامل للتوزيع المشترك، لا اعتيان ولا تقريب.</div>
+    </div>
+    <div id="labTabs">
+      <button id="pbTab0" type="button" class="on">شبكة الرشاش <span class="hen">Sprinkler BN</span></button>
+    </div>
+    <button id="labClose" type="button">✕ عودة للخريطة</button>
+  </div>
+  <div id="labBody">
+    <section class="labScene on">
+      <div class="labCols" style="align-items:flex-start">
+        <div class="labPanel" style="max-width:none; flex:none">
+          <div class="labBox">
+            <h3>الشبكة البايزية <span class="hen">Bayesian Network</span></h3>
+            <div class="pbHint">انقر اي عقدة لتدوير دليلها: مجهول ← صحيح ← خطأ. طول الشريط = الاحتمال البعدي لكون العقدة «صحيح» بمعرفة الادلة.</div>
+            <div id="pbWrap">
+              <svg id="pbNet" viewBox="0 0 520 400" width="520" height="400" xmlns="http://www.w3.org/2000/svg">
+                <defs><marker id="pbArrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#3a4d70"/></marker></defs>
+                <path class="pbEdge" marker-end="url(#pbArrow)" d="M230,94 L128,148"/>
+                <path class="pbEdge" marker-end="url(#pbArrow)" d="M290,94 L392,148"/>
+                <path class="pbEdge" marker-end="url(#pbArrow)" d="M128,226 L232,298"/>
+                <path class="pbEdge" marker-end="url(#pbArrow)" d="M392,226 L288,298"/>
+
+                <g class="pbNode" data-var="C">
+                  <rect class="pbBox" x="190" y="18" width="140" height="76" rx="12"/>
+                  <text class="pbName" x="260" y="42" text-anchor="middle">غائم <tspan class="pbEn">(Cloudy)</tspan></text>
+                  <rect class="pbBarBg" x="208" y="54" width="104" height="12" rx="6"/>
+                  <rect class="pbBar" id="pbBar-C" x="208" y="54" width="52" height="12" rx="6"/>
+                  <text class="pbProb" id="pbProb-C" x="260" y="86" text-anchor="middle">P(صحيح) = 0.500</text>
+                </g>
+                <g class="pbNode" data-var="S">
+                  <rect class="pbBox" x="40" y="150" width="140" height="76" rx="12"/>
+                  <text class="pbName" x="110" y="174" text-anchor="middle">رشاش <tspan class="pbEn">(Sprinkler)</tspan></text>
+                  <rect class="pbBarBg" x="58" y="186" width="104" height="12" rx="6"/>
+                  <rect class="pbBar" id="pbBar-S" x="58" y="186" width="31" height="12" rx="6"/>
+                  <text class="pbProb" id="pbProb-S" x="110" y="218" text-anchor="middle">P(صحيح) = 0.300</text>
+                </g>
+                <g class="pbNode" data-var="R">
+                  <rect class="pbBox" x="340" y="150" width="140" height="76" rx="12"/>
+                  <text class="pbName" x="410" y="174" text-anchor="middle">مطر <tspan class="pbEn">(Rain)</tspan></text>
+                  <rect class="pbBarBg" x="358" y="186" width="104" height="12" rx="6"/>
+                  <rect class="pbBar" id="pbBar-R" x="358" y="186" width="52" height="12" rx="6"/>
+                  <text class="pbProb" id="pbProb-R" x="410" y="218" text-anchor="middle">P(صحيح) = 0.500</text>
+                </g>
+                <g class="pbNode" data-var="W">
+                  <rect class="pbBox" x="190" y="300" width="140" height="76" rx="12"/>
+                  <text class="pbName" x="260" y="324" text-anchor="middle">عشب مبلل <tspan class="pbEn">(WetGrass)</tspan></text>
+                  <rect class="pbBarBg" x="208" y="336" width="104" height="12" rx="6"/>
+                  <rect class="pbBar" id="pbBar-W" x="208" y="336" width="67" height="12" rx="6"/>
+                  <text class="pbProb" id="pbProb-W" x="260" y="368" text-anchor="middle">P(صحيح) = 0.647</text>
+                </g>
+              </svg>
+            </div>
+            <div id="pbReadout"></div>
+            <div id="pbNote"></div>
+          </div>
+        </div>
+        <div class="labPanel">
+          <div class="labBox">
+            <h3>سيناريوهات <span class="hen">Scenarios</span></h3>
+            <div class="labBtnRow">
+              <button id="pbWet" type="button">العشب مبلل</button>
+              <button id="pbExplain" type="button">الرشاش يفسر البلل</button>
+              <button id="pbReset" type="button">تصفير الادلة</button>
+            </div>
+            <div class="labNote">«العشب مبلل» يثبت W=صحيح فيرفع احتمال المطر والرشاش (استدلال تشخيصي عكسي). «الرشاش يفسر البلل» يضيف رشاش=صحيح، فيهبط احتمال المطر رغم بقاء العشب مبللا — هذه ظاهرة «التفسير المزيح» (explaining away)، بصمة الاستدلال البايزي.</div>
+          </div>
+          <div class="labBox">
+            <h3>نتائج مرجعية <span class="hen">Reference</span></h3>
+            <div id="pbQuery"></div>
+          </div>
+          <div class="labBox">
+            <details class="rules">
+              <summary>ما هذا المختبر بالضبط؟ (الصدق العلمي اولا)</summary>
+              <div style="margin-top:6px">شبكة بايزية <b>حقيقية</b> بجداول الاحتمال الشرطي القياسية من راسل ونورفيغ: P(غائم)=0.5، P(رشاش|غائم)=0.1 و P(رشاش|صحو)=0.5، P(مطر|غائم)=0.8 و P(مطر|صحو)=0.2، وجدول العشب المبلل (0.99 / 0.90 / 0.90 / 0.0). الاستدلال <b>دقيق</b> بالتعداد الكامل للتوزيع المشترك (16 اسنادا) لا بالاعتيان — فكل رقم هو البعدي الصحيح تماما. مبرهن آليا ضد حساب يدوي: P(عشب مبلل)=0.647، P(مطر | عشب مبلل)=0.708، والتفسير المزيح P(مطر | مبلل، رشاش)=0.320. <b>ملاحظة صدق:</b> التعداد الدقيق ينفجر اسيا في الشبكات الكبيرة (الاستدلال الدقيق NP-صعب)، فتلزم طرق الاعتيان في الواقع؛ هنا اربع عقد فقط ليبقى الحساب دقيقا ولحظيا.</div>
+            </details>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>

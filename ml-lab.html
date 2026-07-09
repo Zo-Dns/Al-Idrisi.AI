@@ -1,0 +1,70 @@
+<style>
+  #mlCanvasWrap { position: relative; }
+  #mlHint2 { font-size: 12.5px; color: var(--muted); margin-top: 4px; }
+  .mlStat { display:flex; gap:16px; font-size:13px; color:var(--muted); flex-wrap:wrap; margin-top:4px; }
+  .mlStat b { color: var(--ink); font-variant-numeric: tabular-nums; }
+  .mlLegendDot { display:inline-block; width:11px; height:11px; border-radius:50%; vertical-align:-1px; margin-inline-end:4px; }
+</style>
+<div id="lab" dir="rtl" role="dialog" aria-label="مختبر تعلم الآلة">
+  <div id="labHead">
+    <div>
+      <h2>🔬 مختبر تعلم الآلة</h2>
+      <div class="labsub">مصنف حقيقي يتدرب في متصفحك على نقاط ترسمها بنفسك — <span id="labParams"></span></div>
+    </div>
+    <div id="labTabs">
+      <button id="labTab0" type="button" class="on">ساحة التصنيف <span class="hen">Classifier playground</span></button>
+    </div>
+    <button id="labClose" type="button">✕ عودة للخريطة</button>
+  </div>
+  <div id="labBody">
+    <section id="labScene0" class="labScene on">
+      <div class="labCols" style="align-items:flex-start">
+        <div class="labPanel" style="max-width:none; flex:none">
+          <div class="labBox">
+            <h3>البيانات — انقر لتضيف نقطة <span class="hen">Training points</span></h3>
+            <div class="labCanvasWrap" id="mlCanvasWrap"><canvas id="mlCanvas"></canvas></div>
+            <div id="mlHint2"></div>
+            <div class="mlStat" style="margin-top:6px">
+              <span><span class="mlLegendDot" style="background:#4fc8f8"></span>الفئة A <b id="mlCountA">0</b></span>
+              <span><span class="mlLegendDot" style="background:#ffb259"></span>الفئة B <b id="mlCountB">0</b></span>
+            </div>
+            <div class="labBtnRow">
+              <button id="mlBlobs" type="button">مثال: فئتان <span class="hen">Blobs</span></button>
+              <button id="mlXor" type="button">مثال: XOR</button>
+              <button id="mlCircle" type="button">مثال: دائرة <span class="hen">Circle</span></button>
+              <button id="mlClear" type="button">مسح <span class="hen">Clear</span></button>
+            </div>
+          </div>
+        </div>
+        <div class="labPanel">
+          <div class="labBox">
+            <h3>الخوارزمية <span class="hen">Algorithm</span></h3>
+            <div class="sliderRow"><label>النموذج<span class="slen">Model</span></label>
+              <select id="mlAlgo">
+                <option value="knn">اقرب الجيران k-NN</option>
+                <option value="logreg">الانحدار اللوجستي</option>
+                <option value="tree">شجرة القرار</option>
+              </select>
+            </div>
+            <div class="sliderRow" id="mlKRow"><label>عدد الجيران k<span class="slen">k</span></label><input type="range" id="mlK" min="1" max="25" value="5"><span class="val" id="mlKVal"></span></div>
+            <div class="sliderRow" id="mlDepthRow" style="display:none"><label>عمق الشجرة<span class="slen">Max depth</span></label><input type="range" id="mlDepth" min="1" max="8" value="4"><span class="val" id="mlDepthVal"></span></div>
+            <div class="mlStat" style="margin-top:8px">
+              <span>دقة التدريب <span class="hen">Train acc.</span> <b id="mlAcc">—</b></span>
+            </div>
+            <div class="labNote" id="mlAccNote" style="margin-top:6px"></div>
+          </div>
+          <div class="labBox">
+            <h3>ماذا تلاحظ؟ <span class="hen">What to try</span></h3>
+            <div class="labNote" id="mlObserve"></div>
+          </div>
+          <div class="labBox">
+            <details class="rules">
+              <summary>ما هذا المختبر بالضبط؟ (الصدق العلمي اولا)</summary>
+              <div style="margin-top:6px">ثلاث خوارزميات تصنيف <b>حقيقية</b> تعمل في متصفحك على النقاط التي ترسمها: k-NN بالتصويت على اقرب الجيران، والانحدار اللوجستي بالنزول التدرجي على دالة سينية، وشجرة قرار تبني تقسيمات حقيقية بمعيار جيني (Gini). الخلفية الملونة هي «حد القرار»: لون كل نقطة في المستوى حسب تنبؤ النموذج لها. دقة k-NN محسوبة بترك واحد (leave-one-out) حتى لا تكون 100% زائفة. هذه هي نفس الخوارزميات في scikit-learn، على بيانات ثنائية البعد لتراها بعينك.</div>
+            </details>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>

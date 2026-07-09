@@ -1,0 +1,71 @@
+<style>
+  #csCanvasWrap { background:#070b15; border-radius:10px; padding:6px; display:inline-block; }
+  #csCanvas { cursor:pointer; border-radius:4px; }
+  #csStats { font-size:13px; color:var(--muted); margin-top:8px; font-variant-numeric:tabular-nums; }
+  #csStats b { color:var(--ink); }
+  #csObserve { font-size:12.5px; color:var(--ink); line-height:1.6; margin-top:6px; }
+  .csLegend { display:flex; gap:14px; flex-wrap:wrap; font-size:11.5px; color:var(--muted); margin:6px 0; }
+  .csSw { display:inline-block; width:12px; height:12px; border-radius:3px; vertical-align:-2px; margin-inline-end:4px; }
+</style>
+<div id="lab" dir="rtl" role="dialog" aria-label="مختبر الذكاء الكلاسيكي">
+  <div id="labHead">
+    <div>
+      <h2>🔬 مختبر البحث الكلاسيكي</h2>
+      <div class="labsub">اربع خوارزميات بحث حقيقية على نفس الشبكة — قارن الكلفة والامثلية وعدد العقد الموسعة بعينك.</div>
+    </div>
+    <div id="labTabs">
+      <button id="csTab0" type="button" class="on">ساحة البحث <span class="hen">Search playground</span></button>
+    </div>
+    <button id="labClose" type="button">✕ عودة للخريطة</button>
+  </div>
+  <div id="labBody">
+    <section id="csScene0" class="labScene on">
+      <div class="labCols" style="align-items:flex-start">
+        <div class="labPanel" style="max-width:none; flex:none">
+          <div class="labBox">
+            <h3>الشبكة <span class="hen">Grid world</span></h3>
+            <div class="csLegend">
+              <span><span class="csSw" style="background:#7ce38b"></span>البداية S</span>
+              <span><span class="csSw" style="background:#ff8c5a"></span>الهدف G</span>
+              <span><span class="csSw" style="background:#3a2f1a"></span>مستنقع (كلفة 10)</span>
+              <span><span class="csSw" style="background:#05070d"></span>جدار</span>
+              <span><span class="csSw" style="background:rgba(79,200,248,0.4)"></span>عقد موسعة</span>
+              <span><span class="csSw" style="background:rgba(124,227,139,0.8)"></span>المسار</span>
+            </div>
+            <div id="csCanvasWrap"><canvas id="csCanvas"></canvas></div>
+            <div class="labNote" style="margin-top:6px">انقر خلية لتبديل تضاريسها: عادي ← جدار ← مستنقع ← عادي. تعيد الخوارزمية الحل حيا.</div>
+            <div id="csStats"></div>
+          </div>
+        </div>
+        <div class="labPanel">
+          <div class="labBox">
+            <h3>الخوارزمية <span class="hen">Algorithm</span></h3>
+            <div class="sliderRow"><label>البحث<span class="slen">Search</span></label>
+              <select id="csAlgo">
+                <option value="bfs">البحث بالعرض BFS</option>
+                <option value="ucs">الكلفة الموحدة (دايكسترا) UCS</option>
+                <option value="greedy">الجشع الافضل-اولا Greedy</option>
+                <option value="astar" selected>A*</option>
+              </select>
+            </div>
+            <div class="csHeuristicRow sliderRow" id="csHeuristicRow" style="align-items:center">
+              <label>الاسترشاد (مانهاتن)<span class="slen">Heuristic h</span></label>
+              <input type="checkbox" id="csHeuristic" checked>
+            </div>
+          </div>
+          <div class="labBox">
+            <h3>ماذا تلاحظ؟ <span class="hen">What to try</span></h3>
+            <div id="csObserve"></div>
+            <div class="labBtnRow" style="margin-top:8px"><button id="csReset" type="button">اعد الشبكة الاصلية <span class="hen">Reset</span></button></div>
+          </div>
+          <div class="labBox">
+            <details class="rules">
+              <summary>ما هذا المختبر بالضبط؟ (الصدق العلمي اولا)</summary>
+              <div style="margin-top:6px">اربع خوارزميات بحث <b>حقيقية</b> تعمل في متصفحك على نفس الشبكة: البحث بالعرض، والكلفة الموحدة (دايكسترا)، والجشع الافضل-اولا، وA*. الالوان تظهر العقد التي وسعتها الخوارزمية والمسار الذي وجدته. البرهان: A* باسترشاد <b>مقبول</b> (مانهاتن، لا يبالغ ابدا) يجد الحل <b>الامثل</b> نفسه الذي تجده دايكسترا (كلفة 16) لكن بتوسيع 43 عقدة بدل 111 — نظرية الهيمنة. اطفئ الاسترشاد فيتحول A* الى دايكسترا <b>بالضبط</b>. الجشع اسرع (13 عقدة) لكنه <b>غير امثل</b> (كلفة 21، يعبر المستنقع). كل هذه الارقام مبرهنة آليا ضد حساب يدوي. خوارزمية A*: هارت ونيلسون ورافائيل 1968.</div>
+            </details>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>

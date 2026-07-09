@@ -1,0 +1,84 @@
+<style>
+  #dataTableWrap { overflow-x: auto; border: 1px solid var(--panel-border); border-radius: 10px; }
+  table.dataTbl { border-collapse: collapse; width: 100%; font-size: 13px; direction: rtl; }
+  table.dataTbl th { background: rgba(255,255,255,0.06); color: #c9d4e8; font-weight: 600; padding: 7px 10px; text-align: right; white-space: nowrap; position: sticky; top: 0; }
+  table.dataTbl td { padding: 6px 10px; border-top: 1px solid rgba(255,255,255,0.06); white-space: nowrap; }
+  table.dataTbl td .en { font-family: var(--mono); font-size: 10px; color: var(--muted); }
+  td.cell-missing { background: rgba(248,113,113,0.22); color: #ffb4b4; font-style: italic; }
+  td.cell-outlier { background: rgba(255,178,89,0.22); color: #ffd6a0; font-weight: 700; }
+  td.cell-inconsistent { background: rgba(216,201,139,0.20); color: #eae0b0; }
+  tr.row-dup td { opacity: 0.5; text-decoration: line-through; }
+  tr.row-dup td:first-child::after { content: " ⟲"; }
+  .metricRow { display:flex; align-items:center; gap:8px; margin-top:7px; font-size:13px; }
+  .metricRow .mlabel { width: 150px; flex:none; }
+  .metricRow .mlabel .en { font-family: var(--mono); font-size:10px; color:var(--muted); display:block; }
+  .metricRow .mbar { flex:1; height:12px; background:rgba(255,255,255,0.06); border-radius:6px; overflow:hidden; }
+  .metricRow .mfill { display:block; height:100%; border-radius:6px; transition: width 0.35s; }
+  .metricRow .mval { width:44px; text-align:left; font-family:var(--mono); font-size:12px; direction:ltr; flex:none; }
+  .scoreBig { font-size: 30px; font-weight: 800; font-variant-numeric: tabular-nums; }
+  .scoreBig .pct { font-size: 17px; color: var(--muted); }
+</style>
+<div id="lab" dir="rtl" role="dialog" aria-label="مختبر تنظيف البيانات">
+  <div id="labHead">
+    <div>
+      <h2>🔬 مختبر تنظيف البيانات</h2>
+      <div class="labsub">جدول فوضوي حقيقي ومقاييس جودة تحسب لحظيا — <span id="labParams"></span></div>
+    </div>
+    <div id="labTabs">
+      <button id="labTab0" type="button" class="on">منظف البيانات <span class="hen">Data cleaner</span></button>
+    </div>
+    <button id="labClose" type="button">✕ عودة للخريطة</button>
+  </div>
+  <div id="labBody">
+    <section id="labScene0" class="labScene on">
+      <div class="labCols" style="align-items:flex-start">
+        <div class="labPanel" style="max-width:none; flex:1.4">
+          <div class="labBox">
+            <h3>البيانات الخام <span class="hen">Raw dataset</span></h3>
+            <div id="dataTableWrap"></div>
+            <div class="labNote" style="margin-top:8px">
+              <span style="color:#ffb4b4">■</span> قيمة ناقصة ·
+              <span style="color:#ffd6a0">■</span> شاذة ·
+              <span style="color:#eae0b0">■</span> غير متسقة ·
+              <span style="opacity:0.6">اسطر باهتة</span> مكررة
+            </div>
+          </div>
+        </div>
+        <div class="labPanel">
+          <div class="labBox" style="text-align:center">
+            <h3 style="text-align:right">درجة الجودة الكلية <span class="hen">Quality score</span></h3>
+            <div class="scoreBig"><span id="dataScore">—</span><span class="pct">%</span></div>
+            <div class="labNote" id="dataScoreNote" style="margin-top:2px"></div>
+          </div>
+          <div class="labBox">
+            <h3>ابعاد الجودة <span class="hen">Quality dimensions</span></h3>
+            <div class="metricRow"><span class="mlabel">الاكتمال<span class="en">Completeness</span></span><span class="mbar"><span class="mfill" id="mfill-comp"></span></span><span class="mval" id="mval-comp"></span></div>
+            <div class="metricRow"><span class="mlabel">التفرد<span class="en">Uniqueness</span></span><span class="mbar"><span class="mfill" id="mfill-uniq"></span></span><span class="mval" id="mval-uniq"></span></div>
+            <div class="metricRow"><span class="mlabel">الاتساق<span class="en">Consistency</span></span><span class="mbar"><span class="mfill" id="mfill-cons"></span></span><span class="mval" id="mval-cons"></span></div>
+            <div class="metricRow"><span class="mlabel">الصحة<span class="en">Validity</span></span><span class="mbar"><span class="mfill" id="mfill-acc"></span></span><span class="mval" id="mval-acc"></span></div>
+          </div>
+          <div class="labBox">
+            <h3>عمليات التنظيف <span class="hen">Cleaning operations</span></h3>
+            <div class="labBtnRow">
+              <button id="opImpute" type="button">املأ الناقص <span class="hen">Impute</span></button>
+              <button id="opDedupe" type="button">احذف المكرر <span class="hen">Dedupe</span></button>
+              <button id="opStd" type="button">وحد المدن <span class="hen">Standardize</span></button>
+              <button id="opOutlier" type="button">عالج الشواذ <span class="hen">Outliers</span></button>
+            </div>
+            <div class="labBtnRow">
+              <button id="opAll" type="button" class="gold">نظف كل شيء <span class="hen">Clean all</span></button>
+              <button id="opReset" type="button">اعادة الفوضى <span class="hen">Reset</span></button>
+            </div>
+            <div class="labNote" id="dataOpNote" style="margin-top:8px"></div>
+          </div>
+          <div class="labBox">
+            <details class="rules">
+              <summary>كيف تحسب الدرجة؟ (شفافية علمية)</summary>
+              <div style="margin-top:6px">كل مقياس محسوب فعلا من حالة الجدول الان، وفق ابعاد جودة البيانات القياسية: الاكتمال = نسبة الخلايا غير الفارغة · التفرد = نسبة الصفوف الفريدة · الاتساق = نسبة قيم المدن المطابقة للصيغة المعتمدة · الصحة = نسبة الاعمار في نطاق منطقي (0-120). الدرجة الكلية متوسطها. كل عملية تصلح البعد الذي يخصها فترتفع درجته الى 100%.</div>
+            </details>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>

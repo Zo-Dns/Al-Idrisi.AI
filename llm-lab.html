@@ -1,0 +1,92 @@
+<style>
+  .genText { min-height: 120px; background: rgba(255,255,255,0.04); border: 1px solid var(--panel-border); border-radius: 10px; padding: 12px 14px; font-size: 15.5px; line-height: 2.1; }
+  .ctxHi { background: rgba(255,209,102,0.22); border-radius: 5px; padding: 1px 4px; }
+  .eosMark { color: #ffd166; font-weight: 700; }
+  .distRow { display: flex; align-items: center; gap: 8px; padding: 2.5px 0; font-size: 13.5px; }
+  .distRow .dw { width: 128px; flex: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .distRow .dbar { flex: 1; height: 12px; background: rgba(255,255,255,0.06); border-radius: 6px; overflow: hidden; }
+  .distRow .dfill { display: block; height: 100%; background: linear-gradient(90deg, #4fc8f8, #a78bfa); border-radius: 6px; }
+  .distRow .dp { width: 52px; flex: none; font-family: var(--mono); font-size: 12px; color: var(--accent); direction: ltr; text-align: left; }
+  .tokChip { display: inline-block; border: 1px solid; border-radius: 7px; padding: 2px 8px; margin: 3px 2px; font-size: 15px; }
+  .tokChip .eow { opacity: 0.55; font-size: 11px; }
+  .mergeChip { display: inline-block; background: rgba(255,255,255,0.05); border: 1px solid var(--panel-border); border-radius: 7px; padding: 3px 9px; margin: 3px 2px; font-size: 13.5px; }
+  #tokInput { width: 100%; box-sizing: border-box; background: rgba(255,255,255,0.06); border: 1px solid var(--panel-border); border-radius: 8px; color: var(--ink); font-family: var(--font); font-size: 15px; padding: 9px 11px; resize: vertical; }
+  #tokInput:focus { outline: none; border-color: rgba(79,200,248,0.55); }
+</style>
+<div id="lab" dir="rtl" role="dialog" aria-label="مختبرات النماذج اللغوية">
+  <div id="labHead">
+    <div>
+      <h2>🔬 مختبرات النماذج اللغوية</h2>
+      <div class="labsub">نموذج توليد حقيقي ومرمز BPE حقيقي يعملان في متصفحك — كل الارقام فعلية · <span id="labParams"></span></div>
+    </div>
+    <div id="labTabs">
+      <button id="labTab0" type="button">1· التوليد كلمة كلمة <span class="hen">Generation</span></button>
+      <button id="labTab1" type="button">2· الترميز <span class="hen">Tokenizer</span></button>
+    </div>
+    <button id="labClose" type="button">✕ عودة للخريطة</button>
+  </div>
+  <div id="labBody">
+
+    <section id="labScene0" class="labScene">
+      <div class="labCols">
+        <div class="labPanel" style="max-width:540px; flex:1.2">
+          <div class="labBox">
+            <h3>النص المتولد <span class="hen">Generated text</span></h3>
+            <div id="genOut" class="genText"></div>
+            <div class="labBtnRow">
+              <button id="genAuto" type="button" class="gold">▶ توليد تلقائي <span class="hen">Generate</span></button>
+              <button id="genStep" type="button">رمز واحد <span class="hen">1 token</span></button>
+              <button id="genClear" type="button">مسح <span class="hen">Reset</span></button>
+            </div>
+            <div class="sliderRow" style="margin-top:10px">
+              <label>البذرة<span class="slen">Seed</span></label>
+              <select id="genSeed">
+                <option value="كان الصياد" selected>كان الصياد...</option>
+                <option value="في الصباح">في الصباح...</option>
+                <option value="جلست القطة">جلست القطة...</option>
+                <option value="ذهب الولد">ذهب الولد...</option>
+                <option value="">بلا بذرة (من بداية جملة)</option>
+              </select>
+              <span class="labNote">الرموز: <b id="genCount">0</b></span>
+            </div>
+            <div class="sliderRow"><label>درجة الحرارة<span class="slen">Temperature</span></label><input type="range" id="genTemp" min="5" max="250" value="80"><span class="val" id="genTempVal"></span></div>
+            <div class="sliderRow"><label>قص top-k<span class="slen">Top-k</span></label><input type="range" id="genTopk" min="1" max="40" value="12"><span class="val" id="genTopkVal"></span></div>
+            <div class="labNote" style="margin-top:8px">جرب: حرارة 0.05 = نص شبه ثابت (قريب من الاختيار الاعظمي) · حرارة 2.50 = فوضى مغامرة · top-k = 1 يجعل التوليد حتميا تماما. ولاحظ الاهم: النموذج يكتب جملا سليمة التركيب وقد تكون بلا معنى او مخالفة للواقع — <b>هذه هي الهلوسة تتولد امام عينيك</b>.</div>
+          </div>
+          <div class="labBox">
+            <details class="rules">
+              <summary>ما هذا النموذج بالضبط؟ (الصدق العلمي اولا)</summary>
+              <div style="margin-top:6px">نموذج ثلاثي الكلمات (trigram) بمزج رجوعي، تدرب الان في متصفحك على النص المضمن — <b>ليس محولا وليس نموذجا كبيرا</b>. لكنه نموذج لغوي حقيقي بالتعريف العلمي: يحسب توزيع احتمال للرمز التالي من السياق ويسحب منه. الحلقة التوليدية ودرجة الحرارة وقص top-k هنا هي نفسها حرفيا في ChatGPT وClaude — الفرق ان سياقها آلاف الرموز عبر محول بمليارات المعاملات، وسياق هذا النموذج كلمتان فقط.</div>
+            </details>
+          </div>
+        </div>
+        <div class="labPanel">
+          <div class="labBox">
+            <h3>توزيع احتمالات الرمز التالي <span class="hen">Next-token distribution</span></h3>
+            <div class="labNote" style="margin-bottom:6px">من السياق الحالي (اخر كلمتين المظللتين بالذهبي) يحسب النموذج هذا التوزيع — بعد الحرارة والقص — ثم يسحب منه:</div>
+            <div id="genDist"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="labScene1" class="labScene">
+      <div class="labCols">
+        <div class="labPanel" style="max-width:580px; flex:1.2">
+          <div class="labBox">
+            <h3>اكتب اي نص وشاهده يتقطع رموزا <span class="hen">Tokenize live</span></h3>
+            <textarea id="tokInput" rows="3" spellcheck="false">ذهب الصياد الصغير الى المكتبة الالكترونية</textarea>
+            <div id="tokOut" style="margin-top:10px"></div>
+            <div class="labNote" id="tokStats" style="margin-top:8px"></div>
+          </div>
+          <div class="labBox">
+            <h3>اول الدمجات التي تعلمها المرمز <span class="hen">First BPE merges</span></h3>
+            <div id="tokMerges"></div>
+            <div class="labNote" style="margin-top:8px">هكذا تبنى المفردات: نبدأ حروفا مفردة وندمج الزوج الاكثر تكرارا مرة بعد مرة (العلامة ▁ تعني نهاية كلمة). لاحظ ان كلمات النص الشائعة (الصياد، البحر) صارت رمزا واحدا، والكلمات الغريبة عنه (الالكترونية) تتفتت اجزاء صغيرة — مرمزات GPT وClaude بنيت بالخوارزمية نفسها لكن على تيرابايتات نص وبعشرات آلاف الدمجات.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</div>

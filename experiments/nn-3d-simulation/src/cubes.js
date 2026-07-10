@@ -12,7 +12,7 @@ const state = {
   shownWeights: 0,
 };
 
-const lineRatios = [0.35, 0.65, 1.0];
+const lineRatios = [0.08, 0.22, 0.45];
 const canvas = document.getElementById("scene");
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));

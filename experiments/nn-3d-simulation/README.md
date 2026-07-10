@@ -1,46 +1,46 @@
 # 3D Neural Network Simulation
 
-تجربة جانبية مستقلة لمحاكاة شبكة عصبية ثلاثية الأبعاد. لا ترتبط بملفات الأطلس ولا تغيّرها.
+Independent side experiment for a scientific 3D neural-network visualization.
+It is isolated from the Atlas code and can be removed without touching the main
+project.
 
-## الفكرة
+## Current Model
 
-- بيانات حقيقية: UCI Optical Recognition of Handwritten Digits.
-- نموذج حقيقي صغير: `64 -> 96 -> 48 -> 10`.
-- تدريب فعلي: `MLP + ReLU + Softmax + SGD`.
-- دقة اختبار النموذج الحالي: نحو `95.7%`.
-- عرض تفاعلي: Three.js، كاميرا تدور حول الشبكة، عصبونات، وصلات موزونة، ونبضات إشارة أمامية.
+- Dataset: real MNIST handwritten digits.
+- Input: `28 x 28 = 784` pixels.
+- Architecture: `784 -> 96 -> 48 -> 10`.
+- Learning: `MLP + ReLU + Softmax + mini-batch SGD`.
+- Test accuracy: about `96.57%`.
+- Total weights: `784x96 + 96x48 + 48x10 = 80,352`.
+- Biases: `96 + 48 + 10 = 154`.
+- Total parameters: `80,352 + 154 = 80,506`.
 
-## الحسابات الرياضية
+The "more/less connections" control changes only how many trained weights are
+drawn in the 3D scene. It does not change the trained model, the input size, or
+the output probabilities.
 
-- عصبونات الإدخال ثابتة: `64 = 8×8` بكسل.
-- العصبونات المخفية ثابتة: `96 + 48 = 144`.
-- عصبونات الإخراج ثابتة: `10` فئات، من `0` إلى `9`.
-- الأوزان الكلية: `64×96 + 96×48 + 48×10 = 11,232`.
-- الانحيازات: `96 + 48 + 10 = 154`.
-- معاملات النموذج الكلية: `11,232 + 154 = 11,386`.
-- زر الوصلات يغير عدد الوصلات المعروضة بصريا فقط، ولا يغير بنية النموذج أو أوزانه المدربة.
+## Run
 
-## ملاحظة علمية
-
-صور الأرقام الأصلية في هذه النسخة هي `8×8` بكسل فقط. لذلك قد تبدو مربعة أو خشنة عند التكبير، وهذا صحيح علميا لهذه البيانات وليس خطأ في النموذج. في نسخة مستقبلية يمكن الانتقال إلى MNIST بحجم `28×28` لعرض بصري أعلى مع شبكة إدخال أكبر.
-
-## التشغيل
-
-من جذر المشروع:
+From the project root:
 
 ```powershell
 cd E:\AI-Atlas-Project
 python -m http.server 8765 --bind 127.0.0.1
 ```
 
-ثم افتح:
+Open:
 
 ```text
-http://127.0.0.1:8765/experiments/nn-3d-simulation/
+http://127.0.0.1:8765/experiments/nn-3d-simulation/cubes.html
 ```
 
-## توليد البيانات
+## Regenerate Data
+
+Use the bundled Codex Python if NumPy is not installed in the system Python:
 
 ```powershell
-python experiments\nn-3d-simulation\scripts\train_optdigits.py
+& "C:\Users\larjo\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe" experiments\nn-3d-simulation\scripts\train_mnist.py
 ```
+
+Legacy Optdigits training is still available in `scripts/train_optdigits.py`,
+but the current visualization is configured for MNIST `28 x 28`.

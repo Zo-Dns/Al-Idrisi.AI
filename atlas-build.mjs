@@ -114,11 +114,12 @@ function compile(name, { GROUPS, NODES, JOURNEY }, XLINKS) {
   const keyToIdx = new Map(NODES.map((nd, i) => [nd.k, i]));
   if (keyToIdx.size !== NODES.length) throw new Error(name + ": مفاتيح مكررة");
   if (NODES[0].k !== "root") throw new Error(name + ": الاولى يجب ان تكون root");
-  /* فرض الدستور على الخريطة الام: كل عقدة تعلن نوع علاقتها، وكل عقدة حلقة اولى تعلن نوعها */
-  if (name === "AI") for (const nd of NODES) {
+  /* فرض الدستور (المادة 7): الخريطة الام كاملة التغطية rt+nt، وكل حلقة اولى في اي عالم تعلن rt */
+  for (const nd of NODES) {
     if (nd.k === "root") continue;
-    if (!nd.rt) throw new Error("AI: عقدة بلا نوع علاقة rt: " + nd.k);
-    if (nd.p === "root" && !nd.nt) throw new Error("AI: عقدة حلقة اولى بلا نوع nt: " + nd.k);
+    if (name === "AI" && !nd.rt) throw new Error("AI: عقدة بلا نوع علاقة rt: " + nd.k);
+    if (nd.p === "root" && !nd.rt) throw new Error(name + ": عقدة حلقة اولى بلا rt: " + nd.k);
+    if (name === "AI" && nd.p === "root" && !nd.nt) throw new Error("AI: عقدة حلقة اولى بلا نوع nt: " + nd.k);
   }
   const nodes = NODES.map((nd) => {
     if (nd.p !== null && !keyToIdx.has(nd.p)) throw new Error(name + " اب مجهول: " + nd.p);

@@ -312,8 +312,8 @@ function rebuildLines() {
     const a = positionsByLayer[c.l][c.i];
     const b = positionsByLayer[c.l + 1][c.j];
     positions.push(a.x, a.y, a.z, b.x, b.y, b.z);
-    const weightBrightness = Math.min(1, 0.05 + Math.abs(c.w) * 0.22);
-    const signTint = c.w >= 0 ? [0.045, 0.07, 0.09] : [0.09, 0.055, 0.045];
+    const weightBrightness = Math.min(1, 0.1 + Math.abs(c.w) * 0.82);
+    const signTint = c.w >= 0 ? [0.72, 0.82, 1.0] : [1.0, 0.74, 0.66];
     colors.push(
       signTint[0] * weightBrightness, signTint[1] * weightBrightness, signTint[2] * weightBrightness,
       signTint[0] * weightBrightness, signTint[1] * weightBrightness, signTint[2] * weightBrightness
@@ -324,7 +324,7 @@ function rebuildLines() {
   geo.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
   weightLines = new THREE.LineSegments(
     geo,
-    new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.56, depthWrite: false })
+    new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.105, blending: THREE.AdditiveBlending, depthWrite: false })
   );
   group.add(weightLines);
 
@@ -337,15 +337,15 @@ function rebuildLines() {
     const a = positionsByLayer[c.l][c.i];
     const b = positionsByLayer[c.l + 1][c.j];
     activePos.push(a.x, a.y, a.z, b.x, b.y, b.z);
-    const bright = Math.min(1, 0.05 + c.signal * 1.1);
-    activeCol.push(bright * 0.05, bright * 0.075, bright * 0.1, bright * 0.05, bright * 0.075, bright * 0.1);
+    const bright = Math.min(1, 0.28 + c.signal * 3.2);
+    activeCol.push(bright, bright, bright, bright, bright, bright);
   }
   const activeGeo = new THREE.BufferGeometry();
   activeGeo.setAttribute("position", new THREE.Float32BufferAttribute(activePos, 3));
   activeGeo.setAttribute("color", new THREE.Float32BufferAttribute(activeCol, 3));
   activeLines = new THREE.LineSegments(
     activeGeo,
-    new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.72, depthWrite: false })
+    new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.32, blending: THREE.AdditiveBlending, depthWrite: false })
   );
   group.add(activeLines);
 

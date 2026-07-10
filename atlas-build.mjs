@@ -104,8 +104,8 @@ const XLINKS_HISTORY = [
 ];
 
 /* طبقة الدلالة (دستور الخريطة الام، README المادة 3): rt نوع العلاقة، nt نوع عقدة الحلقة الاولى، sp اب المعنى، rn جملة العلاقة */
-const REL_TYPES = new Set(["is", "part", "uses", "cross", "ctx"]);
-const NODE_TYPES = new Set(["field", "flat", "ctx", "umbrella"]);
+const REL_TYPES = new Set(["is", "part", "uses", "cross", "ctx", "enables"]);
+const NODE_TYPES = new Set(["field", "flat", "ctx", "umbrella", "enabler", "framework"]);
 
 function compile(name, { GROUPS, NODES, JOURNEY }, XLINKS) {
   for (const nd of NODES) for (const v of [nd.n, nd.d, nd.e, nd.rn]) {

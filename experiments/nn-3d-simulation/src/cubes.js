@@ -10,9 +10,13 @@ const state = {
   autoOrbit: true,
   lineMode: 0,
   shownWeights: 0,
+  contributionDots: 0,
+  contributionMassCoverage: 0,
+  visibleMassCoverage: 0,
 };
 
 const lineRatios = [0.08, 0.22, 0.45];
+const dotBudgets = [260, 560, 980];
 const OUTPUT_DIGIT_OFFSET = 24;
 const OUTPUT_SELECTED_BLUE = 0x2f76d2;
 const canvas = document.getElementById("scene");
@@ -57,10 +61,6 @@ let outputGlowMesh = null;
 let flowSignalDots = null;
 let flowSignalData = [];
 let inputSignalMesh = null;
-let inputDigitCanvas = null;
-let inputDigitTexture = null;
-let inputDigitMesh = null;
-let inputDigitBackMesh = null;
 
 const cubeGeo = new THREE.BoxGeometry(8.5, 8.5, 8.5);
 const inputPanelGeo = new THREE.BoxGeometry(9.5, 9.5, 3.2);
@@ -72,8 +72,8 @@ const tempObj = new THREE.Object3D();
 const tempColor = new THREE.Color();
 
 const mats = {
-  input: new THREE.MeshBasicMaterial({ color: 0xffffff, vertexColors: true, transparent: true, opacity: 0.9 }),
-  inputSignal: new THREE.MeshBasicMaterial({ color: 0xffffff, vertexColors: true, transparent: true, opacity: 1, depthTest: false, depthWrite: false, blending: THREE.AdditiveBlending }),
+  input: new THREE.MeshBasicMaterial({ color: 0xffffff, vertexColors: true, transparent: true, opacity: 0.58, depthWrite: false, side: THREE.DoubleSide }),
+  inputSignal: new THREE.MeshBasicMaterial({ color: 0x4aa3ff, vertexColors: true, transparent: true, opacity: 1, depthTest: false, depthWrite: false, blending: THREE.AdditiveBlending }),
   hidden: new THREE.MeshStandardMaterial({ color: 0xffffff, vertexColors: true, emissive: 0x050505, roughness: 0.58 }),
   output: new THREE.MeshStandardMaterial({ color: 0xffffff, vertexColors: true, emissive: 0x2d2200, roughness: 0.32 }),
   outputGlow: new THREE.MeshBasicMaterial({ color: 0xffffff, vertexColors: true, transparent: true, opacity: 0.62, depthTest: false, depthWrite: false, blending: THREE.AdditiveBlending }),
@@ -130,7 +130,7 @@ function layerPoint(layer, index, count) {
   const xs = [-285, -95, 90, 270];
   if (layer === 0) {
     const side = getInputSide();
-    const spacing = side > 8 ? 4.8 : 18;
+    const spacing = side > 8 ? 6.4 : 18;
     const col = index % side;
     const row = Math.floor(index / side);
     return new THREE.Vector3(xs[layer], ((side - 1) / 2 - row) * spacing, (col - (side - 1) / 2) * spacing);
@@ -201,8 +201,6 @@ function buildScene() {
   flowSignalDots = null;
   flowSignalData = [];
   inputSignalMesh = null;
-  inputDigitMesh = null;
-  inputDigitBackMesh = null;
   positionsByLayer = state.model.architecture.map((count, layer) =>
     Array.from({ length: count }, (_, i) => layerPoint(layer, i, count))
   );
@@ -230,52 +228,8 @@ function buildScene() {
   outputGlowMesh.visible = false;
   group.add(outputGlowMesh);
 
-  addInputDigitPlane();
-
   addLabels();
   rebuildLines();
-}
-
-function addInputDigitPlane() {
-  const side = getInputSide();
-  inputDigitCanvas = document.createElement("canvas");
-  inputDigitCanvas.width = side;
-  inputDigitCanvas.height = side;
-  inputDigitTexture = new THREE.CanvasTexture(inputDigitCanvas);
-  inputDigitTexture.magFilter = THREE.NearestFilter;
-  inputDigitTexture.minFilter = THREE.NearestFilter;
-  inputDigitTexture.generateMipmaps = false;
-
-  const backMaterial = new THREE.MeshBasicMaterial({
-    color: 0x06101d,
-    transparent: true,
-    opacity: 0.72,
-    depthTest: false,
-    depthWrite: false,
-    side: THREE.DoubleSide,
-    toneMapped: false,
-  });
-  const backPlane = new THREE.Mesh(new THREE.PlaneGeometry(128, 128), backMaterial);
-  backPlane.rotation.y = -Math.PI / 2;
-  backPlane.position.set(positionsByLayer[0][0].x - 34, 0, 0);
-  backPlane.renderOrder = 28;
-  inputDigitBackMesh = backPlane;
-  group.add(backPlane);
-
-  const material = new THREE.MeshBasicMaterial({
-    map: inputDigitTexture,
-    transparent: true,
-    depthTest: false,
-    depthWrite: false,
-    side: THREE.DoubleSide,
-    toneMapped: false,
-  });
-  const digitPlane = new THREE.Mesh(new THREE.PlaneGeometry(118, 118), material);
-  digitPlane.rotation.y = -Math.PI / 2;
-  digitPlane.position.set(positionsByLayer[0][0].x - 37, 0, 0);
-  digitPlane.renderOrder = 30;
-  inputDigitMesh = digitPlane;
-  group.add(digitPlane);
 }
 
 function addLabels() {
@@ -307,26 +261,69 @@ function addLabels() {
 
 function collectWeightCandidates() {
   const candidates = [];
-  const outputLayer = state.model.weights.length - 1;
-  const probs = state.pass?.probs || [];
-  const pred = probs.length ? argmax(probs) : -1;
-  const predProb = pred >= 0 ? Math.max(1e-6, probs[pred] || 0) : 1;
   for (let l = 0; l < state.model.weights.length; l++) {
     const W = state.model.weights[l];
     for (let j = 0; j < W.length; j++) {
       for (let i = 0; i < W[j].length; i++) {
         const w = W[j][i];
-        const source = Math.abs(state.pass?.activations?.[l]?.[i] || 0);
-        const outputGate = l === outputLayer
-          ? (j === pred ? 1 : Math.pow(Math.max(0, (probs[j] || 0) / predProb), 3) * 0.08)
-          : 1;
-        const signal = source * Math.abs(w) * outputGate;
+        const source = state.pass?.activations?.[l]?.[i] || 0;
+        const contribution = source * w;
+        const signal = Math.abs(contribution);
         const tie = (((i * 1103515245 + j * 12345 + l * 97) >>> 0) % 1000) / 100000;
-        candidates.push({ l, i, j, w, signal, score: Math.abs(w) + tie });
+        candidates.push({ l, i, j, w, source, contribution, signal, score: Math.abs(w) + tie });
       }
     }
   }
   return candidates;
+}
+
+function selectVisibleWeightsByLayer(candidates) {
+  const shown = [];
+  const ratio = lineRatios[state.lineMode];
+  for (let l = 0; l < state.model.weights.length; l++) {
+    const layerCandidates = candidates
+      .filter((c) => c.l === l)
+      .sort((a, b) => b.score - a.score);
+    const count = Math.max(1, Math.floor(layerCandidates.length * ratio));
+    shown.push(...layerCandidates.slice(0, count));
+  }
+  return shown;
+}
+
+function edgeKey(c) {
+  return `${c.l}:${c.i}:${c.j}`;
+}
+
+function withRequiredEdges(base, required) {
+  const seen = new Set(base.map(edgeKey));
+  const merged = base.slice();
+  for (const c of required) {
+    const key = edgeKey(c);
+    if (!seen.has(key)) {
+      seen.add(key);
+      merged.push(c);
+    }
+  }
+  return merged;
+}
+
+function selectContributionDotsByLayer(visibleCandidates) {
+  const byContribution = visibleCandidates
+    .filter((c) => c.signal > 0)
+    .sort((a, b) => b.signal - a.signal);
+  const totalVisibleMass = byContribution.reduce((sum, c) => sum + c.signal, 0);
+  const totalBudget = dotBudgets[state.lineMode];
+  const dots = [];
+  if (totalVisibleMass <= 0) return dots;
+
+  for (let l = 0; l < state.model.weights.length; l++) {
+    const layerCandidates = byContribution.filter((c) => c.l === l);
+    const layerMass = layerCandidates.reduce((sum, c) => sum + c.signal, 0);
+    if (layerMass <= 0) continue;
+    const layerBudget = Math.max(6, Math.round(totalBudget * layerMass / totalVisibleMass));
+    dots.push(...layerCandidates.slice(0, Math.min(layerBudget, layerCandidates.length)));
+  }
+  return dots.sort((a, b) => b.signal - a.signal);
 }
 
 function rebuildLines() {
@@ -337,9 +334,11 @@ function rebuildLines() {
   flowSignalData = [];
 
   const totalWeights = state.model.weights.reduce((s, W) => s + W.length * W[0].length, 0);
-  const candidates = collectWeightCandidates().sort((a, b) => b.score - a.score);
-  const shown = candidates.slice(0, Math.max(500, Math.floor(totalWeights * lineRatios[state.lineMode])));
+  const candidates = collectWeightCandidates();
+  const shown = selectVisibleWeightsByLayer(candidates);
   state.shownWeights = shown.length;
+  const totalContributionMass = candidates.reduce((sum, c) => sum + c.signal, 0);
+  const visibleContributionMass = shown.reduce((sum, c) => sum + c.signal, 0);
 
   const positions = [];
   const colors = [];
@@ -363,12 +362,10 @@ function rebuildLines() {
   );
   group.add(weightLines);
 
-  const bySignal = collectWeightCandidates().sort((a, b) => b.signal - a.signal);
-  const outputLayer = state.model.weights.length - 1;
-  const pred = argmax(state.pass.probs);
-  const active = bySignal
-    .filter((c) => c.l !== outputLayer || c.j === pred)
-    .slice(0, 360);
+  const active = shown
+    .filter((c) => c.signal > 0)
+    .sort((a, b) => b.signal - a.signal)
+    .slice(0, Math.max(80, Math.round(dotBudgets[state.lineMode] * 0.8)));
   const activePos = [];
   const activeCol = [];
   for (const c of active) {
@@ -388,17 +385,15 @@ function rebuildLines() {
   );
   group.add(activeLines);
 
-  const pulseCandidates = [];
-  const layerLimits = [520, 320, 180];
-  for (let l = 0; l < state.model.weights.length; l++) {
-    const layerActive = bySignal
-      .filter((c) => c.l === l && c.signal > 0 && (l !== outputLayer || c.j === pred))
-      .slice(0, layerLimits[l] || 180);
-    pulseCandidates.push(...layerActive);
-  }
-
+  const pulseCandidates = selectContributionDotsByLayer(shown);
+  const maxPulseSignal = Math.max(1e-9, ...pulseCandidates.map((c) => c.signal));
+  const pulseMass = pulseCandidates.reduce((sum, c) => sum + c.signal, 0);
+  state.contributionDots = pulseCandidates.length;
+  state.visibleMassCoverage = totalContributionMass > 0 ? visibleContributionMass / totalContributionMass : 0;
+  state.contributionMassCoverage = totalContributionMass > 0 ? pulseMass / totalContributionMass : 0;
   flowSignalData = pulseCandidates.map((c, idx) => ({
     ...c,
+    normSignal: c.signal / maxPulseSignal,
     phase: ((idx * 37) % 113) / 113,
   }));
 
@@ -425,7 +420,7 @@ function updateCubes() {
       mesh.setMatrixAt(i, tempObj.matrix);
 
       if (layer === 0) {
-        tempColor.setRGB(0.025 + shaped * 0.92, 0.055 + shaped * 0.92, 0.07 + shaped * 0.9);
+        tempColor.setRGB(0.015 + shaped * 0.10, 0.055 + shaped * 0.38, 0.12 + shaped * 1.05);
       } else if (layer === 3) {
         tempColor.setRGB(0.08 + shaped * 1.0, 0.07 + shaped * 0.72, 0.025 + shaped * 0.18);
       } else {
@@ -447,7 +442,7 @@ function updateCubes() {
     tempObj.updateMatrix();
     inputSignalMesh.setMatrixAt(i, tempObj.matrix);
 
-    tempColor.setRGB(0.02 + lit * 0.78, 0.10 + lit * 0.9, 0.14 + lit * 0.86);
+    tempColor.setRGB(0.02 + lit * 0.12, 0.10 + lit * 0.42, 0.22 + lit * 1.12);
     inputSignalMesh.setColorAt(i, tempColor);
   }
   inputSignalMesh.instanceMatrix.needsUpdate = true;
@@ -487,7 +482,7 @@ function updateFlowSignals(time = 0) {
     const visible = wave >= 0 && wave <= 1;
     const a = positionsByLayer[c.l][c.i];
     const b = positionsByLayer[c.l + 1][c.j];
-    const energy = Math.min(1, Math.sqrt(Math.max(0, c.signal)) * 1.9);
+    const energy = Math.sqrt(Math.max(0, c.normSignal || 0));
     const head = visible ? wave : 0;
     const x = a.x + (b.x - a.x) * head;
     const y = a.y + (b.y - a.y) * head;
@@ -495,7 +490,7 @@ function updateFlowSignals(time = 0) {
 
     if (visible) {
       tempObj.position.set(x, y, z);
-      tempObj.scale.setScalar(0.62 + energy * 0.62);
+      tempObj.scale.setScalar(0.45 + energy * 1.05);
     } else {
       tempObj.position.copy(a);
       tempObj.scale.setScalar(0);
@@ -566,7 +561,9 @@ function updateHud() {
   document.getElementById("stParams").textContent = formatInt(weights + biases);
   document.getElementById("stLearning").textContent = state.model.learning || "MLP";
   document.getElementById("stSample").textContent = `${state.sampleIndex + 1} / ${state.samples.length}`;
-  document.getElementById("mathNote").textContent = `W = ${weightFormula(arch)} = ${formatInt(weights)}; b = ${formatInt(biases)}; forward pass is deterministic`;
+  document.getElementById("stDots").textContent = formatInt(state.contributionDots);
+  document.getElementById("stMass").textContent = `${(state.contributionMassCoverage * 100).toFixed(1)}% dots / ${(state.visibleMassCoverage * 100).toFixed(1)}% lines`;
+  document.getElementById("mathNote").textContent = `forward pass: all output logits z_k = b_k + sum_i a_i*W_k,i are computed; dots show visible |a_i*W_ji| terms`;
 }
 
 function updateSample() {
@@ -580,30 +577,12 @@ function updateSample() {
   document.getElementById("predLabel").textContent = `${pred} (${Math.round(probs[pred] * 100)}%)`;
   document.getElementById("lossVal").textContent = loss.toFixed(3);
   drawDigit(sample.pixels);
-  updateInputDigitPlane(sample.pixels);
   drawBars(probs, pred);
   updateCubes();
   updateOutputHighlights();
   rebuildLines();
   updateHud();
   updateProof();
-}
-
-function updateInputDigitPlane(pixels) {
-  const side = getInputSide();
-  const ctx = inputDigitCanvas.getContext("2d");
-  const img = ctx.createImageData(side, side);
-  for (let i = 0; i < pixels.length; i++) {
-    const v = Math.max(0, Math.min(1, pixels[i] || 0));
-    const lit = Math.pow(v, 0.52);
-    const offset = i * 4;
-    img.data[offset] = Math.round(45 + lit * 210);
-    img.data[offset + 1] = Math.round(120 + lit * 135);
-    img.data[offset + 2] = Math.round(155 + lit * 100);
-    img.data[offset + 3] = Math.round(lit * 255);
-  }
-  ctx.putImageData(img, 0, 0);
-  inputDigitTexture.needsUpdate = true;
 }
 
 function drawDigit(pixels) {

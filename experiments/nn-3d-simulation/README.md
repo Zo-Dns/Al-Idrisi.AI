@@ -31,8 +31,11 @@ python -m http.server 8765 --bind 127.0.0.1
 Open:
 
 ```text
-http://127.0.0.1:8765/experiments/nn-3d-simulation/cubes.html
+http://127.0.0.1:8765/experiments/nn-3d-simulation/
 ```
+
+The earlier prototype interface was removed; the directory URL now opens the
+current cube-based visualization directly.
 
 ## Regenerate Data
 
@@ -41,6 +44,3 @@ Use the bundled Codex Python if NumPy is not installed in the system Python:
 ```powershell
 & "C:\Users\larjo\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe" experiments\nn-3d-simulation\scripts\train_mnist.py
 ```
-
-Legacy Optdigits training is still available in `scripts/train_optdigits.py`,
-but the current visualization is configured for MNIST `28 x 28`.

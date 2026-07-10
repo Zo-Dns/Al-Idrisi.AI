@@ -3,62 +3,66 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>محاكاة 3D للشبكة العصبية</title>
-  <link rel="stylesheet" href="./src/styles.css">
+  <title>مختبر المكعبات العصبية</title>
+  <link rel="stylesheet" href="./src/cubes.css">
 </head>
 <body>
   <main id="app">
     <canvas id="scene"></canvas>
 
-    <section id="layerGuide" aria-label="دليل الطبقات">
-      <span><i class="inputDot"></i> INPUT: 784 pixels</span>
-      <span><i class="hiddenDot"></i> HIDDEN: 96 + 48</span>
-      <span><i class="outputDot"></i> OUTPUT: 10 classes</span>
+    <section id="topGuide" aria-label="دليل النموذج">
+      <span><i class="input"></i> INPUT 28x28 = 784</span>
+      <span><i class="hidden"></i> HIDDEN 96 + 48</span>
+      <span><i class="output"></i> OUTPUT 0-9</span>
+      <span><i class="weights"></i> W = 80,352</span>
     </section>
 
-    <section id="hud" aria-label="لوحة معلومات الشبكة">
-      <div>
-        <h1>محاكاة 3D للشبكة العصبية</h1>
-        <p>بيانات أرقام حقيقية · أوزان مدربة · دوران كاميرا كامل حول الشبكة</p>
-      </div>
-
+    <section id="hud" aria-label="لوحة الحسابات">
+      <h1>مختبر المكعبات العصبية</h1>
+      <p>تمثيل 3D حقيقي لبنية MLP: كل مكعب عصبون أو بكسل، وكل خط وزن مدرب.</p>
       <div class="stats">
-        <div><span>إدخال ثابت</span><b id="stInput">-</b></div>
-        <div><span>مخفية ثابتة</span><b id="stHidden">-</b></div>
-        <div><span>إخراج ثابت</span><b id="stOutput">-</b></div>
-        <div><span>كل الأوزان</span><b id="stSynapses">-</b></div>
-        <div><span>المعروض بصريا</span><b id="stShown">-</b></div>
-        <div><span>خوارزمية التعلم</span><b id="stLearning">-</b></div>
+        <div><span>Architecture</span><b id="stArch">-</b></div>
+        <div><span>Weights shown</span><b id="stShown">-</b></div>
+        <div><span>Total weights</span><b id="stWeights">-</b></div>
+        <div><span>Parameters</span><b id="stParams">-</b></div>
+        <div><span>Learning</span><b id="stLearning">-</b></div>
+        <div><span>Sample</span><b id="stSample">-</b></div>
+        <div><span>Contribution dots</span><b id="stDots">-</b></div>
+        <div><span>Mass covered</span><b id="stMass">-</b></div>
       </div>
       <p id="mathNote" class="mathNote">-</p>
+      <div id="proofPanel" class="proofPanel" aria-label="الإثبات الرياضي">
+        <h2>الإثبات الرياضي الحي</h2>
+        <div class="proofFlow">
+          <div><span>Input vector</span><b id="proofInput">-</b></div>
+          <div><span>Layer 1</span><b id="proofLayer1">-</b></div>
+          <div><span>Layer 2</span><b id="proofLayer2">-</b></div>
+          <div><span>Output</span><b id="proofOutput">-</b></div>
+        </div>
+        <p id="proofEquation" class="proofEquation">-</p>
+        <p id="proofLogit" class="proofEquation">-</p>
+        <p id="proofContrib" class="proofContrib">-</p>
+      </div>
     </section>
 
     <section id="samplePanel" aria-label="العينة الحالية">
       <canvas id="digit" width="160" height="160"></canvas>
       <div class="sampleMeta">
-        <div class="label">الرقم الحقيقي <b id="trueLabel">-</b></div>
-        <div class="label">توقع الشبكة <b id="predLabel">-</b></div>
-        <div class="label">الخسارة <b id="lossVal">-</b></div>
+        <div>الحقيقة <b id="trueLabel">-</b></div>
+        <div>التوقع <b id="predLabel">-</b></div>
+        <div>الخسارة <b id="lossVal">-</b></div>
       </div>
       <div id="bars"></div>
       <div class="controls">
         <button id="prevSample" type="button">السابق</button>
         <button id="nextSample" type="button">عينة جديدة</button>
         <button id="toggleOrbit" type="button">إيقاف الدوران</button>
-        <button id="toggleSynapses" type="button">وصلات أكثر</button>
+        <button id="toggleLines" type="button">وصلات أكثر</button>
       </div>
-    </section>
-
-    <section id="legend" aria-label="وسيلة الإيضاح">
-      <span><i class="pos"></i> وزن موجب</span>
-      <span><i class="neg"></i> وزن سالب</span>
-      <span><i class="pulse"></i> إشارة أمامية</span>
-      <span><i class="active"></i> تفعيل عصبون</span>
     </section>
 
     <div id="loading">جاري تحميل النموذج الحقيقي...</div>
   </main>
-
-  <script type="module" src="./src/main.js?v=mnist-28x28"></script>
+  <script type="module" src="./src/cubes.js?v=spaced-input-original-size"></script>
 </body>
 </html>

@@ -52,6 +52,8 @@ let activeLines = null;
 let labelSprites = [];
 let outputDigitSprites = [];
 let outputGlowMesh = null;
+let flowPulseMesh = null;
+let flowPulseData = [];
 let inputSignalMesh = null;
 let inputDigitCanvas = null;
 let inputDigitTexture = null;
@@ -63,6 +65,7 @@ const inputPanelGeo = new THREE.BoxGeometry(9.5, 9.5, 3.2);
 const inputSignalGeo = new THREE.BoxGeometry(12.6, 12.6, 2.4);
 const outputCubeGeo = new THREE.BoxGeometry(10.5, 10.5, 10.5);
 const outputGlowGeo = new THREE.SphereGeometry(16, 24, 16);
+const flowPulseGeo = new THREE.SphereGeometry(3.2, 12, 8);
 const tempObj = new THREE.Object3D();
 const tempColor = new THREE.Color();
 
@@ -72,6 +75,7 @@ const mats = {
   hidden: new THREE.MeshStandardMaterial({ color: 0xffffff, vertexColors: true, emissive: 0x050505, roughness: 0.58 }),
   output: new THREE.MeshStandardMaterial({ color: 0xffffff, vertexColors: true, emissive: 0x2d2200, roughness: 0.32 }),
   outputGlow: new THREE.MeshBasicMaterial({ color: 0xffffff, vertexColors: true, transparent: true, opacity: 0.62, depthTest: false, depthWrite: false, blending: THREE.AdditiveBlending }),
+  flowPulse: new THREE.MeshBasicMaterial({ color: 0xffffff, vertexColors: true, transparent: true, opacity: 0.92, depthWrite: false, blending: THREE.AdditiveBlending }),
 };
 
 function getInputSide() {
@@ -169,6 +173,8 @@ function buildScene() {
   labelSprites = [];
   outputDigitSprites = [];
   outputGlowMesh = null;
+  flowPulseMesh = null;
+  flowPulseData = [];
   inputSignalMesh = null;
   inputDigitMesh = null;
   inputDigitBackMesh = null;
@@ -293,6 +299,9 @@ function collectWeightCandidates() {
 function rebuildLines() {
   if (weightLines) group.remove(weightLines);
   if (activeLines) group.remove(activeLines);
+  if (flowPulseMesh) group.remove(flowPulseMesh);
+  flowPulseMesh = null;
+  flowPulseData = [];
 
   const totalWeights = state.model.weights.reduce((s, W) => s + W.length * W[0].length, 0);
   const candidates = collectWeightCandidates().sort((a, b) => b.score - a.score);
@@ -321,7 +330,8 @@ function rebuildLines() {
   );
   group.add(weightLines);
 
-  const active = collectWeightCandidates().sort((a, b) => b.signal - a.signal).slice(0, 220);
+  const bySignal = collectWeightCandidates().sort((a, b) => b.signal - a.signal);
+  const active = bySignal.slice(0, 360);
   const activePos = [];
   const activeCol = [];
   for (const c of active) {
@@ -340,6 +350,26 @@ function rebuildLines() {
     new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.32, blending: THREE.AdditiveBlending, depthWrite: false })
   );
   group.add(activeLines);
+
+  const pulseCandidates = [];
+  const layerLimits = [520, 320, 180];
+  for (let l = 0; l < state.model.weights.length; l++) {
+    const layerActive = bySignal
+      .filter((c) => c.l === l && c.signal > 0)
+      .slice(0, layerLimits[l] || 180);
+    pulseCandidates.push(...layerActive);
+  }
+
+  flowPulseData = pulseCandidates.map((c, idx) => ({
+    ...c,
+    phase: ((idx * 37) % 113) / 113,
+  }));
+
+  flowPulseMesh = new THREE.InstancedMesh(flowPulseGeo, mats.flowPulse, Math.max(1, flowPulseData.length));
+  flowPulseMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+  flowPulseMesh.instanceColor = new THREE.InstancedBufferAttribute(new Float32Array(Math.max(1, flowPulseData.length) * 3), 3);
+  flowPulseMesh.renderOrder = 18;
+  group.add(flowPulseMesh);
 }
 
 function updateCubes() {
@@ -424,6 +454,38 @@ function updateOutputHighlights(time = 0) {
   outputGlowMesh.instanceColor.needsUpdate = true;
 }
 
+function updateFlowPulses(time = 0) {
+  if (!flowPulseMesh || flowPulseData.length === 0) return;
+  const layers = state.model.weights.length;
+  for (let k = 0; k < flowPulseData.length; k++) {
+    const c = flowPulseData[k];
+    const local = (time * 0.00036 + c.phase) % 1;
+    const wave = local * (layers + 0.82) - c.l;
+    const visible = wave >= 0 && wave <= 1;
+    const a = positionsByLayer[c.l][c.i];
+    const b = positionsByLayer[c.l + 1][c.j];
+    const u = visible ? wave : 0;
+    tempObj.position.lerpVectors(a, b, u);
+
+    const energy = Math.min(1, Math.sqrt(Math.max(0, c.signal)) * 1.9);
+    const size = visible ? 0.7 + energy * 3.2 : 0.001;
+    tempObj.scale.setScalar(size);
+    tempObj.updateMatrix();
+    flowPulseMesh.setMatrixAt(k, tempObj.matrix);
+
+    if (c.l === layers - 1) {
+      tempColor.setRGB(1.0, 0.82, 0.22);
+    } else if (c.w >= 0) {
+      tempColor.setRGB(0.75, 0.95, 1.0);
+    } else {
+      tempColor.setRGB(1.0, 0.42, 0.28);
+    }
+    flowPulseMesh.setColorAt(k, tempColor);
+  }
+  flowPulseMesh.instanceMatrix.needsUpdate = true;
+  flowPulseMesh.instanceColor.needsUpdate = true;
+}
+
 function updateHud() {
   const arch = state.model.architecture;
   const weights = state.model.weights.reduce((s, W) => s + W.length * W[0].length, 0);
@@ -502,6 +564,7 @@ function animate(time) {
   controls.autoRotate = state.autoOrbit;
   controls.update();
   group.rotation.y = -0.18 + Math.sin(time * 0.00008) * 0.035;
+  updateFlowPulses(time);
   updateOutputHighlights(time);
   renderer.render(scene, camera);
   requestAnimationFrame(animate);

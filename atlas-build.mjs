@@ -50,6 +50,7 @@ const XLINKS_ML = [
   ["crossval", "datasplit"], ["scaling", "knn"], ["leakage", "datasplit"],
   ["xgboost-2014", "ensemble"], ["svm-era", "svm"], ["mitchell-1997", "what-ml"],
   ["dl-bridge", "generalization"], ["interpretability", "decisiontree"],
+  ["selfsupervised", "semisupervised"],
 ];
 const XLINKS_DATA = [
   ["cleaning", "quality"], ["imputation", "completeness"], ["duplicates", "leakage-d"],

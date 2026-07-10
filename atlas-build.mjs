@@ -89,6 +89,7 @@ const XLINKS_RL = [
   ["q-learning", "td-learning"], ["sarsa", "q-learning"], ["dqn", "q-learning"], ["actor-critic", "td-learning"],
   ["value-iteration", "bellman-optimality"], ["td-error", "q-learning"], ["ucb", "exploration-exploitation"], ["deadly-triad", "q-learning"],
   ["ppo", "rlhf-bridge"], ["td-gammon", "td-learning"], ["alphago", "self-play"], ["dqn", "function-approximation"], ["ppo", "trpo"],
+  ["muzero", "model-based-rl"],
 ];
 const XLINKS_PROB = [
   ["bayes-rule", "conditional-prob"], ["bayes-net", "conditional-independence"], ["d-separation", "conditional-independence"],

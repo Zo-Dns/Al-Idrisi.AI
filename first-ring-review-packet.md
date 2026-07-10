@@ -54,13 +54,43 @@
 - العقد العميقة في العوالم العشرة: 624 من 822 عقدة غير جذرية لم تؤشر دلاليا بعد (التغطية الحالية 198 عقدة بنيوية: الخريطة الام كاملة + الحلقات الاولى للعوالم). تؤشر عالما عالما في جولات لاحقة مع مراجعة كل جولة — لا دفعة عمياء واحدة.
 - الاصلاحات التجميلية المؤجلة (المادة 7 بند 7).
 
+## سجل الاحكام والتنفيذ — الجولة الاولى (10 يوليو 2026)
+
+**المراجع**: GPT 5.6 (استاذ مشارك في مجلس المشروع). **النتيجة**: 5 مقبول · 10 مقبول بتعديل · 3 مرفوض العلاقة. **حكمه بعد التنفيذ**: الحلقة الاولى مقبولة كمراجعة خبرية علمية اولى، مع بقاء الحاجة لمراجع مستقل ثان.
+
+| # | العقدة | الحكم | التنفيذ |
+|---|---|---|---|
+| 1 | ml | مقبول | لا تغيير |
+| 2 | classic | مقبول بتعديل | ازيل ايحاء انتهاء المدرسة 1987 من التبرير (نص العقدة كان سليما: «سادت... وما زالت») |
+| 3 | prob | مقبول بتعديل | rn جديد: «منهج رئيسي للاستدلال تحت اللايقين... يعرض فرعا للملاحة» |
+| 4 | nn | مقبول بتعديل | rt: part ← is؛ rn: «عائلة نماذج **من** تعلم الآلة» |
+| 5 | dl | مقبول | لا تغيير |
+| 6 | llm | مقبول | لا تغيير («غالبا» كانت موجودة اصلا) |
+| 7 | rl | مقبول بتعديل لفظي | التوثيق: «احد الانماط الاساسية» بدل حصر الثلاثة |
+| 8 | data | مقبول بتعديل | rn مخفف: «طبقة تمكين... لا فرعا منهجيا موازيا» مع اقرار الاتجاه البحثي data-centric |
+| 9 | apps | مقبول | لا تغيير |
+| 10 | history | مقبول | لا تغيير |
+| 11 | ethics | مقبول بتعديل جوهري | نفذ البديل المجاز: nt: umbrella، rt: cross، rn مزدوج (معياري + تقني)؛ **الفصل الى عقدتين مؤجل معللا**: عالم #ethics يوحد الشقين على نمط NIST؛ ترقية محرك: العقد العابرة ترسم من rt المعلن لا من اسم المجموعة |
+| 12 | genai | مقبول بتعديل المصدر | اضيف Goodfellow ف20 وNIST GenAI Profile 2024 للجانب متعدد الوسائط؛ Zhao للجانب اللغوي |
+| 13 | agents | مقبول بتعديل الصياغة | rn جديد: «اطار عابر يمكن بناؤه... او مزيج منها — لا يشترط جمعها كلها» |
+| 14 | robotics | مقبول بتعديل بنيوي | sp: root، rn يعلن العرض الملاحي تحت التطبيقات |
+| 15 | creativity | مرفوض العلاقة ← صحح | rt: is، sp: root، rn جديد؛ **خلاف جزئي موثق**: رابط XLINK الى genai لم يضف — يزدوج مع خط العرض p القائم |
+| 16 | governance | مقبول بتعديل بنيوي | rt: ctx، sp: root؛ «اول قانون شامل» خففت الى «ابرز اطار تشريعي شامل»؛ OECD (2019، حدثت 2024) |
+| 17 | xai | مرفوض العلاقة ← صحح | rt: is، sp: root؛ رابطان عابران جديدان الى ml وgovernance |
+| 18 | multiagent | مرفوض العلاقة ← صحح | sp: root؛ رابطان عابران جديدان الى agents وrl؛ **خلاف جزئي موثق**: رابط prob لم يضف — عمق الالعاب البايزية يتجاوز جمهور الخريطة |
+
+**تحقق التنفيذ**: البناءان بحارسيهما نجحا، 90 اختبار مختبر خضراء، وتحقق متصفح حي اكد بطاقات ethics (مظلة عابرة، رسم متقطع) وnn وrobotics وcreativity وxai وmultiagent والروابط العابرة 32←36.
+
+---
+
 ## ثبت المصادر المشار اليها في الجدول
 
 - Russell, S. & Norvig, P., *Artificial Intelligence: A Modern Approach*, 4th ed., Pearson (الاجزاء II–V؛ ف26 الروبوتات؛ ف27 الفلسفة والاخلاق)
 - Goodfellow, I., Bengio, Y., Courville, A., *Deep Learning*, MIT Press 2016 (الشكل 1.4؛ الفصل 6)
 - Sutton, R. & Barto, A., *Reinforcement Learning: An Introduction*, 2nd ed., MIT Press 2018 (الفصل 1)
 - ACM Computing Classification System, 2012 (Computing methodologies؛ Information systems؛ Applied computing؛ Social and professional topics)
-- Zhao, W. X. et al., "A Survey of Large Language Models", arXiv:2303.18223 (2023)
+- Zhao, W. X. et al., "A Survey of Large Language Models", arXiv:2303.18223 (2023) — الجانب اللغوي
+- Goodfellow, Bengio, Courville, *Deep Learning*, MIT Press 2016، الفصل 20 (Deep Generative Models) وNIST AI 600-1 (Generative AI Profile, 2024) — الجانب التوليدي متعدد الوسائط
 - Pearl, J., *Probabilistic Reasoning in Intelligent Systems*, Morgan Kaufmann 1988
 - Nilsson, N., *The Quest for Artificial Intelligence*, Cambridge University Press 2010
 - Boden, M., *The Creative Mind: Myths and Mechanisms*, 2nd ed., Routledge 2004

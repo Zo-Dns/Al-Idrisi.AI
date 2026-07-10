@@ -26,6 +26,8 @@ const XLINKS_AI = [
   ["promptinjection", "redteam"], ["deepblue", "classic"], ["dartmouth", "classic"], ["alphago", "classic"],
   ["prob", "classic"], ["prob", "ml"], ["prob", "rl"], ["genai", "gan"], ["genai", "dl"],
   ["agents", "rl"], ["agents", "classic"], ["agents", "llm"],
+  /* روابط المراجعة الخبرية الاولى (10 يوليو 2026): عقد فروع-من-الجذر المعروضة تحت اب ملاحي */
+  ["xai", "ml"], ["xai", "governance"], ["multiagent", "agents"], ["multiagent", "rl"],
 ];
 const XLINKS_LLM = [
   ["temp2", "hallu2"], ["rag2", "hallu2"], ["scaling2", "gpuclusters"], ["rlhf2", "alignment"],

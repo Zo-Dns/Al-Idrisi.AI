@@ -101,8 +101,12 @@ const XLINKS_HISTORY = [
   ["nobel-2024", "hopfield-net"], ["nobel-2024", "alphafold2"],
 ];
 
+/* طبقة الدلالة (دستور الخريطة الام، README المادة 3): rt نوع العلاقة، nt نوع عقدة الحلقة الاولى، sp اب المعنى، rn جملة العلاقة */
+const REL_TYPES = new Set(["is", "part", "uses", "cross", "ctx"]);
+const NODE_TYPES = new Set(["field", "flat", "ctx", "umbrella"]);
+
 function compile(name, { GROUPS, NODES, JOURNEY }, XLINKS) {
-  for (const nd of NODES) for (const v of [nd.n, nd.d, nd.e]) {
+  for (const nd of NODES) for (const v of [nd.n, nd.d, nd.e, nd.rn]) {
     if (v && HARAKAT.test(v)) throw new Error(name + " تشكيل في " + nd.k);
   }
   for (const s of JOURNEY) if (HARAKAT.test(s.t)) throw new Error(name + " تشكيل خطوة " + s.k);
@@ -110,9 +114,29 @@ function compile(name, { GROUPS, NODES, JOURNEY }, XLINKS) {
   const keyToIdx = new Map(NODES.map((nd, i) => [nd.k, i]));
   if (keyToIdx.size !== NODES.length) throw new Error(name + ": مفاتيح مكررة");
   if (NODES[0].k !== "root") throw new Error(name + ": الاولى يجب ان تكون root");
+  /* فرض الدستور على الخريطة الام: كل عقدة تعلن نوع علاقتها، وكل عقدة حلقة اولى تعلن نوعها */
+  if (name === "AI") for (const nd of NODES) {
+    if (nd.k === "root") continue;
+    if (!nd.rt) throw new Error("AI: عقدة بلا نوع علاقة rt: " + nd.k);
+    if (nd.p === "root" && !nd.nt) throw new Error("AI: عقدة حلقة اولى بلا نوع nt: " + nd.k);
+  }
   const nodes = NODES.map((nd) => {
     if (nd.p !== null && !keyToIdx.has(nd.p)) throw new Error(name + " اب مجهول: " + nd.p);
-    return { k: nd.k, n: nd.n, e: nd.e, p: nd.p === null ? -1 : keyToIdx.get(nd.p), g: nd.g, h: nd.h ? 1 : 0, d: nd.d };
+    const out = { k: nd.k, n: nd.n, e: nd.e, p: nd.p === null ? -1 : keyToIdx.get(nd.p), g: nd.g, h: nd.h ? 1 : 0, d: nd.d };
+    if (nd.rt !== undefined) {
+      if (!REL_TYPES.has(nd.rt)) throw new Error(name + " نوع علاقة مجهول (" + nd.rt + "): " + nd.k);
+      out.rt = nd.rt;
+    }
+    if (nd.nt !== undefined) {
+      if (!NODE_TYPES.has(nd.nt)) throw new Error(name + " نوع عقدة مجهول (" + nd.nt + "): " + nd.k);
+      out.nt = nd.nt;
+    }
+    if (nd.rn !== undefined) out.rn = nd.rn;
+    if (nd.sp !== undefined) {
+      if (!keyToIdx.has(nd.sp)) throw new Error(name + " اب دلالي مجهول: " + nd.k + " ← " + nd.sp);
+      out.sp = keyToIdx.get(nd.sp);
+    }
+    return out;
   });
   const xlinks = XLINKS.map(([a, b]) => {
     if (!keyToIdx.has(a) || !keyToIdx.has(b)) throw new Error(name + " رابط مجهول: " + a + "-" + b);

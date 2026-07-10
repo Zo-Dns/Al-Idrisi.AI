@@ -103,6 +103,8 @@
   .lg.off { opacity: 0.35; }
   .lg .dot { width: 11px; height: 11px; border-radius: 50%; flex: none; box-shadow: 0 0 8px 1px currentColor; }
   .lg .cnt { margin-inline-start: auto; color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+  .lg .lsym { color: #8792ac; flex: none; width: 12px; text-align: center; font-size: 12px; }
+  .lg.lglegend { cursor: default; font-size: 11.5px; color: var(--muted); }
 
   #btns { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 6px; }
   #btns button {
@@ -163,6 +165,11 @@
   #card h2 { margin: 0; font-size: 17px; font-weight: 700; flex: 1; }
   #card .cen { font-family: var(--mono); font-size: 12px; color: var(--muted); direction: ltr; unicode-bidi: embed; text-align: right; margin-top: 2px; }
   #card .cdesc { font-size: 14px; line-height: 1.75; margin-top: 10px; color: #d7deef; }
+  #card .crel {
+    font-size: 12.5px; line-height: 1.7; margin-top: 10px; color: #b9c5e2;
+    white-space: pre-line;
+    border-top: 1px dashed rgba(255,255,255,0.14); padding-top: 8px;
+  }
   #card .cgroup { font-size: 12px; color: var(--muted); margin-top: 10px; }
   #cardClose {
     background: none; border: none; color: var(--muted);
@@ -541,6 +548,7 @@
     <button id="cardClose" type="button" aria-label="اغلاق">✕</button>
   </div>
   <div class="cdesc" id="cardDesc"></div>
+  <div class="crel" id="cardRel"></div>
   <button id="branchBtn" type="button"></button><button id="labBtn" type="button"></button><button id="mapBtn" type="button"></button>
   <div class="cgroup" id="cardGroup"></div>
 </div>
@@ -734,6 +742,7 @@ const nodes = RAW.nodes.map((r, i) => ({
   isHub: !!r.h,
   group: r.g,
   desc: r.d,
+  nt: r.nt, rt: r.rt, rn: r.rn, sp: r.sp === undefined ? -1 : r.sp,
   children: [],
   depth: 0,
   collapsed: false,
@@ -767,6 +776,22 @@ const JOURNEY = RAW.journey.map(s => ({ node: nodes[s.i], text: s.t, rel: (s.r |
 function colorOf(nd) { return nd.group < 0 ? ROOT_COLOR : GROUPS[nd.group].color; }
 /* العقد العابرة للمجالات (مثل الذكاء التوليدي والوكلاء في الخريطة الام): ترسم بلغة بصرية مختلفة (هالة لا نجم، خط جذر متقطع) كي تقرأ مظلة عابرة لا فرعا علميا مساويا للحقول */
 function isCrossCut(nd) { return nd.group >= 0 && GROUPS[nd.group] && GROUPS[nd.group].name === "مفاهيم عابرة للمجالات"; }
+
+/* طبقة الدلالة العلمية (دستور الخريطة الام، المادة 3): سطر التصنيف والعلاقة في بطاقة العقدة.
+   nt نوع العقدة (حلقة اولى) · rt نوع العلاقة · sp اب المعنى ان خالف اب العرض · rn جملة معدة تغني عن الجملة الآلية */
+const NT_PHRASE = { field: "فرع علمي", flat: "فرع متداخل مسطح عرضيا للوصول", ctx: "وجه سياقي لا فرع من العلم", umbrella: "مظلة عابرة للمجالات" };
+const RT_PHRASE = { is: "فرع من", part: "جزء من", cross: "مظلة عابرة تقطع عدة فروع", ctx: "سياق يحيط بـ" };
+function relLine(nd) {
+  const bits = [];
+  if (nd.nt && NT_PHRASE[nd.nt]) bits.push("التصنيف: " + NT_PHRASE[nd.nt]);
+  if (nd.rn) bits.push("العلاقة: " + nd.rn);
+  else if (nd.rt) {
+    const target = nd.sp >= 0 ? nodes[nd.sp] : (nd.parent >= 0 ? nodes[nd.parent] : null);
+    if (nd.rt === "cross") bits.push("العلاقة: " + RT_PHRASE.cross);
+    else if (target) bits.push("العلاقة: " + (nd.rt === "uses" ? "علاقة اعتماد مع" : (RT_PHRASE[nd.rt] || "")) + " «" + target.name + "»");
+  }
+  return bits.join("\n");
+}
 
 /* ============ التوزيع الابتدائي ============ */
 function radialLayout() {
@@ -1762,6 +1787,10 @@ function openCard(n) {
   document.getElementById("cardTitle").textContent = n.name;
   document.getElementById("cardEn").textContent = n.en || "";
   document.getElementById("cardDesc").textContent = n.desc;
+  const relEl = document.getElementById("cardRel");
+  const relTxt = relLine(n);
+  relEl.textContent = relTxt;
+  relEl.style.display = relTxt ? "block" : "none";
   const col = colorOf(n);
   const dot = document.getElementById("cardDot");
   dot.style.background = col; dot.style.color = col;
@@ -1926,6 +1955,16 @@ GROUPS.forEach((g, i) => {
   el.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); } });
   legend.appendChild(el);
 });
+
+/* شرح لغة الخطوط (دستور الخريطة الام، المادة 3) */
+for (const [sym, txt] of [["━", "خط صلب: شجرة العرض الهرمية — نوع كل علاقة في بطاقة عقدتها"], ["┄", "خط متقطع: رابط عابر او مظلة تقطع الفروع"]]) {
+  const el = document.createElement("div");
+  el.className = "lg lglegend";
+  const s = document.createElement("span"); s.className = "lsym"; s.textContent = sym;
+  const tx = document.createElement("span"); tx.textContent = txt;
+  el.appendChild(s); el.appendChild(tx);
+  legend.appendChild(el);
+}
 
 document.getElementById("stats").innerHTML =
   "<span><b>" + nodes.length + "</b> مفهوما</span>" +

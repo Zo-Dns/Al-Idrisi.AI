@@ -52,10 +52,16 @@ for (const [a, b] of XLINKS_PROB) {
   if (!keys.has(b)) bad("رابط متقاطع مفتاح مجهول: " + b);
 }
 
-// 7) كل مجموعة فيها عقدة محورية واحدة
+// 7) قاعدة المحاور (قننت 11 يوليو 2026): كل مجموعة فيها محور واحد على الاقل،
+//    وكل محور اما عقدة حلقة اولى (p=root) او عقدة داخلية ترسو عائلة (لها ابناء) —
+//    القاعدة القديمة (محور واحد بالضبط) كانت خاطئة: اشقاء الحلقة الاولى قد يتشاركون مجموعة لونية واحدة عن حق.
 for (let g = 0; g < GROUPS.length; g++) {
   const hubs = NODES.filter((n) => n.g === g && n.h);
-  if (hubs.length !== 1) bad(`المجموعة ${g} (${GROUPS[g].name}) فيها ${hubs.length} محاور`);
+  if (hubs.length === 0) bad(`المجموعة ${g} (${GROUPS[g].name}) بلا محور`);
+  for (const h of hubs) {
+    if (h.k !== "root" && h.p !== "root" && !NODES.some((x) => x.p === h.k))
+      bad(`محور داخلي بلا ابناء (بروز يتيم): ${h.k} في ${GROUPS[g].name}`);
+  }
 }
 
 console.log(`\nالعقد: ${NODES.length} · المجموعات: ${GROUPS.length} · خطوات الرحلة: ${JOURNEY.length} · روابط متقاطعة: ${XLINKS_PROB.length}`);

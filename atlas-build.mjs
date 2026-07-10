@@ -127,6 +127,11 @@ function compile(name, { GROUPS, NODES, JOURNEY }, XLINKS) {
     if (nd.p === "root" && !nd.rt) throw new Error(name + ": عقدة حلقة اولى بلا rt: " + nd.k);
     if (name === "AI" && nd.p === "root" && !nd.nt) throw new Error("AI: عقدة حلقة اولى بلا نوع nt: " + nd.k);
   }
+  /* قاعدة المحاور: البروز h لعقدة حلقة اولى او لعقدة داخلية ترسو عائلة (لها ابناء) — يمنع البروز اليتيم والالوان الدخيلة كسوابق dyna/creativity/tooluse */
+  for (const nd of NODES) {
+    if (nd.h && nd.k !== "root" && nd.p !== "root" && !NODES.some((x) => x.p === nd.k))
+      throw new Error(name + ": محور داخلي بلا ابناء (بروز يتيم): " + nd.k);
+  }
   const nodes = NODES.map((nd) => {
     if (nd.p !== null && !keyToIdx.has(nd.p)) throw new Error(name + " اب مجهول: " + nd.p);
     const out = { k: nd.k, n: nd.n, e: nd.e, p: nd.p === null ? -1 : keyToIdx.get(nd.p), g: nd.g, h: nd.h ? 1 : 0, d: nd.d };

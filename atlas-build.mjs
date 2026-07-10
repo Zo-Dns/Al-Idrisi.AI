@@ -28,6 +28,7 @@ const XLINKS_AI = [
   ["agents", "rl"], ["agents", "classic"], ["agents", "llm"],
   /* روابط المراجعة الخبرية الاولى (10 يوليو 2026): عقد فروع-من-الجذر المعروضة تحت اب ملاحي */
   ["xai", "ml"], ["xai", "governance"], ["multiagent", "agents"], ["multiagent", "rl"],
+  ["education", "llm"],
 ];
 const XLINKS_LLM = [
   ["temp2", "hallu2"], ["rag2", "hallu2"], ["scaling2", "gpuclusters"], ["rlhf2", "alignment"],
@@ -74,6 +75,7 @@ const XLINKS_APPS = [
   ["protein-structure", "drug-discovery"], ["genomics-ai", "drug-discovery"], ["recommendation-engines", "computational-advertising"],
   ["fraud-detection", "demand-forecasting"], ["coding-assistants", "agentic-coding"], ["rag-knowledge-assistants", "semantic-search"],
   ["foundation-model-apis", "model-adaptation"], ["inference-serving", "edge-on-device"],
+  ["ai-tutoring", "conversational-assistants"],
 ];
 const XLINKS_CLASSIC = [
   ["astar", "heuristic"], ["astar", "ucs"], ["astar", "admissibility"], ["minimax", "alpha-beta"],

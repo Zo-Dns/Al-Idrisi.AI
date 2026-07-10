@@ -1964,6 +1964,7 @@ let hoverNode = null;
 let cardNode = null;   /* معرف مبكرا كي تصل اليه sourcesForCard() الذي يستدعى فور تحميل الصفحة، قبل قسم البطاقة */
 let matchSet = null;
 let jIdx = -1; /* خطوة الرحلة الحالية، -1 = غير نشطة */
+let journeyCamFree = false; /* صار المستخدم يحرك الخريطة يدويا اثناء الخطوة: اوقف التتبع التلقائي حتى الخطوة التالية */
 let curRel = [];              /* مفاهيم الخطوة الحالية */
 let curRelSet = new Set();
 const journeySet = new Set(JOURNEY.map(s => s.node.id));
@@ -2376,8 +2377,8 @@ function draw(now) {
     if (Math.abs(camTarget.scale - scale) < 0.002 &&
         Math.abs(camTarget.tx - tx) < 0.5 && Math.abs(camTarget.ty - ty) < 0.5) camTarget = null;
   }
-  /* اثناء الرحلة: تتبع المحطة ومفاهيمها وهي تتحرك (مركز مرجح نحو المحطة) */
-  if (jIdx >= 0 && !camTarget) {
+  /* اثناء الرحلة: تتبع المحطة ومفاهيمها وهي تتحرك (مركز مرجح نحو المحطة) — يتوقف اذا حرك المستخدم الخريطة يدويا */
+  if (jIdx >= 0 && !camTarget && !journeyCamFree) {
     const n = JOURNEY[jIdx].node;
     let cx = n.x * 3, cy = n.y * 3, wsum = 3;
     for (const r of curRel) {
@@ -2579,6 +2580,7 @@ canvas.addEventListener("pointermove", (e) => {
     tx += e.clientX - lastX;
     ty += e.clientY - lastY;
     camTarget = null;
+    journeyCamFree = true;
   } else {
     setHover(findNode(e.clientX, e.clientY), e.clientX, e.clientY);
   }
@@ -2600,6 +2602,7 @@ canvas.addEventListener("pointerleave", () => setHover(null));
 canvas.addEventListener("wheel", (e) => {
   e.preventDefault();
   camTarget = null;
+  journeyCamFree = true;
   const f = Math.exp(-e.deltaY * 0.0012);
   const ns = Math.min(9, Math.max(0.08, scale * f));
   const k = ns / scale;
@@ -2787,6 +2790,7 @@ function showStep() {
   let cx = st.node.x * 3, cy = st.node.y * 3, wsum = 3;
   for (const r of curRel) { cx += r.x; cy += r.y; wsum++; }
   cx /= wsum; cy /= wsum;
+  journeyCamFree = false; /* خطوة جديدة: استأنف التتبع التلقائي وحرك الكاميرا اليها */
   camTarget = { scale: s, tx: W / 2 - cx * s, ty: H * 0.42 - cy * s };
 }
 function startJourney() {

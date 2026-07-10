@@ -13,6 +13,8 @@ const state = {
 };
 
 const lineRatios = [0.08, 0.22, 0.45];
+const OUTPUT_DIGIT_OFFSET = 24;
+const OUTPUT_SELECTED_BLUE = 0x2f76d2;
 const canvas = document.getElementById("scene");
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
@@ -52,7 +54,7 @@ let activeLines = null;
 let labelSprites = [];
 let outputDigitSprites = [];
 let outputGlowMesh = null;
-let flowSignalLines = null;
+let flowSignalDots = null;
 let flowSignalData = [];
 let inputSignalMesh = null;
 let inputDigitCanvas = null;
@@ -65,6 +67,7 @@ const inputPanelGeo = new THREE.BoxGeometry(9.5, 9.5, 3.2);
 const inputSignalGeo = new THREE.BoxGeometry(12.6, 12.6, 2.4);
 const outputCubeGeo = new THREE.BoxGeometry(10.5, 10.5, 10.5);
 const outputGlowGeo = new THREE.SphereGeometry(16, 24, 16);
+const flowSignalDotGeo = new THREE.SphereGeometry(2.4, 12, 8);
 const tempObj = new THREE.Object3D();
 const tempColor = new THREE.Color();
 
@@ -74,6 +77,7 @@ const mats = {
   hidden: new THREE.MeshStandardMaterial({ color: 0xffffff, vertexColors: true, emissive: 0x050505, roughness: 0.58 }),
   output: new THREE.MeshStandardMaterial({ color: 0xffffff, vertexColors: true, emissive: 0x2d2200, roughness: 0.32 }),
   outputGlow: new THREE.MeshBasicMaterial({ color: 0xffffff, vertexColors: true, transparent: true, opacity: 0.62, depthTest: false, depthWrite: false, blending: THREE.AdditiveBlending }),
+  flowSignalDot: new THREE.MeshBasicMaterial({ color: 0x010101, transparent: true, opacity: 0.94, depthTest: false, depthWrite: false }),
 };
 
 function getInputSide() {
@@ -82,6 +86,29 @@ function getInputSide() {
 
 function weightFormula(arch) {
   return arch.slice(0, -1).map((n, i) => `${n}x${arch[i + 1]}`).join(" + ");
+}
+
+function fmt(n, digits = 3) {
+  if (!Number.isFinite(n)) return "0";
+  const v = Math.abs(n);
+  if (v >= 100) return n.toFixed(1);
+  if (v >= 10) return n.toFixed(2);
+  return n.toFixed(digits);
+}
+
+function vectorNorm(values) {
+  return Math.sqrt(values.reduce((sum, v) => sum + v * v, 0));
+}
+
+function countPositive(values) {
+  return values.reduce((sum, v) => sum + (v > 0 ? 1 : 0), 0);
+}
+
+function topIndexes(values, limit = 2) {
+  return values
+    .map((value, index) => ({ value, index }))
+    .sort((a, b) => b.value - a.value)
+    .slice(0, limit);
 }
 
 function resize() {
@@ -171,7 +198,7 @@ function buildScene() {
   labelSprites = [];
   outputDigitSprites = [];
   outputGlowMesh = null;
-  flowSignalLines = null;
+  flowSignalDots = null;
   flowSignalData = [];
   inputSignalMesh = null;
   inputDigitMesh = null;
@@ -200,6 +227,7 @@ function buildScene() {
   outputGlowMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
   outputGlowMesh.instanceColor = new THREE.InstancedBufferAttribute(new Float32Array(positionsByLayer[3].length * 3), 3);
   outputGlowMesh.renderOrder = 24;
+  outputGlowMesh.visible = false;
   group.add(outputGlowMesh);
 
   addInputDigitPlane();
@@ -268,10 +296,10 @@ function addLabels() {
 
   for (let i = 0; i < 10; i++) {
     const p = positionsByLayer[3][i];
-    const sprite = makeTextSprite(String(i), { color: "#ffffff", fontSize: 82, width: 128, height: 128, scale: [28, 28] });
-    sprite.position.set(p.x + 92, p.y, p.z);
+    const sprite = makeTextSprite(String(i), { color: "#ffffff", fontSize: 82, width: 128, height: 128, scale: [22, 22] });
+    sprite.position.set(p.x + OUTPUT_DIGIT_OFFSET, p.y, p.z);
     sprite.renderOrder = 36;
-    sprite.userData.baseScale = 28;
+    sprite.userData.baseScale = 22;
     outputDigitSprites.push(sprite);
     group.add(sprite);
   }
@@ -279,13 +307,20 @@ function addLabels() {
 
 function collectWeightCandidates() {
   const candidates = [];
+  const outputLayer = state.model.weights.length - 1;
+  const probs = state.pass?.probs || [];
+  const pred = probs.length ? argmax(probs) : -1;
+  const predProb = pred >= 0 ? Math.max(1e-6, probs[pred] || 0) : 1;
   for (let l = 0; l < state.model.weights.length; l++) {
     const W = state.model.weights[l];
     for (let j = 0; j < W.length; j++) {
       for (let i = 0; i < W[j].length; i++) {
         const w = W[j][i];
         const source = Math.abs(state.pass?.activations?.[l]?.[i] || 0);
-        const signal = source * Math.abs(w);
+        const outputGate = l === outputLayer
+          ? (j === pred ? 1 : Math.pow(Math.max(0, (probs[j] || 0) / predProb), 3) * 0.08)
+          : 1;
+        const signal = source * Math.abs(w) * outputGate;
         const tie = (((i * 1103515245 + j * 12345 + l * 97) >>> 0) % 1000) / 100000;
         candidates.push({ l, i, j, w, signal, score: Math.abs(w) + tie });
       }
@@ -297,8 +332,8 @@ function collectWeightCandidates() {
 function rebuildLines() {
   if (weightLines) group.remove(weightLines);
   if (activeLines) group.remove(activeLines);
-  if (flowSignalLines) group.remove(flowSignalLines);
-  flowSignalLines = null;
+  if (flowSignalDots) group.remove(flowSignalDots);
+  flowSignalDots = null;
   flowSignalData = [];
 
   const totalWeights = state.model.weights.reduce((s, W) => s + W.length * W[0].length, 0);
@@ -329,7 +364,11 @@ function rebuildLines() {
   group.add(weightLines);
 
   const bySignal = collectWeightCandidates().sort((a, b) => b.signal - a.signal);
-  const active = bySignal.slice(0, 360);
+  const outputLayer = state.model.weights.length - 1;
+  const pred = argmax(state.pass.probs);
+  const active = bySignal
+    .filter((c) => c.l !== outputLayer || c.j === pred)
+    .slice(0, 360);
   const activePos = [];
   const activeCol = [];
   for (const c of active) {
@@ -353,7 +392,7 @@ function rebuildLines() {
   const layerLimits = [520, 320, 180];
   for (let l = 0; l < state.model.weights.length; l++) {
     const layerActive = bySignal
-      .filter((c) => c.l === l && c.signal > 0)
+      .filter((c) => c.l === l && c.signal > 0 && (l !== outputLayer || c.j === pred))
       .slice(0, layerLimits[l] || 180);
     pulseCandidates.push(...layerActive);
   }
@@ -363,21 +402,10 @@ function rebuildLines() {
     phase: ((idx * 37) % 113) / 113,
   }));
 
-  const flowGeo = new THREE.BufferGeometry();
-  flowGeo.setAttribute("position", new THREE.Float32BufferAttribute(new Float32Array(Math.max(1, flowSignalData.length) * 6), 3));
-  flowGeo.setAttribute("color", new THREE.Float32BufferAttribute(new Float32Array(Math.max(1, flowSignalData.length) * 6), 3));
-  flowSignalLines = new THREE.LineSegments(
-    flowGeo,
-    new THREE.LineBasicMaterial({
-      vertexColors: true,
-      transparent: true,
-      opacity: 0.9,
-      blending: THREE.AdditiveBlending,
-      depthWrite: false,
-    })
-  );
-  flowSignalLines.renderOrder = 18;
-  group.add(flowSignalLines);
+  flowSignalDots = new THREE.InstancedMesh(flowSignalDotGeo, mats.flowSignalDot, Math.max(1, flowSignalData.length));
+  flowSignalDots.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+  flowSignalDots.renderOrder = 42;
+  group.add(flowSignalDots);
 }
 
 function updateCubes() {
@@ -427,46 +455,31 @@ function updateCubes() {
 }
 
 function updateOutputHighlights(time = 0) {
-  if (!state.pass || !outputGlowMesh) return;
+  if (!state.pass) return;
   const probs = state.pass.probs;
   const pred = argmax(probs);
-  const pulse = 0.5 + 0.5 * Math.sin(time * 0.005);
+  const flash = 0.5 + 0.5 * Math.sin(time * 0.006);
+  const flashLift = Math.pow(flash, 1.8);
 
   for (let i = 0; i < probs.length; i++) {
     const p = positionsByLayer[3][i];
     const prob = Math.max(0, Math.min(1, probs[i] || 0));
     const isPred = i === pred;
-    const glowScale = isPred ? 2.3 + pulse * 0.55 : 0.22 + Math.pow(prob, 0.42) * 1.1;
-    tempObj.position.copy(p);
-    tempObj.scale.setScalar(glowScale);
-    tempObj.updateMatrix();
-    outputGlowMesh.setMatrixAt(i, tempObj.matrix);
-
-    if (isPred) {
-      tempColor.setRGB(1.0, 0.78 + pulse * 0.2, 0.18);
-    } else {
-      const dim = 0.08 + Math.pow(prob, 0.5) * 0.34;
-      tempColor.setRGB(dim, dim * 0.95, dim * 0.7);
-    }
-    outputGlowMesh.setColorAt(i, tempColor);
 
     const sprite = outputDigitSprites[i];
     if (sprite) {
-      const labelScale = isPred ? 39 + pulse * 4 : 24 + Math.pow(prob, 0.45) * 12;
+      const labelScale = isPred ? 30 + flashLift * 7 : 21;
+      sprite.position.copy(p).add(new THREE.Vector3(OUTPUT_DIGIT_OFFSET, 0, 0));
       sprite.scale.set(labelScale, labelScale, 1);
-      sprite.material.opacity = isPred ? 1 : 0.28 + Math.pow(prob, 0.5) * 0.35;
-      sprite.material.color.set(isPred ? 0xffd166 : 0xd7e2f1);
+      sprite.material.opacity = isPred ? 0.72 + flashLift * 0.28 : 0.72 + Math.pow(prob, 0.5) * 0.08;
+      sprite.material.color.set(isPred ? OUTPUT_SELECTED_BLUE : 0xffffff);
     }
   }
-  outputGlowMesh.instanceMatrix.needsUpdate = true;
-  outputGlowMesh.instanceColor.needsUpdate = true;
 }
 
 function updateFlowSignals(time = 0) {
-  if (!flowSignalLines || flowSignalData.length === 0) return;
+  if (!flowSignalDots || flowSignalData.length === 0) return;
   const layers = state.model.weights.length;
-  const pos = flowSignalLines.geometry.attributes.position.array;
-  const col = flowSignalLines.geometry.attributes.color.array;
   for (let k = 0; k < flowSignalData.length; k++) {
     const c = flowSignalData[k];
     const local = (time * 0.00036 + c.phase) % 1;
@@ -475,53 +488,72 @@ function updateFlowSignals(time = 0) {
     const a = positionsByLayer[c.l][c.i];
     const b = positionsByLayer[c.l + 1][c.j];
     const energy = Math.min(1, Math.sqrt(Math.max(0, c.signal)) * 1.9);
-    const trail = 0.10 + energy * 0.08;
     const head = visible ? wave : 0;
-    const tail = Math.max(0, head - trail);
-    const p0x = a.x + (b.x - a.x) * tail;
-    const p0y = a.y + (b.y - a.y) * tail;
-    const p0z = a.z + (b.z - a.z) * tail;
-    const p1x = a.x + (b.x - a.x) * head;
-    const p1y = a.y + (b.y - a.y) * head;
-    const p1z = a.z + (b.z - a.z) * head;
+    const x = a.x + (b.x - a.x) * head;
+    const y = a.y + (b.y - a.y) * head;
+    const z = a.z + (b.z - a.z) * head;
 
-    const base = k * 6;
     if (visible) {
-      pos[base] = p0x;
-      pos[base + 1] = p0y;
-      pos[base + 2] = p0z;
-      pos[base + 3] = p1x;
-      pos[base + 4] = p1y;
-      pos[base + 5] = p1z;
+      tempObj.position.set(x, y, z);
+      tempObj.scale.setScalar(0.62 + energy * 0.62);
     } else {
-      pos[base] = a.x;
-      pos[base + 1] = a.y;
-      pos[base + 2] = a.z;
-      pos[base + 3] = a.x;
-      pos[base + 4] = a.y;
-      pos[base + 5] = a.z;
+      tempObj.position.copy(a);
+      tempObj.scale.setScalar(0);
     }
-
-    let r;
-    let g;
-    let bl;
-    if (c.l === layers - 1) {
-      r = 1.0; g = 0.82; bl = 0.22;
-    } else if (c.w >= 0) {
-      r = 0.45; g = 0.92; bl = 1.0;
-    } else {
-      r = 1.0; g = 0.36; bl = 0.22;
-    }
-    const brightness = visible ? 0.35 + energy * 0.95 : 0;
-    col[base] = r * brightness * 0.28;
-    col[base + 1] = g * brightness * 0.28;
-    col[base + 2] = bl * brightness * 0.28;
-    col[base + 3] = r * brightness;
-    col[base + 4] = g * brightness;
-    col[base + 5] = bl * brightness;
+    tempObj.updateMatrix();
+    flowSignalDots.setMatrixAt(k, tempObj.matrix);
   }
-  flowSignalLines.geometry.attributes.position.needsUpdate = true;
-  flowSignalLines.geometry.attributes.color.needsUpdate = true;
+  flowSignalDots.instanceMatrix.needsUpdate = true;
+}
+
+function updateProof() {
+  if (!state.model || !state.pass) return;
+  const sample = state.samples[state.sampleIndex];
+  const arch = state.model.architecture;
+  const input = sample.pixels;
+  const activations = state.pass.activations;
+  const preacts = state.pass.preacts;
+  const probs = state.pass.probs;
+  const pred = argmax(probs);
+  const top = topIndexes(probs, 2);
+  const margin = top.length > 1 ? probs[top[0].index] - probs[top[1].index] : probs[pred];
+  const activePixels = input.reduce((sum, v) => sum + (v > 0.05 ? 1 : 0), 0);
+  const inputEnergy = input.reduce((sum, v) => sum + v, 0);
+  const z1 = preacts[0] || [];
+  const z2 = preacts[1] || [];
+  const logits = preacts[preacts.length - 1] || [];
+  const a1 = activations[1] || [];
+  const a2 = activations[2] || [];
+  const lastLayer = state.model.weights.length - 1;
+  const lastWeights = state.model.weights[lastLayer][pred] || [];
+  const lastBias = state.model.biases[lastLayer][pred] || 0;
+  const dot = lastWeights.reduce((sum, w, i) => sum + w * (a2[i] || 0), 0);
+  const logit = lastBias + dot;
+  const contributors = lastWeights
+    .map((w, i) => ({
+      i,
+      w,
+      a: a2[i] || 0,
+      c: w * (a2[i] || 0),
+    }))
+    .sort((a, b) => Math.abs(b.c) - Math.abs(a.c))
+    .slice(0, 3)
+    .map((item) => `h2[${item.i}]: ${fmt(item.a, 2)}*${fmt(item.w, 2)}=${fmt(item.c, 2)}`)
+    .join(" | ");
+
+  document.getElementById("proofInput").textContent =
+    `x in R^${arch[0]} | lit=${activePixels} | sum=${fmt(inputEnergy, 2)} | ||x||2=${fmt(vectorNorm(input), 2)}`;
+  document.getElementById("proofLayer1").textContent =
+    `z1=W1*x+b1 | ReLU active=${countPositive(a1)}/${arch[1]} | max z=${fmt(Math.max(...z1), 2)}`;
+  document.getElementById("proofLayer2").textContent =
+    `z2=W2*a1+b2 | ReLU active=${countPositive(a2)}/${arch[2]} | max z=${fmt(Math.max(...z2), 2)}`;
+  document.getElementById("proofOutput").textContent =
+    `argmax p=${pred} | p=${fmt(probs[pred] * 100, 2)}% | margin=${fmt(margin * 100, 2)}%`;
+  document.getElementById("proofEquation").textContent =
+    `a1=ReLU(W1*x+b1); a2=ReLU(W2*a1+b2); p=softmax(W3*a2+b3)`;
+  document.getElementById("proofLogit").textContent =
+    `z_${pred}=b_${pred}+sum(a2_i*W3_${pred},i) = ${fmt(lastBias, 3)} + ${fmt(dot, 3)} = ${fmt(logit, 3)}; stored=${fmt(logits[pred], 3)}`;
+  document.getElementById("proofContrib").textContent = `top evidence: ${contributors}`;
 }
 
 function updateHud() {
@@ -534,7 +566,7 @@ function updateHud() {
   document.getElementById("stParams").textContent = formatInt(weights + biases);
   document.getElementById("stLearning").textContent = state.model.learning || "MLP";
   document.getElementById("stSample").textContent = `${state.sampleIndex + 1} / ${state.samples.length}`;
-  document.getElementById("mathNote").textContent = `W = ${weightFormula(arch)} = ${formatInt(weights)}; b = ${formatInt(biases)}; output = softmax(Wx + b)`;
+  document.getElementById("mathNote").textContent = `W = ${weightFormula(arch)} = ${formatInt(weights)}; b = ${formatInt(biases)}; forward pass is deterministic`;
 }
 
 function updateSample() {
@@ -554,6 +586,7 @@ function updateSample() {
   updateOutputHighlights();
   rebuildLines();
   updateHud();
+  updateProof();
 }
 
 function updateInputDigitPlane(pixels) {

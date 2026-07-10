@@ -38,6 +38,8 @@
   }
   #stage { position: fixed; inset: 0; cursor: grab; touch-action: none; display: block; }
   #stage.dragging { cursor: grabbing; }
+  /* ختم الشفافية: تاريخه يحدث يدويا مع كل جولة تدقيق محتوى، لا آليا مع البناء (الامانة: التاريخ = آخر تحقق علمي لا آخر تصريف) */
+  #stamp { font-size: 11px; color: var(--muted); margin-top: 3px; }
 
   .hud { position: fixed; z-index: 10; }
 
@@ -489,6 +491,7 @@
   <h1>كيف يعمل الذكاء الاصطناعي</h1>
   <div class="sub">شبكة تفاعلية من البيانات الى الجواب — اسحب، قرب، وانقر اي مفهوم لشرحه</div>
   <div id="stats"></div>
+  <div id="stamp">آخر تحديث علمي: يوليو 2026 · مراجعة متعددة النماذج موثقة</div>
   <button id="journeyBtn" type="button">✨ ابدأ الجولة الكبرى: عوالم الذكاء الاصطناعي من التعلم الى المسؤولية</button>
   <div id="searchwrap">
     <input id="search" type="text" placeholder="ابحث عن مفهوم..." spellcheck="false" />
@@ -1678,9 +1681,24 @@ function findNode(sx, sy) {
 let dragNode = null, panning = false;
 let downX = 0, downY = 0, moved = false;
 let lastX = 0, lastY = 0;
+/* قرص-تكبير باللمس: تتبع المؤشرات النشطة وحالة القرص {مسافة، منتصف} */
+const activePtrs = new Map();
+let pinch = null;
 
 canvas.addEventListener("pointerdown", (e) => {
-  canvas.setPointerCapture(e.pointerId);
+  try { canvas.setPointerCapture(e.pointerId); } catch (_) { /* مؤشر صناعي في الاختبارات */ }
+  activePtrs.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  if (activePtrs.size === 2) {
+    /* بدء القرص: الغ سحب العقدة والتحريك، واقفل فتح البطاقة بالنقر */
+    if (dragNode) { dragNode.fx = null; dragNode.fy = null; dragNode = null; }
+    panning = false;
+    moved = true;
+    const a = [...activePtrs.values()];
+    pinch = { dist: Math.hypot(a[0].x - a[1].x, a[0].y - a[1].y) || 1,
+              midX: (a[0].x + a[1].x) / 2, midY: (a[0].y + a[1].y) / 2 };
+    canvas.classList.add("dragging");
+    return;
+  }
   downX = lastX = e.clientX; downY = lastY = e.clientY;
   moved = false;
   const n = findNode(e.clientX, e.clientY);
@@ -1695,6 +1713,22 @@ canvas.addEventListener("pointerdown", (e) => {
 });
 
 canvas.addEventListener("pointermove", (e) => {
+  if (activePtrs.has(e.pointerId)) activePtrs.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  /* وضع القرص: تكبير مرتكز على منتصف الاصبعين + تحريك بحركة المنتصف */
+  if (pinch && activePtrs.size >= 2) {
+    const a = [...activePtrs.values()];
+    const dist = Math.hypot(a[0].x - a[1].x, a[0].y - a[1].y) || 1;
+    const midX = (a[0].x + a[1].x) / 2, midY = (a[0].y + a[1].y) / 2;
+    const ns = Math.min(9, Math.max(0.08, scale * (dist / pinch.dist)));
+    const k = ns / scale;
+    tx = midX - (midX - tx) * k + (midX - pinch.midX);
+    ty = midY - (midY - ty) * k + (midY - pinch.midY);
+    scale = ns;
+    pinch = { dist, midX, midY };
+    camTarget = null;
+    journeyCamFree = true;
+    return;
+  }
   if (Math.abs(e.clientX - downX) + Math.abs(e.clientY - downY) > 5) moved = true;
   if (dragNode) {
     const w = toWorld(e.clientX, e.clientY);
@@ -1711,7 +1745,14 @@ canvas.addEventListener("pointermove", (e) => {
   lastX = e.clientX; lastY = e.clientY;
 });
 
-canvas.addEventListener("pointerup", () => {
+function endPointer(e) {
+  activePtrs.delete(e.pointerId);
+  if (pinch && activePtrs.size < 2) {
+    pinch = null;
+    /* بقي اصبع واحد: يتابع تحريكا من موضعه بلا قفزة */
+    const rest = activePtrs.values().next().value;
+    if (rest) { lastX = rest.x; lastY = rest.y; panning = true; return; }
+  }
   if (dragNode) {
     if (!moved) openCard(dragNode);
     dragNode.fx = null; dragNode.fy = null;
@@ -1719,7 +1760,9 @@ canvas.addEventListener("pointerup", () => {
   }
   panning = false;
   canvas.classList.remove("dragging");
-});
+}
+canvas.addEventListener("pointerup", endPointer);
+canvas.addEventListener("pointercancel", endPointer);
 
 canvas.addEventListener("pointerleave", () => setHover(null));
 

@@ -480,11 +480,11 @@ function updateFlowSignals(time = 0) {
   if (!state.signalsPlaying) return;
   const layers = state.model.weights.length;
   const signalTime = Math.max(0, time - state.signalStartTime);
-  const cycleDistance = layers + 1.05;
-  const signalDistance = signalTime * 0.00125;
+  const cycleDistance = layers + 0.82;
+  const signalDistance = signalTime * 0.00135;
   for (let k = 0; k < flowSignalData.length; k++) {
     const c = flowSignalData[k];
-    const launchDelay = c.phase * 0.9;
+    const launchDelay = c.phase * cycleDistance;
     const rawTravel = signalDistance - launchDelay;
     const travel = rawTravel >= 0 ? rawTravel % cycleDistance : -1;
     const wave = travel - c.l;

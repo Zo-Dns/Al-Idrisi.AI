@@ -52,8 +52,8 @@ let activeLines = null;
 let labelSprites = [];
 let outputDigitSprites = [];
 let outputGlowMesh = null;
-let flowPulseMesh = null;
-let flowPulseData = [];
+let flowSignalLines = null;
+let flowSignalData = [];
 let inputSignalMesh = null;
 let inputDigitCanvas = null;
 let inputDigitTexture = null;
@@ -65,7 +65,6 @@ const inputPanelGeo = new THREE.BoxGeometry(9.5, 9.5, 3.2);
 const inputSignalGeo = new THREE.BoxGeometry(12.6, 12.6, 2.4);
 const outputCubeGeo = new THREE.BoxGeometry(10.5, 10.5, 10.5);
 const outputGlowGeo = new THREE.SphereGeometry(16, 24, 16);
-const flowPulseGeo = new THREE.SphereGeometry(3.2, 12, 8);
 const tempObj = new THREE.Object3D();
 const tempColor = new THREE.Color();
 
@@ -75,7 +74,6 @@ const mats = {
   hidden: new THREE.MeshStandardMaterial({ color: 0xffffff, vertexColors: true, emissive: 0x050505, roughness: 0.58 }),
   output: new THREE.MeshStandardMaterial({ color: 0xffffff, vertexColors: true, emissive: 0x2d2200, roughness: 0.32 }),
   outputGlow: new THREE.MeshBasicMaterial({ color: 0xffffff, vertexColors: true, transparent: true, opacity: 0.62, depthTest: false, depthWrite: false, blending: THREE.AdditiveBlending }),
-  flowPulse: new THREE.MeshBasicMaterial({ color: 0xffffff, vertexColors: true, transparent: true, opacity: 0.92, depthWrite: false, blending: THREE.AdditiveBlending }),
 };
 
 function getInputSide() {
@@ -173,8 +171,8 @@ function buildScene() {
   labelSprites = [];
   outputDigitSprites = [];
   outputGlowMesh = null;
-  flowPulseMesh = null;
-  flowPulseData = [];
+  flowSignalLines = null;
+  flowSignalData = [];
   inputSignalMesh = null;
   inputDigitMesh = null;
   inputDigitBackMesh = null;
@@ -299,9 +297,9 @@ function collectWeightCandidates() {
 function rebuildLines() {
   if (weightLines) group.remove(weightLines);
   if (activeLines) group.remove(activeLines);
-  if (flowPulseMesh) group.remove(flowPulseMesh);
-  flowPulseMesh = null;
-  flowPulseData = [];
+  if (flowSignalLines) group.remove(flowSignalLines);
+  flowSignalLines = null;
+  flowSignalData = [];
 
   const totalWeights = state.model.weights.reduce((s, W) => s + W.length * W[0].length, 0);
   const candidates = collectWeightCandidates().sort((a, b) => b.score - a.score);
@@ -314,8 +312,8 @@ function rebuildLines() {
     const a = positionsByLayer[c.l][c.i];
     const b = positionsByLayer[c.l + 1][c.j];
     positions.push(a.x, a.y, a.z, b.x, b.y, b.z);
-    const weightBrightness = Math.min(1, 0.1 + Math.abs(c.w) * 0.82);
-    const signTint = c.w >= 0 ? [0.72, 0.82, 1.0] : [1.0, 0.74, 0.66];
+    const weightBrightness = Math.min(1, 0.05 + Math.abs(c.w) * 0.22);
+    const signTint = c.w >= 0 ? [0.045, 0.07, 0.09] : [0.09, 0.055, 0.045];
     colors.push(
       signTint[0] * weightBrightness, signTint[1] * weightBrightness, signTint[2] * weightBrightness,
       signTint[0] * weightBrightness, signTint[1] * weightBrightness, signTint[2] * weightBrightness
@@ -326,7 +324,7 @@ function rebuildLines() {
   geo.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
   weightLines = new THREE.LineSegments(
     geo,
-    new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.105, blending: THREE.AdditiveBlending, depthWrite: false })
+    new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.56, depthWrite: false })
   );
   group.add(weightLines);
 
@@ -339,15 +337,15 @@ function rebuildLines() {
     const a = positionsByLayer[c.l][c.i];
     const b = positionsByLayer[c.l + 1][c.j];
     activePos.push(a.x, a.y, a.z, b.x, b.y, b.z);
-    const bright = Math.min(1, 0.28 + c.signal * 3.2);
-    activeCol.push(bright, bright, bright, bright, bright, bright);
+    const bright = Math.min(1, 0.05 + c.signal * 1.1);
+    activeCol.push(bright * 0.05, bright * 0.075, bright * 0.1, bright * 0.05, bright * 0.075, bright * 0.1);
   }
   const activeGeo = new THREE.BufferGeometry();
   activeGeo.setAttribute("position", new THREE.Float32BufferAttribute(activePos, 3));
   activeGeo.setAttribute("color", new THREE.Float32BufferAttribute(activeCol, 3));
   activeLines = new THREE.LineSegments(
     activeGeo,
-    new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.32, blending: THREE.AdditiveBlending, depthWrite: false })
+    new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.72, depthWrite: false })
   );
   group.add(activeLines);
 
@@ -360,16 +358,26 @@ function rebuildLines() {
     pulseCandidates.push(...layerActive);
   }
 
-  flowPulseData = pulseCandidates.map((c, idx) => ({
+  flowSignalData = pulseCandidates.map((c, idx) => ({
     ...c,
     phase: ((idx * 37) % 113) / 113,
   }));
 
-  flowPulseMesh = new THREE.InstancedMesh(flowPulseGeo, mats.flowPulse, Math.max(1, flowPulseData.length));
-  flowPulseMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
-  flowPulseMesh.instanceColor = new THREE.InstancedBufferAttribute(new Float32Array(Math.max(1, flowPulseData.length) * 3), 3);
-  flowPulseMesh.renderOrder = 18;
-  group.add(flowPulseMesh);
+  const flowGeo = new THREE.BufferGeometry();
+  flowGeo.setAttribute("position", new THREE.Float32BufferAttribute(new Float32Array(Math.max(1, flowSignalData.length) * 6), 3));
+  flowGeo.setAttribute("color", new THREE.Float32BufferAttribute(new Float32Array(Math.max(1, flowSignalData.length) * 6), 3));
+  flowSignalLines = new THREE.LineSegments(
+    flowGeo,
+    new THREE.LineBasicMaterial({
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.9,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+    })
+  );
+  flowSignalLines.renderOrder = 18;
+  group.add(flowSignalLines);
 }
 
 function updateCubes() {
@@ -454,36 +462,66 @@ function updateOutputHighlights(time = 0) {
   outputGlowMesh.instanceColor.needsUpdate = true;
 }
 
-function updateFlowPulses(time = 0) {
-  if (!flowPulseMesh || flowPulseData.length === 0) return;
+function updateFlowSignals(time = 0) {
+  if (!flowSignalLines || flowSignalData.length === 0) return;
   const layers = state.model.weights.length;
-  for (let k = 0; k < flowPulseData.length; k++) {
-    const c = flowPulseData[k];
+  const pos = flowSignalLines.geometry.attributes.position.array;
+  const col = flowSignalLines.geometry.attributes.color.array;
+  for (let k = 0; k < flowSignalData.length; k++) {
+    const c = flowSignalData[k];
     const local = (time * 0.00036 + c.phase) % 1;
     const wave = local * (layers + 0.82) - c.l;
     const visible = wave >= 0 && wave <= 1;
     const a = positionsByLayer[c.l][c.i];
     const b = positionsByLayer[c.l + 1][c.j];
-    const u = visible ? wave : 0;
-    tempObj.position.lerpVectors(a, b, u);
-
     const energy = Math.min(1, Math.sqrt(Math.max(0, c.signal)) * 1.9);
-    const size = visible ? 0.7 + energy * 3.2 : 0.001;
-    tempObj.scale.setScalar(size);
-    tempObj.updateMatrix();
-    flowPulseMesh.setMatrixAt(k, tempObj.matrix);
+    const trail = 0.10 + energy * 0.08;
+    const head = visible ? wave : 0;
+    const tail = Math.max(0, head - trail);
+    const p0x = a.x + (b.x - a.x) * tail;
+    const p0y = a.y + (b.y - a.y) * tail;
+    const p0z = a.z + (b.z - a.z) * tail;
+    const p1x = a.x + (b.x - a.x) * head;
+    const p1y = a.y + (b.y - a.y) * head;
+    const p1z = a.z + (b.z - a.z) * head;
 
-    if (c.l === layers - 1) {
-      tempColor.setRGB(1.0, 0.82, 0.22);
-    } else if (c.w >= 0) {
-      tempColor.setRGB(0.75, 0.95, 1.0);
+    const base = k * 6;
+    if (visible) {
+      pos[base] = p0x;
+      pos[base + 1] = p0y;
+      pos[base + 2] = p0z;
+      pos[base + 3] = p1x;
+      pos[base + 4] = p1y;
+      pos[base + 5] = p1z;
     } else {
-      tempColor.setRGB(1.0, 0.42, 0.28);
+      pos[base] = a.x;
+      pos[base + 1] = a.y;
+      pos[base + 2] = a.z;
+      pos[base + 3] = a.x;
+      pos[base + 4] = a.y;
+      pos[base + 5] = a.z;
     }
-    flowPulseMesh.setColorAt(k, tempColor);
+
+    let r;
+    let g;
+    let bl;
+    if (c.l === layers - 1) {
+      r = 1.0; g = 0.82; bl = 0.22;
+    } else if (c.w >= 0) {
+      r = 0.45; g = 0.92; bl = 1.0;
+    } else {
+      r = 1.0; g = 0.36; bl = 0.22;
+    }
+    const brightness = visible ? 0.35 + energy * 0.95 : 0;
+    col[base] = r * brightness * 0.28;
+    col[base + 1] = g * brightness * 0.28;
+    col[base + 2] = bl * brightness * 0.28;
+    col[base + 3] = r * brightness;
+    col[base + 4] = g * brightness;
+    col[base + 5] = bl * brightness;
   }
-  flowPulseMesh.instanceMatrix.needsUpdate = true;
-  flowPulseMesh.instanceColor.needsUpdate = true;
+  flowSignalLines.geometry.attributes.position.needsUpdate = true;
+  flowSignalLines.geometry.attributes.color.needsUpdate = true;
 }
 
 function updateHud() {
@@ -564,7 +602,7 @@ function animate(time) {
   controls.autoRotate = state.autoOrbit;
   controls.update();
   group.rotation.y = -0.18 + Math.sin(time * 0.00008) * 0.035;
-  updateFlowPulses(time);
+  updateFlowSignals(time);
   updateOutputHighlights(time);
   renderer.render(scene, camera);
   requestAnimationFrame(animate);

@@ -9,6 +9,7 @@ const state = {
   pass: null,
   autoOrbit: true,
   signalsPlaying: true,
+  signalStartTime: 0,
   lineMode: 0,
   shownWeights: 0,
   contributionDots: 0,
@@ -478,10 +479,15 @@ function updateFlowSignals(time = 0) {
   flowSignalDots.visible = state.signalsPlaying;
   if (!state.signalsPlaying) return;
   const layers = state.model.weights.length;
+  const signalTime = Math.max(0, time - state.signalStartTime);
+  const cycleDistance = layers + 1.05;
+  const signalDistance = signalTime * 0.00125;
   for (let k = 0; k < flowSignalData.length; k++) {
     const c = flowSignalData[k];
-    const local = (time * 0.00036 + c.phase) % 1;
-    const wave = local * (layers + 0.82) - c.l;
+    const launchDelay = c.phase * 0.9;
+    const rawTravel = signalDistance - launchDelay;
+    const travel = rawTravel >= 0 ? rawTravel % cycleDistance : -1;
+    const wave = travel - c.l;
     const visible = wave >= 0 && wave <= 1;
     const a = positionsByLayer[c.l][c.i];
     const b = positionsByLayer[c.l + 1][c.j];
@@ -640,6 +646,7 @@ document.getElementById("toggleOrbit").addEventListener("click", (event) => {
 
 document.getElementById("toggleSignals").addEventListener("click", (event) => {
   state.signalsPlaying = !state.signalsPlaying;
+  if (state.signalsPlaying) state.signalStartTime = performance.now();
   if (flowSignalDots) flowSignalDots.visible = state.signalsPlaying;
   event.currentTarget.textContent = state.signalsPlaying ? "إيقاف الإرسال" : "تشغيل الإرسال";
 });
@@ -651,4 +658,7 @@ document.getElementById("toggleLines").addEventListener("click", (event) => {
   event.currentTarget.textContent = state.lineMode === lineRatios.length - 1 ? "وصلات أقل" : "وصلات أكثر";
 });
 
-loadData().then(() => requestAnimationFrame(animate));
+loadData().then(() => {
+  state.signalStartTime = performance.now();
+  requestAnimationFrame(animate);
+});

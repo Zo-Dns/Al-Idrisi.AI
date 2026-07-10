@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>محاكاة 3D للشبكة العصبية</title>
+  <link rel="stylesheet" href="./src/styles.css">
+</head>
+<body>
+  <main id="app">
+    <canvas id="scene"></canvas>
+
+    <section id="layerGuide" aria-label="دليل الطبقات">
+      <span><i class="inputDot"></i> INPUT: 784 pixels</span>
+      <span><i class="hiddenDot"></i> HIDDEN: 96 + 48</span>
+      <span><i class="outputDot"></i> OUTPUT: 10 classes</span>
+    </section>
+
+    <section id="hud" aria-label="لوحة معلومات الشبكة">
+      <div>
+        <h1>محاكاة 3D للشبكة العصبية</h1>
+        <p>بيانات أرقام حقيقية · أوزان مدربة · دوران كاميرا كامل حول الشبكة</p>
+      </div>
+
+      <div class="stats">
+        <div><span>إدخال ثابت</span><b id="stInput">-</b></div>
+        <div><span>مخفية ثابتة</span><b id="stHidden">-</b></div>
+        <div><span>إخراج ثابت</span><b id="stOutput">-</b></div>
+        <div><span>كل الأوزان</span><b id="stSynapses">-</b></div>
+        <div><span>المعروض بصريا</span><b id="stShown">-</b></div>
+        <div><span>خوارزمية التعلم</span><b id="stLearning">-</b></div>
+      </div>
+      <p id="mathNote" class="mathNote">-</p>
+    </section>
+
+    <section id="samplePanel" aria-label="العينة الحالية">
+      <canvas id="digit" width="160" height="160"></canvas>
+      <div class="sampleMeta">
+        <div class="label">الرقم الحقيقي <b id="trueLabel">-</b></div>
+        <div class="label">توقع الشبكة <b id="predLabel">-</b></div>
+        <div class="label">الخسارة <b id="lossVal">-</b></div>
+      </div>
+      <div id="bars"></div>
+      <div class="controls">
+        <button id="prevSample" type="button">السابق</button>
+        <button id="nextSample" type="button">عينة جديدة</button>
+        <button id="toggleOrbit" type="button">إيقاف الدوران</button>
+        <button id="toggleSynapses" type="button">وصلات أكثر</button>
+      </div>
+    </section>
+
+    <section id="legend" aria-label="وسيلة الإيضاح">
+      <span><i class="pos"></i> وزن موجب</span>
+      <span><i class="neg"></i> وزن سالب</span>
+      <span><i class="pulse"></i> إشارة أمامية</span>
+      <span><i class="active"></i> تفعيل عصبون</span>
+    </section>
+
+    <div id="loading">جاري تحميل النموذج الحقيقي...</div>
+  </main>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>

@@ -12,6 +12,7 @@ import * as APPS from "./apps-content.mjs";
 import * as CLASSIC from "./classic-content.mjs";
 import * as RL from "./rl-content.mjs";
 import * as PROB from "./prob-content.mjs";
+import * as HISTORY from "./history-content.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const HARAKAT = /[ً-ْٰ]/;
@@ -23,7 +24,8 @@ const XLINKS_AI = [
   ["safety", "rlhf"], ["rag", "hallucination"], ["cutoff", "rag"], ["genai", "llm"],
   ["genai", "imagegen"], ["benchmarks", "evaluation"], ["scaling", "gpu"], ["multimodal", "vision"],
   ["promptinjection", "redteam"], ["deepblue", "classic"], ["dartmouth", "classic"], ["alphago", "classic"],
-  ["prob", "classic"], ["prob", "ml"], ["prob", "rl"],
+  ["prob", "classic"], ["prob", "ml"], ["prob", "rl"], ["genai", "gan"], ["genai", "dl"],
+  ["agents", "rl"], ["agents", "classic"], ["agents", "llm"],
 ];
 const XLINKS_LLM = [
   ["temp2", "hallu2"], ["rag2", "hallu2"], ["scaling2", "gpuclusters"], ["rlhf2", "alignment"],
@@ -61,6 +63,7 @@ const XLINKS_ETHICS = [
   ["reward-hacking", "scalable-oversight"], ["mechanistic-interpretability", "explainability-xai"], ["eu-ai-act", "human-oversight"],
   ["nist-ai-rmf", "ai-risk-management"], ["responsible-scaling-policies", "catastrophic-cbrn-risk"], ["agi-e", "alignment-control"],
   ["rlhf-e", "alignment-problem"], ["constitutional-ai-e", "scalable-oversight"],
+  ["human-oversight", "alignment-control"], ["human-oversight", "governance-regulation"],
 ];
 const XLINKS_APPS = [
   ["object-detection", "self-driving-cars"], ["medical-imaging", "object-detection"], ["conversational-assistants", "rag-knowledge-assistants"],
@@ -74,6 +77,8 @@ const XLINKS_CLASSIC = [
   ["minimax", "mcts"], ["deep-blue", "alpha-beta"], ["csp", "sat-dpll"], ["csp", "local-search"],
   ["resolution", "fol"], ["resolution", "inference"], ["strips", "fol"], ["planning", "astar"],
   ["expert-systems", "kr"], ["neuro-symbolic", "alphago-bridge"],
+  ["combinatorial-explosion", "game-tree"], ["combinatorial-explosion", "state-space-planning"], ["combinatorial-explosion", "inference"],
+  ["min-conflicts", "local-search"], ["walksat", "local-search"],
 ];
 const XLINKS_RL = [
   ["q-learning", "td-learning"], ["sarsa", "q-learning"], ["dqn", "q-learning"], ["actor-critic", "td-learning"],
@@ -86,6 +91,14 @@ const XLINKS_PROB = [
   ["kalman-filter", "kalman-1960"], ["bayes-net", "pearl-1988"], ["em-algorithm", "forward-backward"],
   ["vae-p", "variational-inference"], ["naive-bayes-p", "conditional-independence"], ["pomdp", "temporal-models"],
   ["enumeration-inference", "marginalization"], ["bayes-1763", "bayes-rule"], ["diffusion-p", "variational-inference"],
+  ["markov-random-field", "bayes-net"], ["causal-inference", "bayes-net"], ["belief-propagation", "approx-inference"],
+];
+const XLINKS_HISTORY = [
+  ["turing-1950", "turing-machine"], ["mcculloch-pitts", "perceptron"], ["perceptrons-book", "perceptron"],
+  ["backprop-1986", "perceptrons-book"], ["deep-blue", "shannon-chess"], ["lecun-convnet", "alexnet"],
+  ["imagenet", "alexnet"], ["alphago", "dqn-atari"], ["alphago", "deep-blue"],
+  ["transformer", "gpt-series"], ["chatgpt", "eliza"], ["turing-award-2018", "backprop-1986"],
+  ["nobel-2024", "hopfield-net"], ["nobel-2024", "alphafold2"],
 ];
 
 function compile(name, { GROUPS, NODES, JOURNEY }, XLINKS) {
@@ -126,16 +139,17 @@ const apps = compile("APPS", APPS, XLINKS_APPS);
 const classic = compile("CLASSIC", CLASSIC, XLINKS_CLASSIC);
 const rl = compile("RL", RL, XLINKS_RL);
 const prob = compile("PROB", PROB, XLINKS_PROB);
+const history = compile("HISTORY", HISTORY, XLINKS_HISTORY);
 
 let t = readFileSync(join(here, "atlas-template.html"), "utf8");
-for (const ph of ["/*__DATA_AI__*/null", "/*__DATA_LLM__*/null", "/*__DATA_DL__*/null", "/*__DATA_ML__*/null", "/*__DATA_DATA__*/null", "/*__DATA_ETHICS__*/null", "/*__DATA_APPS__*/null", "/*__DATA_CLASSIC__*/null", "/*__DATA_RL__*/null", "/*__DATA_PROB__*/null"])
+for (const ph of ["/*__DATA_AI__*/null", "/*__DATA_LLM__*/null", "/*__DATA_DL__*/null", "/*__DATA_ML__*/null", "/*__DATA_DATA__*/null", "/*__DATA_ETHICS__*/null", "/*__DATA_APPS__*/null", "/*__DATA_CLASSIC__*/null", "/*__DATA_RL__*/null", "/*__DATA_PROB__*/null", "/*__DATA_HISTORY__*/null"])
   if (!t.includes(ph)) throw new Error("data placeholder missing: " + ph);
 t = t.replace("/*__DATA_AI__*/null", ai.json).replace("/*__DATA_LLM__*/null", llm.json)
      .replace("/*__DATA_DL__*/null", dl.json).replace("/*__DATA_ML__*/null", ml.json)
      .replace("/*__DATA_DATA__*/null", data.json)
      .replace("/*__DATA_ETHICS__*/null", ethics.json).replace("/*__DATA_APPS__*/null", apps.json)
      .replace("/*__DATA_CLASSIC__*/null", classic.json).replace("/*__DATA_RL__*/null", rl.json)
-     .replace("/*__DATA_PROB__*/null", prob.json);
+     .replace("/*__DATA_PROB__*/null", prob.json).replace("/*__DATA_HISTORY__*/null", history.json);
 
 writeFileSync(join(here, "ai-how-ai-works.html"), t, "utf8");
 const wrap = (b) => '<!doctype html>\n<html lang="ar">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n</head>\n<body>\n' + b + "\n</body>\n</html>\n";
@@ -152,4 +166,4 @@ const stub = (target) =>
 writeFileSync(join(here, "llm-how-llms-work.html"), stub("https://claude.ai/code/artifact/27d20e2b-0a65-4db4-9493-dceb2d42ee68#llm"), "utf8");
 writeFileSync(join(here, "llm-how-llms-work-standalone.html"), wrap(stub("ai-how-ai-works.html#llm")), "utf8");
 
-console.log(`atlas: ai=${ai.count} + llm=${llm.count} + dl=${dl.count} + ml=${ml.count} + data=${data.count} + ethics=${ethics.count} + apps=${apps.count} + classic=${classic.count} + rl=${rl.count} + prob=${prob.count} nodes, size=${Math.round(t.length / 1024)}KB — OK`);
+console.log(`atlas: ai=${ai.count} + llm=${llm.count} + dl=${dl.count} + ml=${ml.count} + data=${data.count} + ethics=${ethics.count} + apps=${apps.count} + classic=${classic.count} + rl=${rl.count} + prob=${prob.count} + history=${history.count} nodes, size=${Math.round(t.length / 1024)}KB — OK`);

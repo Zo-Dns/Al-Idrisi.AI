@@ -1,0 +1,238 @@
+:root {
+  color-scheme: dark;
+  --bg: #070b16;
+  --panel: rgba(6, 10, 18, 0.76);
+  --line: rgba(160, 190, 235, 0.22);
+  --ink: #f4f8ff;
+  --muted: #9aa8be;
+  --cyan: #dff8ff;
+  --blue: #8fc9ff;
+  --gold: #ffd166;
+  --font: "Segoe UI", Tahoma, system-ui, sans-serif;
+  --mono: Consolas, "Cascadia Mono", monospace;
+}
+
+html,
+body,
+#app {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font);
+}
+
+#scene {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+#hud,
+#samplePanel,
+#topGuide,
+#loading {
+  position: fixed;
+  z-index: 5;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 16px 42px rgba(0, 0, 0, 0.42);
+}
+
+#topGuide {
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 8px 11px;
+  font-size: 11px;
+  color: var(--muted);
+  direction: ltr;
+  white-space: nowrap;
+}
+
+#topGuide i {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  margin-right: 5px;
+  box-shadow: 0 0 10px currentColor;
+}
+
+#topGuide .input { color: var(--cyan); background: var(--cyan); }
+#topGuide .hidden { color: var(--blue); background: var(--blue); }
+#topGuide .output { color: var(--gold); background: var(--gold); }
+#topGuide .weights { color: #ffffff; background: #ffffff; }
+
+#hud {
+  top: 14px;
+  right: 14px;
+  width: 330px;
+  padding: 13px;
+}
+
+h1 {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.25;
+}
+
+p {
+  margin: 5px 0 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-top: 11px;
+}
+
+.stats div,
+.sampleMeta div {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  padding: 6px 7px;
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.stats span,
+.sampleMeta div {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.stats b,
+.sampleMeta b {
+  display: block;
+  margin-top: 2px;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  direction: ltr;
+}
+
+.mathNote {
+  margin-top: 8px;
+  padding-top: 7px;
+  border-top: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 10px;
+  direction: ltr;
+}
+
+#samplePanel {
+  left: 14px;
+  bottom: 14px;
+  width: 265px;
+  padding: 10px;
+}
+
+#digit {
+  float: right;
+  width: 82px;
+  height: 82px;
+  margin-left: 9px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: #02040a;
+  image-rendering: pixelated;
+}
+
+.sampleMeta {
+  display: grid;
+  gap: 5px;
+}
+
+#bars {
+  clear: both;
+  padding-top: 10px;
+}
+
+.bar {
+  display: grid;
+  grid-template-columns: 16px 1fr 34px;
+  gap: 6px;
+  align-items: center;
+  margin-top: 4px;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 10px;
+  direction: ltr;
+}
+
+.barTrack {
+  height: 7px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.barFill {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--gold), #ffffff);
+}
+
+.controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+button {
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  padding: 6px 8px;
+  background: rgba(255, 255, 255, 0.065);
+  color: var(--ink);
+  font: 12px var(--font);
+  cursor: pointer;
+}
+
+button:hover {
+  border-color: rgba(223, 248, 255, 0.56);
+  background: rgba(223, 248, 255, 0.12);
+}
+
+#loading {
+  inset: 50% auto auto 50%;
+  transform: translate(-50%, -50%);
+  padding: 14px 18px;
+  color: var(--muted);
+}
+
+#loading.hide {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  #topGuide { display: none; }
+  #hud {
+    left: 12px;
+    right: 12px;
+    top: 12px;
+    width: auto;
+  }
+  #samplePanel {
+    left: 12px;
+    right: 12px;
+    width: auto;
+  }
+}

@@ -12,6 +12,22 @@
     --font: "Segoe UI", Tahoma, system-ui, sans-serif;
     --mono: Consolas, "Cascadia Mono", monospace;
   }
+
+  /* ===== سمة الاطلس السماوي — تجربة تصميم للخريطة الام فقط (صنف celestial يضاف من JS عند WORLD=ai) ===== */
+  html.celestial {
+    --bg: #000000;
+    --panel: rgba(13, 16, 30, 0.9);
+    --panel-border: rgba(217, 185, 108, 0.24);
+    --muted: #97a0b6;
+    --accent: #d9b96c;
+  }
+  html.celestial #titlebox h1 { color: #f0e7cf; }
+  html.celestial #titlebox .sub { color: #a3a696; }
+  html.celestial .jname { color: #f0e7cf; }
+  html.celestial #btns button { border-color: rgba(217, 185, 108, 0.3); background: rgba(217, 185, 108, 0.07); color: #e9e3d3; }
+  html.celestial #btns button:hover { background: rgba(217, 185, 108, 0.16); border-color: rgba(217, 185, 108, 0.5); }
+  html.celestial #hint b { color: #e9d9a8; }
+
   html, body { height: 100%; }
   body {
     margin: 0;
@@ -418,8 +434,62 @@
     padding: 16px;
   }
   .sourceOfflineLink { color: #bfeeff; font-weight: 700; margin-top: 8px; display: inline-block; }
+  .sourceLinkBox {
+    display: block;
+    margin-top: 10px;
+    background: rgba(79, 200, 248, 0.1);
+    border: 1px solid rgba(79, 200, 248, 0.35);
+    border-radius: 8px;
+    padding: 10px 12px;
+    color: #bfeeff;
+    font-family: var(--font); font-size: 14px; font-weight: 700;
+    text-decoration: none;
+    text-align: center;
+  }
+  .sourceLinkBox:hover { background: rgba(79, 200, 248, 0.2); }
 
-  @media (max-width: 720px) { #hint { display: none; } #card { bottom: auto; top: 18px; left: 18px; } }
+  /* ===== المصادر الاكاديمية الكاملة (زر الخريطة الام فقط) ===== */
+  #refBtn {
+    flex-basis: 100%; margin-top: 5px;
+    background: rgba(216, 201, 139, 0.12);
+    border: 1px solid rgba(216, 201, 139, 0.42);
+    color: #ecdfa8; font-family: var(--font);
+    font-size: 12.5px; font-weight: 700;
+    border-radius: 8px; padding: 8px 12px; cursor: pointer;
+  }
+  #refBtn:hover { background: rgba(216, 201, 139, 0.22); border-color: rgba(216,201,139,0.62); }
+  #refOverlay { position: fixed; inset: 0; z-index: 40; background: rgba(4,7,14,0.68); backdrop-filter: blur(3px); display: none; }
+  #refOverlay.open { display: block; }
+  #refPanel {
+    position: fixed; z-index: 41; left: 50%; transform: translateX(-50%);
+    top: 4vh; width: 940px; max-width: calc(100vw - 26px); max-height: 92vh;
+    direction: rtl; background: rgba(11, 16, 28, 0.98);
+    border: 1px solid rgba(216, 201, 139, 0.34); border-radius: 16px;
+    box-shadow: 0 18px 54px rgba(0,0,0,0.62); display: none; flex-direction: column;
+  }
+  #refPanel.open { display: flex; }
+  #refHead { padding: 18px 20px 12px; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; align-items: flex-start; gap: 12px; }
+  #refHead h2 { margin: 0; font-size: 20px; color: #ecdfa8; flex: 1; }
+  #refHead p { margin: 6px 0 0; font-size: 13.5px; color: var(--muted); line-height: 1.6; }
+  #refClose { background: none; border: none; color: var(--muted); font-family: var(--font); font-size: 22px; cursor: pointer; line-height: 1; }
+  #refClose:hover { color: var(--ink); }
+  #refTools { padding: 11px 20px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; border-bottom: 1px solid rgba(255,255,255,0.06); }
+  #refSearch { flex: 1; min-width: 200px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.14); color: var(--ink); font-family: var(--font); font-size: 14px; border-radius: 9px; padding: 8px 12px; direction: rtl; }
+  #refSearch:focus { outline: 2px solid rgba(216,201,139,0.5); outline-offset: 1px; }
+  #refCount { font-size: 12.5px; color: var(--muted); font-family: var(--mono); direction: ltr; }
+  #refBody { padding: 4px 20px 20px; overflow: auto; }
+  .refSec { margin-top: 16px; }
+  .refSec > h3 { margin: 0 0 9px; font-size: 15.5px; color: #dfe8ff; border-right: 3px solid rgba(216,201,139,0.6); padding-right: 9px; }
+  .refSec .refSecNote { color: var(--muted); font-size: 12px; font-weight: 400; }
+  .refItem { border: 1px solid rgba(255,255,255,0.07); background: rgba(255,255,255,0.035); border-radius: 9px; padding: 8px 12px; margin-bottom: 6px; }
+  .refCite { color: var(--ink); font-size: 14px; line-height: 1.5; direction: ltr; text-align: left; }
+  .refCite b { color: #f2e9c4; font-weight: 700; }
+  .refCite i { color: #cfe6ff; font-style: italic; }
+  .refCite .refVenue { color: var(--muted); }
+  .refKind { display: inline-block; font-family: var(--font); font-size: 10.5px; font-weight: 700; color: #cbb26a; border: 1px solid rgba(216,201,139,0.32); border-radius: 999px; padding: 1px 8px; margin-inline-start: 8px; direction: rtl; white-space: nowrap; }
+  .refEmpty { color: var(--muted); font-size: 14px; padding: 22px 0; text-align: center; }
+
+  @media (max-width: 720px) { #hint { display: none; } #card { bottom: auto; top: 18px; left: 18px; } #refPanel { top: 2vh; max-height: 96vh; } }
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
 
@@ -442,6 +512,7 @@
     <button id="fitBtn" type="button">ملاءمة العرض</button>
     <button id="shuffleBtn" type="button">اعادة التوزيع</button>
     <label><input id="liveChk" type="checkbox" checked /> حركة حية</label>
+    <button id="refBtn" type="button">📚 المصادر الاكاديمية الكاملة</button>
   </div>
 </div>
 
@@ -462,6 +533,22 @@
     <button id="sourcesClose" type="button" aria-label="اغلاق">✕</button>
   </div>
   <div id="sourcesList"></div>
+</aside>
+
+<div id="refOverlay"></div>
+<aside id="refPanel" dir="rtl" aria-label="المصادر الاكاديمية الكاملة" role="dialog" aria-modal="true">
+  <div id="refHead">
+    <div style="flex:1">
+      <h2>📚 المصادر الاكاديمية الكاملة</h2>
+      <p id="refIntro"></p>
+    </div>
+    <button id="refClose" type="button" aria-label="اغلاق">✕</button>
+  </div>
+  <div id="refTools">
+    <input id="refSearch" type="text" placeholder="ابحث باسم مؤلف او عنوان او سنة..." spellcheck="false" />
+    <span id="refCount"></span>
+  </div>
+  <div id="refBody"></div>
 </aside>
 
 <div id="card" dir="rtl">
@@ -1409,8 +1496,9 @@ const RAW_APPS = /*__DATA_APPS__*/null;
 const RAW_CLASSIC = /*__DATA_CLASSIC__*/null;
 const RAW_RL = /*__DATA_RL__*/null;
 const RAW_PROB = /*__DATA_PROB__*/null;
-const RAW_BY_WORLD = { ai: RAW_AI, llm: RAW_LLM, dl: RAW_DL, ml: RAW_ML, data: RAW_DATA, ethics: RAW_ETHICS, apps: RAW_APPS, classic: RAW_CLASSIC, rl: RAW_RL, prob: RAW_PROB };
-const WORLD = ["llm", "dl", "ml", "data", "ethics", "apps", "classic", "rl", "prob"].includes((location.hash || "").slice(1)) ? location.hash.slice(1) : "ai";
+const RAW_HISTORY = /*__DATA_HISTORY__*/null;
+const RAW_BY_WORLD = { ai: RAW_AI, llm: RAW_LLM, dl: RAW_DL, ml: RAW_ML, data: RAW_DATA, ethics: RAW_ETHICS, apps: RAW_APPS, classic: RAW_CLASSIC, rl: RAW_RL, prob: RAW_PROB, history: RAW_HISTORY };
+const WORLD = ["llm", "dl", "ml", "data", "ethics", "apps", "classic", "rl", "prob", "history"].includes((location.hash || "").slice(1)) ? location.hash.slice(1) : "ai";
 const RAW = RAW_BY_WORLD[WORLD];
 /* واجهة المختبرات المشتركة — يملؤها مختبر العالم النشط فقط */
 let labOpen = false;
@@ -1483,16 +1571,31 @@ if (WORLD === "prob") {
   document.querySelector("#titlebox .sub").textContent = "فرع متعمق انبثق من عقدة الذكاء الاحتمالي في الخريطة الام — من قاعدة بايز والشبكات البايزية الى الاستدلال والنماذج الزمنية والقرار";
   document.getElementById("journeyBtn").textContent = "✨ ابدأ رحلة الاستدلال: من قاعدة بايز الى الشبكات البايزية الى القرار";
 }
+if (WORLD === "history") {
+  document.title = "تاريخ الذكاء الاصطناعي";
+  document.querySelector("#titlebox h1").textContent = "تاريخ الذكاء الاصطناعي";
+  document.querySelector("#titlebox .sub").textContent = "فرع متعمق انبثق من عقدة محطات تاريخية في الخريطة الام — القصة الكاملة من الجذور المنطقية قبل 1950 الى الذكاء التوليدي ونوبل 2024";
+  document.getElementById("journeyBtn").textContent = "✨ ابدأ رحلة التاريخ: من آلة تورينغ الى نوبل 2024";
+}
 if (WORLD !== "ai") document.getElementById("worldBack").style.display = "block";
 document.getElementById("worldBack").addEventListener("click", () => enterWorld("", null));
 /* دخول ناعم من التعتيم */
 setTimeout(() => document.getElementById("warp").classList.remove("on"), 80);
 
 const GROUPS = RAW.groups;
-const ROOT_COLOR = "#e9eef8";
-const LINK_COLOR = "rgba(120, 150, 220, 0.13)";
-const LINK_XCOLOR = "rgba(150, 170, 230, 0.10)";
-const LINK_HI = "rgba(140, 190, 255, 0.5)";
+
+/* ===== تجربة الاطلس السماوي: الخريطة الام فقط (WORLD يعرف في نسخة الاطلس المبنية قبل هذا السطر) ===== */
+const CELESTIAL = (typeof WORLD === "undefined") || WORLD === "ai";
+if (CELESTIAL) {
+  document.documentElement.classList.add("celestial");
+  /* لوحة تراثية (لازورد، فيروز، زعفران، مرجان، ياقوت) بدل النيون — نفس علاقات التمييز بين المجموعات العشر */
+  const CELESTIAL_GROUP_COLORS = ["#8ecf9f", "#d9c48f", "#74c7cf", "#a89ae0", "#e094ab", "#e2a869", "#a9b4c8", "#d98a80", "#64a893", "#86aed6", "#c9b8d8"];
+  GROUPS.forEach((gr, i) => { if (CELESTIAL_GROUP_COLORS[i]) gr.color = CELESTIAL_GROUP_COLORS[i]; });
+}
+const ROOT_COLOR = CELESTIAL ? "#f2e5c2" : "#e9eef8";
+const LINK_COLOR = CELESTIAL ? "rgba(213, 189, 141, 0.15)" : "rgba(120, 150, 220, 0.13)";
+const LINK_XCOLOR = CELESTIAL ? "rgba(213, 189, 141, 0.09)" : "rgba(150, 170, 230, 0.10)";
+const LINK_HI = CELESTIAL ? "rgba(236, 209, 150, 0.55)" : "rgba(140, 190, 255, 0.5)";
 const GOLD = "#ffd166";
 
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -1538,6 +1641,8 @@ for (const [ai, bi] of RAW.xlinks) links.push({ a: nodes[ai], b: nodes[bi], x: t
 const JOURNEY = RAW.journey.map(s => ({ node: nodes[s.i], text: s.t, rel: (s.r || []).map(ix => nodes[ix]) }));
 
 function colorOf(nd) { return nd.group < 0 ? ROOT_COLOR : GROUPS[nd.group].color; }
+/* العقد العابرة للمجالات (مثل الذكاء التوليدي والوكلاء في الخريطة الام): ترسم بلغة بصرية مختلفة (هالة لا نجم، خط جذر متقطع) كي تقرأ مظلة عابرة لا فرعا علميا مساويا للحقول */
+function isCrossCut(nd) { return nd.group >= 0 && GROUPS[nd.group] && GROUPS[nd.group].name === "مفاهيم عابرة للمجالات"; }
 
 /* ============ التوزيع الابتدائي ============ */
 function radialLayout() {
@@ -1694,22 +1799,117 @@ function resize() {
   W = window.innerWidth; H = window.innerHeight;
   canvas.width = W * DPR; canvas.height = H * DPR;
   canvas.style.width = W + "px"; canvas.style.height = H + "px";
+  if (CELESTIAL) buildSky();
 }
 window.addEventListener("resize", resize);
+
+/* سماء الاطلس السماوي: نجوم بعيدة بذرتها ثابتة (لا تتراقص بين الاطارات) + حلقتا اسطرلاب بعلامات درجات — تبنى مرة لكل مقاس */
+let skyCanvas = null;
+function mulberry32(a) {
+  return function () {
+    a |= 0; a = (a + 0x6D2B79F5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function buildSky() {
+  if (!W || !H) { skyCanvas = null; return; } /* لوح مخفي او مقاس صفري: لا سماء حتى اول تحجيم حقيقي */
+  skyCanvas = document.createElement("canvas");
+  skyCanvas.width = W * DPR; skyCanvas.height = H * DPR;
+  const s = skyCanvas.getContext("2d");
+  s.setTransform(DPR, 0, 0, DPR, 0, 0);
+  /* خلفية سوداء خالصة: بلا توهج مركزي، نجوم فقط */
+  /* النجوم البعيدة */
+  const rnd = mulberry32(20260710);
+  const count = Math.round((W * H) / 6500);
+  for (let i = 0; i < count; i++) {
+    const x = rnd() * W, y = rnd() * H;
+    const rr = 0.3 + rnd() * 1.05;
+    const a = 0.1 + rnd() * 0.3;
+    s.beginPath(); s.arc(x, y, rr, 0, Math.PI * 2);
+    s.fillStyle = "rgba(226, 224, 210, " + a.toFixed(3) + ")";
+    s.fill();
+  }
+  /* نجوم لامعة قليلة بوهيج صليبي صغير */
+  for (let i = 0; i < 9; i++) {
+    const x = rnd() * W, y = rnd() * H, L = 3 + rnd() * 4;
+    s.strokeStyle = "rgba(240, 231, 207, 0.26)"; s.lineWidth = 0.7;
+    s.beginPath(); s.moveTo(x - L, y); s.lineTo(x + L, y); s.moveTo(x, y - L); s.lineTo(x, y + L); s.stroke();
+    s.beginPath(); s.arc(x, y, 1.1, 0, Math.PI * 2);
+    s.fillStyle = "rgba(244, 236, 214, 0.65)"; s.fill();
+  }
+  /* (ازيلت حلقتا الاسطرلاب بناء على طلب المستخدم — تبقى النجوم والتوهج فقط) */
+}
 resize();
 
 const spriteCache = new Map();
-function sprite(color, r, isHub) {
-  const key = color + "|" + Math.round(r * 2) + "|" + (isHub ? 1 : 0);
+function sprite(color, r, isHub, kind) {
+  const key = color + "|" + Math.round(r * 2) + "|" + (isHub ? 1 : 0) + "|" + (kind || "");
   let s = spriteCache.get(key);
   if (s) return s;
-  const glow = isHub ? r * 1.9 : r * 2.4;
+  const glow = kind === "umbrella" ? r * 2.7 : (isHub ? r * 1.9 : r * 2.4);
   const pad = Math.ceil(glow);
   const size = Math.ceil((r + pad) * 2) * 2;
   const c = document.createElement("canvas");
   c.width = c.height = size;
   const g = c.getContext("2d");
   const cx = size / 2;
+  if (CELESTIAL) {
+    /* نجم في خريطة سماوية: هالة ملونة رقيقة + قلب ابيض دافئ؛ المحوري نجم مسمى بوهيج صليبي وحلقة رصد */
+    const grad = g.createRadialGradient(cx, cx, r * 0.2, cx, cx, r + glow);
+    grad.addColorStop(0, color + "55");
+    grad.addColorStop(0.45, color + "1c");
+    grad.addColorStop(1, color + "00");
+    g.fillStyle = grad;
+    g.fillRect(0, 0, size, size);
+    if (kind === "umbrella") {
+      /* مظلة عابرة: هالة حلقية (لا نجم بوهيج صليبي) لتقرأ نوعا مختلفا من النظرة الاولى */
+      for (const rr of [r * 1.35, r * 1.72, r * 2.1]) {
+        g.beginPath(); g.arc(cx, cx, rr, 0, Math.PI * 2);
+        g.strokeStyle = color + "5a"; g.lineWidth = Math.max(0.8, r * 0.085); g.stroke();
+      }
+      if (g.setLineDash) g.setLineDash([r * 0.5, r * 0.5]);
+      g.beginPath(); g.arc(cx, cx, r * 2.48, 0, Math.PI * 2);
+      g.strokeStyle = color + "38"; g.lineWidth = Math.max(0.6, r * 0.06); g.stroke();
+      if (g.setLineDash) g.setLineDash([]);
+      const uc = g.createRadialGradient(cx, cx, 0, cx, cx, r);
+      uc.addColorStop(0, "#fff8e2"); uc.addColorStop(0.5, color); uc.addColorStop(1, color + "99");
+      g.beginPath(); g.arc(cx, cx, r * 0.72, 0, Math.PI * 2); g.fillStyle = uc; g.fill();
+      s = { c, half: size / 2 }; spriteCache.set(key, s); return s;
+    }
+    if (isHub) {
+      const L = Math.min(cx - 1, r * 3.2);
+      const flare = (x0, y0, x1, y1) => {
+        const lg = g.createLinearGradient(x0, y0, x1, y1);
+        lg.addColorStop(0, "rgba(244, 231, 195, 0)");
+        lg.addColorStop(0.5, "rgba(244, 231, 195, 0.55)");
+        lg.addColorStop(1, "rgba(244, 231, 195, 0)");
+        g.strokeStyle = lg; g.lineWidth = Math.max(1, r * 0.16);
+        g.beginPath(); g.moveTo(x0, y0); g.lineTo(x1, y1); g.stroke();
+      };
+      flare(cx - L, cx, cx + L, cx);
+      flare(cx, cx - L, cx, cx + L);
+      g.beginPath(); g.arc(cx, cx, r * 1.55, 0, Math.PI * 2);
+      g.strokeStyle = color + "59"; g.lineWidth = 1; g.stroke();
+      const core = g.createRadialGradient(cx, cx, 0, cx, cx, r);
+      core.addColorStop(0, "#fff8e2");
+      core.addColorStop(0.5, color);
+      core.addColorStop(1, color + "aa");
+      g.beginPath(); g.arc(cx, cx, r, 0, Math.PI * 2);
+      g.fillStyle = core; g.fill();
+    } else {
+      const core = g.createRadialGradient(cx - r * 0.2, cx - r * 0.22, 0, cx, cx, r);
+      core.addColorStop(0, "#f6f1de");
+      core.addColorStop(0.55, color);
+      core.addColorStop(1, color + "b8");
+      g.beginPath(); g.arc(cx, cx, r * 0.95, 0, Math.PI * 2);
+      g.fillStyle = core; g.fill();
+    }
+    s = { c, half: size / 2 };
+    spriteCache.set(key, s);
+    return s;
+  }
   const grad = g.createRadialGradient(cx, cx, r * 0.3, cx, cx, r + glow);
   grad.addColorStop(0, color + "66");
   grad.addColorStop(0.4, color + "22");
@@ -1735,6 +1935,7 @@ function sprite(color, r, isHub) {
 }
 
 let hoverNode = null;
+let cardNode = null;   /* معرف مبكرا كي تصل اليه sourcesForCard() الذي يستدعى فور تحميل الصفحة، قبل قسم البطاقة */
 let matchSet = null;
 let jIdx = -1; /* خطوة الرحلة الحالية، -1 = غير نشطة */
 let curRel = [];              /* مفاهيم الخطوة الحالية */
@@ -1744,52 +1945,274 @@ const groupOn = GROUPS.map(() => true);
 let anyGroupOff = false;
 
 /* مصادر موثوقة لكل مجموعة: المفتاح [WORLD][رقم المجموعة]، تظهر فقط عند فتح بطاقة عقدة من تلك المجموعة (كـDEEP_LINKS تماما) */
+/* مصادر مشتركة بين مجموعة الخريطة الام وعقدة جذر عالمها الفرعي المغوص اليه — ثابت واحد يستخدم في المكانين */
+const SRC_ML = {
+  intro: "مصادر مختارة لمجموعة تعلم الآلة.",
+  topics: [{
+    title: "تعلم الآلة",
+    items: [
+      { type: "فيديو تعليمي", title: "What is Machine Learning?", source: "IBM Technology",
+        note: "شرح مبسط لمعنى تعلم الآلة والفرق بينه وبين البرمجة التقليدية.",
+        embed: "https://www.youtube-nocookie.com/embed/9gGnTQTYNaE?rel=0", url: "https://www.youtube.com/watch?v=9gGnTQTYNaE" },
+      { type: "فيديو تعليمي", title: "A Gentle Introduction to Machine Learning", source: "StatQuest with Josh Starmer",
+        note: "مقدمة سهلة عن فكرة النموذج والتدريب والاختبار وخطر فرط التخصيص.",
+        embed: "https://www.youtube-nocookie.com/embed/Gv9_4yMHFhI?rel=0", url: "https://www.youtube.com/watch?v=Gv9_4yMHFhI" },
+      { type: "مصدر اكاديمي", title: "CS229: Machine Learning", source: "Stanford University",
+        note: "الصفحة الرسمية لمقرر تعلم الآلة الشهير في جامعة ستانفورد، يغطي التعلم الموجه وغير الموجه والمعزز.",
+        link: "https://cs229.stanford.edu/" },
+      { type: "محاضرة بروفيسور", title: "Lecture 1 | Machine Learning (Stanford)", source: "Andrew Ng",
+        note: "المحاضرة الاولى لاندرو نج في ستانفورد عن دوافع تعلم الآلة وتطبيقاته.",
+        embed: "https://www.youtube-nocookie.com/embed/UzxYlbK2c7E?rel=0", url: "https://www.youtube.com/watch?v=UzxYlbK2c7E" }
+    ]
+  }]
+};
+const SRC_DATA = {
+  intro: "مصادر مختارة لمجموعة البيانات.",
+  topics: [{
+    title: "البيانات",
+    items: [
+      { type: "فيديو تعليمي", title: "What is Data Labeling? Its Types, Role, Challenges and Solutions | AI Data Labeling Services", source: "Kotwel",
+        note: "يشرح مفهوم وسم البيانات وانواعه واهميته في تدريب نماذج الذكاء الاصطناعي.",
+        embed: "https://www.youtube-nocookie.com/embed/Hq9qNpVdhQE?rel=0", url: "https://www.youtube.com/watch?v=Hq9qNpVdhQE" },
+      { type: "فيديو تعليمي", title: "Algorithmic Bias and Fairness: Crash Course AI #18", source: "CrashCourse",
+        note: "يوضح كيف ينتقل التحيز الموجود في البيانات الى قرارات الانظمة الذكية.",
+        embed: "https://www.youtube-nocookie.com/embed/gV0_raKR2UQ?rel=0", url: "https://www.youtube.com/watch?v=gV0_raKR2UQ" },
+      { type: "مصدر اكاديمي", title: "Introduction to Data-Centric AI", source: "MIT",
+        note: "مقرر رسمي من معهد ام آي تي عن تحسين جودة البيانات وتنظيفها ووسمها لبناء نماذج افضل.",
+        link: "https://dcai.csail.mit.edu/" },
+      { type: "محاضرة بروفيسور", title: "A Chat with Andrew on MLOps: From Model-centric to Data-centric AI", source: "Andrew Ng",
+        note: "اندرو نج يشرح اهمية الانتقال من التركيز على النموذج الى التركيز على جودة البيانات.",
+        embed: "https://www.youtube-nocookie.com/embed/06-AZXmwHjo?rel=0", url: "https://www.youtube.com/watch?v=06-AZXmwHjo" }
+    ]
+  }]
+};
+const SRC_DL = {
+  intro: "مصادر مختارة لمجموعة التعلم العميق.",
+  topics: [{
+    title: "التعلم العميق",
+    items: [
+      { type: "فيديو تعليمي", title: "But what is a neural network? | Deep learning chapter 1", source: "3Blue1Brown",
+        note: "شرح مرئي مبسط لكيفية عمل الشبكات العصبية طبقة بعد طبقة.",
+        embed: "https://www.youtube-nocookie.com/embed/aircAruvnKk?rel=0", url: "https://www.youtube.com/watch?v=aircAruvnKk" },
+      { type: "فيديو تعليمي", title: "Gradient descent, how neural networks learn | Deep Learning Chapter 2", source: "3Blue1Brown",
+        note: "يشرح كيف تتعلم الشبكات العصبية اوزانها عبر خوارزمية النزول التدرجي.",
+        embed: "https://www.youtube-nocookie.com/embed/IHZwWFHWa-w?rel=0", url: "https://www.youtube.com/watch?v=IHZwWFHWa-w" },
+      { type: "مصدر اكاديمي", title: "MIT 6.S191: Introduction to Deep Learning", source: "MIT",
+        note: "مقرر معهد ماساتشوستس الرسمي الذي يغطي الشبكات المتكررة والالتفافية والنماذج التوليدية.",
+        link: "https://introtodeeplearning.com/" },
+      { type: "محاضرة بروفيسور", title: "Geoffrey Hinton and Yann LeCun, 2018 ACM A.M. Turing Award Lecture \"The Deep Learning Revolution\"", source: "Geoffrey Hinton و Yann LeCun",
+        note: "محاضرة جائزة تورينغ لرائدي التعلم العميق يستعرضان فيها تطور هذا المجال.",
+        embed: "https://www.youtube-nocookie.com/embed/VsnQf7exv5I?rel=0", url: "https://www.youtube.com/watch?v=VsnQf7exv5I" }
+    ]
+  }]
+};
+const SRC_LLM = {
+  intro: "مصادر مختارة لمجموعة النماذج اللغوية الكبيرة.",
+  topics: [{
+    title: "النماذج اللغوية الكبيرة",
+    items: [
+      { type: "فيديو تعليمي", title: "Transformers, the tech behind LLMs | Deep Learning Chapter 5", source: "3Blue1Brown",
+        note: "شرح مرئي لبنية المحول التي تقوم عليها النماذج اللغوية الكبيرة.",
+        embed: "https://www.youtube-nocookie.com/embed/wjZofJX0v4M?rel=0", url: "https://www.youtube.com/watch?v=wjZofJX0v4M" },
+      { type: "فيديو تعليمي", title: "Transformer Neural Networks, ChatGPT's foundation, Clearly Explained!!!", source: "StatQuest with Josh Starmer",
+        note: "شرح مبسط لكيفية بناء نماذج مثل شات جي بي تي على بنية المحولات.",
+        embed: "https://www.youtube-nocookie.com/embed/zxQyTK8quyY?rel=0", url: "https://www.youtube.com/watch?v=zxQyTK8quyY" },
+      { type: "مصدر اكاديمي", title: "CS224N: Natural Language Processing with Deep Learning", source: "Stanford University",
+        note: "مقرر جامعة ستانفورد الذي يغطي التدريب المسبق والضبط الدقيق والتعلم المعزز من التغذية البشرية في النماذج اللغوية الكبيرة.",
+        link: "https://web.stanford.edu/class/cs224n/" },
+      { type: "محاضرة بروفيسور", title: "[1hr Talk] Intro to Large Language Models", source: "Andrej Karpathy",
+        note: "محاضرة شاملة من احد رواد الذكاء الاصطناعي حول كيفية عمل النماذج اللغوية الكبيرة.",
+        embed: "https://www.youtube-nocookie.com/embed/zjkBMFhNj_g?rel=0", url: "https://www.youtube.com/watch?v=zjkBMFhNj_g" }
+    ]
+  }]
+};
+const SRC_APPS = {
+  intro: "مصادر مختارة لمجموعة التطبيقات.",
+  topics: [{
+    title: "التطبيقات",
+    items: [
+      { type: "فيديو تعليمي", title: "Computer Vision: Crash Course Computer Science #35", source: "CrashCourse",
+        note: "يشرح كيف تفسر الحواسيب الصور وتطبيقات ذلك في التعرف على الوجوه وغيرها.",
+        embed: "https://www.youtube-nocookie.com/embed/-4E2-0sxVUM?rel=0", url: "https://www.youtube.com/watch?v=-4E2-0sxVUM" },
+      { type: "فيديو تعليمي", title: "Natural Language Processing: Crash Course AI #7", source: "CrashCourse",
+        note: "مقدمة عن كيفية فهم الحاسوب للغة البشرية وتطبيقاتها العملية.",
+        embed: "https://www.youtube-nocookie.com/embed/oi0JXuL19TA?rel=0", url: "https://www.youtube.com/watch?v=oi0JXuL19TA" },
+      { type: "مصدر اكاديمي", title: "CS231n: Deep Learning for Computer Vision", source: "Stanford University",
+        note: "مقرر جامعة ستانفورد حول تطبيقات الرؤية الحاسوبية في الطب والقيادة الذاتية والبحث.",
+        link: "https://cs231n.stanford.edu/" },
+      { type: "محاضرة بروفيسور", title: "How we teach computers to understand pictures | Fei Fei Li", source: "Fei-Fei Li",
+        note: "محاضرة تيد لرائدة الرؤية الحاسوبية حول تعليم الحواسيب فهم الصور.",
+        embed: "https://www.youtube-nocookie.com/embed/40riCqvRoMs?rel=0", url: "https://www.youtube.com/watch?v=40riCqvRoMs" }
+    ]
+  }]
+};
+const SRC_ETHICS = {
+  intro: "مصادر مختارة لمجموعة الاخلاق والامان.",
+  topics: [{
+    title: "الاخلاق والامان",
+    items: [
+      { type: "فيديو تعليمي", title: "AI Safety - Computerphile", source: "Computerphile",
+        note: "يشرح لماذا يجب التفكير في امان الذكاء الاصطناعي مبكرا وقبل بناء انظمة اكثر قدرة.",
+        embed: "https://www.youtube-nocookie.com/embed/IB1OvoCNnWY?rel=0", url: "https://www.youtube.com/watch?v=IB1OvoCNnWY" },
+      { type: "فيديو تعليمي", title: "Generative AI's Greatest Flaw - Computerphile", source: "Computerphile",
+        note: "يشرح هجوم حقن الموجهات غير المباشر حيث تخفى تعليمات خبيثة داخل صفحات ويب يقرأها النموذج.",
+        embed: "https://www.youtube-nocookie.com/embed/rAEqP9VEhe8?rel=0", url: "https://www.youtube.com/watch?v=rAEqP9VEhe8" },
+      { type: "مصدر اكاديمي", title: "Fairness and Machine Learning: Limitations and Opportunities", source: "MIT Press",
+        note: "كتاب اكاديمي مجاني يؤسس لمفهوم التحيز والعدالة في التعلم الالي وكيف تكتسب النماذج تحيزات من بيانات التدريب.",
+        link: "https://fairmlbook.org/" },
+      { type: "محاضرة بروفيسور", title: "3 principles for creating safer AI | Stuart Russell", source: "Stuart Russell",
+        note: "استاذ علوم الحاسوب في بيركلي يطرح ثلاثة مبادئ لبناء ذكاء اصطناعي اكثر امانا ومتوافقا مع نوايا الانسان.",
+        embed: "https://www.youtube-nocookie.com/embed/EBK-a94IFHY?rel=0", url: "https://www.youtube.com/watch?v=EBK-a94IFHY" }
+    ]
+  }]
+};
+const SRC_CLASSIC = {
+  intro: "مصادر مختارة لمجموعة الذكاء الرمزي الكلاسيكي.",
+  topics: [{
+    title: "الذكاء الرمزي الكلاسيكي",
+    items: [
+      { type: "فيديو تعليمي", title: "A* (A Star) Search Algorithm - Computerphile", source: "Computerphile",
+        note: "شرح لخوارزمية A* في ايجاد اقصر مسار وتفوقها على خوارزمية دايكسترا.",
+        embed: "https://www.youtube-nocookie.com/embed/ySN5Wnu88nE?rel=0", url: "https://www.youtube.com/watch?v=ySN5Wnu88nE" },
+      { type: "فيديو تعليمي", title: "Symbolic AI: Crash Course AI #10", source: "CrashCourse",
+        note: "يقدم الذكاء الرمزي كمدرسة مقابلة للشبكات العصبية توضح تمثيل المعرفة والمنطق والانظمة الخبيرة.",
+        embed: "https://www.youtube-nocookie.com/embed/WHCo4m2VOws?rel=0", url: "https://www.youtube.com/watch?v=WHCo4m2VOws" },
+      { type: "مصدر اكاديمي", title: "Artificial Intelligence: A Modern Approach, 4th US ed.", source: "University of California, Berkeley (Stuart Russell & Peter Norvig)",
+        note: "الموقع الرسمي لكتاب الذكاء الاصطناعي المرجعي لراسل ونورفيغ، يغطي البحث والمنطق والتخطيط والانظمة الخبيرة.",
+        link: "https://aima.cs.berkeley.edu/" },
+      { type: "محاضرة بروفيسور", title: "3. Reasoning: Goal Trees and Rule-Based Expert Systems", source: "Patrick Winston",
+        note: "محاضرة ضمن مادة MIT 6.034 يشرح فيها اشجار الاهداف وبناء الانظمة الخبيرة القائمة على القواعد.",
+        embed: "https://www.youtube-nocookie.com/embed/leXa7EKUPFk?rel=0", url: "https://www.youtube.com/watch?v=leXa7EKUPFk" }
+    ]
+  }]
+};
+const SRC_PROB = {
+  intro: "مصادر مختارة لمجموعة الذكاء الاحتمالي.",
+  topics: [{
+    title: "الذكاء الاحتمالي",
+    items: [
+      { type: "فيديو تعليمي", title: "Bayes theorem, the geometry of changing beliefs", source: "3Blue1Brown",
+        note: "شرح بصري لقاعدة بايز وكيفية تحديث الاحتمال السابق لفرضية ما بعد ملاحظة دليل جديد.",
+        embed: "https://www.youtube-nocookie.com/embed/HZGCoVF3YvM?rel=0", url: "https://www.youtube.com/watch?v=HZGCoVF3YvM" },
+      { type: "فيديو تعليمي", title: "Visually Explained: Kalman Filters", source: "Visually Explained",
+        note: "شرح بصري لمرشح كالمان كمثال على النماذج الزمنية الاحتمالية لتتبع حالة نظام متغير عبر الزمن.",
+        embed: "https://www.youtube-nocookie.com/embed/IFeCIbljreY?rel=0", url: "https://www.youtube.com/watch?v=IFeCIbljreY" },
+      { type: "مصدر اكاديمي", title: "CS 228 - Probabilistic Graphical Models", source: "Stanford University",
+        note: "الصفحة الرسمية لمقرر ستانفورد CS228 في النماذج البيانية الاحتمالية، يغطي الشبكات البايزية والاستدلال تحت الغموض.",
+        link: "https://cs228.stanford.edu/" },
+      { type: "محاضرة بروفيسور", title: "Judea Pearl, 2012 ACM A.M. Turing Award Lecture \"The Mechanization of Causal Inference\"", source: "Judea Pearl",
+        note: "جوديا بيرل مخترع الشبكات البايزية يلقي محاضرة جائزة تورينغ عن ميكنة الاستدلال الاحتمالي والسببي.",
+        embed: "https://www.youtube-nocookie.com/embed/iNm4nFBFmvo?rel=0", url: "https://www.youtube.com/watch?v=iNm4nFBFmvo" }
+    ]
+  }]
+};
+/* عالم التاريخ: مصادر اكاديمية 100% حصرا (كتب مرجعية، اوراق اولية، وثائق تاريخية اصلية، صفحات مؤسسات) بلا فيديوهات، حسب قاعدة العالم */
+const SRC_HISTORY = {
+  intro: "مصادر اكاديمية موثوقة لتاريخ الذكاء الاصطناعي (كتب مرجعية واوراق ووثائق اصلية).",
+  topics: [{
+    title: "تاريخ الذكاء الاصطناعي",
+    items: [
+      { type: "كتاب اكاديمي", title: "The Quest for Artificial Intelligence: A History of Ideas and Achievements", source: "Nils J. Nilsson — Cambridge University Press, 2010",
+        note: "الكتاب الاكاديمي المرجعي الشامل لتاريخ المجال، متاح مجانا بنسخة رسمية من ستانفورد.",
+        link: "http://ai.stanford.edu/~nilsson/QAI/qai.pdf" },
+      { type: "وثيقة تاريخية اصلية", title: "A Proposal for the Dartmouth Summer Research Project on Artificial Intelligence", source: "McCarthy, Minsky, Rochester, Shannon — 1955",
+        note: "النص الاصلي للمقترح الذي صاغ مصطلح الذكاء الاصطناعي واطلق المجال، محفوظ على موقع مكارثي في ستانفورد.",
+        link: "http://www-formal.stanford.edu/jmc/history/dartmouth/dartmouth.html" },
+      { type: "ورقة اولية", title: "Computing Machinery and Intelligence", source: "A. M. Turing — Mind, 1950 (Oxford University Press)",
+        note: "الورقة المؤسسة التي طرحت سؤال هل تفكر الالات وقدمت اختبار تورينغ.",
+        link: "https://academic.oup.com/mind/article/LIX/236/433/986238" },
+      { type: "ورقة اولية", title: "Learning Representations by Back-Propagating Errors", source: "Rumelhart, Hinton & Williams — Nature, 1986",
+        note: "الورقة التي عممت الانتشار الخلفي لتدريب الشبكات متعددة الطبقات واعادت احياء النهج الاتصالي.",
+        link: "https://www.nature.com/articles/323533a0" },
+      { type: "ورقة اولية", title: "Attention Is All You Need", source: "Vaswani et al. — 2017 (arXiv)",
+        note: "الورقة التي قدمت معمارية المحول واسست عصر النماذج اللغوية الكبيرة والذكاء التوليدي.",
+        link: "https://arxiv.org/abs/1706.03762" },
+      { type: "مصدر اكاديمي", title: "Artificial Intelligence: A Modern Approach (AIMA)", source: "Stuart Russell & Peter Norvig — UC Berkeley",
+        note: "الموقع الرسمي للكتاب المرجعي الاول في تدريس الذكاء الاصطناعي، وفصله الاول يؤرخ للمجال.",
+        link: "https://aima.cs.berkeley.edu/" },
+      { type: "موسوعة اكاديمية", title: "Artificial Intelligence — Stanford Encyclopedia of Philosophy", source: "Stanford University",
+        note: "مدخل موسوعي محكم يغطي تاريخ الذكاء الاصطناعي واسسه الفلسفية والمفاهيمية.",
+        link: "https://plato.stanford.edu/entries/artificial-intelligence/" }
+    ]
+  }]
+};
 const SOURCES_BY_GROUP = {
   ai: {
-    2: {   /* المجموعة 2 في الخريطة الام = "الشبكات العصبية" */
+    0: SRC_ML,
+    1: SRC_DATA,
+    2: {   /* المجموعة 2 = "الشبكات العصبية" (لا عالم فرعي مقابل، تبقى محلية) */
       intro: "مصادر مختارة لمجموعة الشبكات العصبية.",
-      topics: [
-        {
-          title: "الشبكات العصبية",
-          items: [
-            {
-              type: "فيديو تعليمي",
-              title: "But what is a neural network? | Deep learning chapter 1",
-              source: "3Blue1Brown - Grant Sanderson",
-              note: "مدخل بصري ممتاز لفكرة العصبونات والطبقات وتمثيل الارقام داخل الشبكة.",
-              embed: "https://www.youtube-nocookie.com/embed/aircAruvnKk?start=664&rel=0",
-              url: "https://www.youtube.com/watch?v=aircAruvnKk&t=664s"
-            },
-            {
-              type: "محاكاة بصرية",
-              title: "Neural Network 3D Simulation",
-              source: "Denis Dmitriev - Deep Robotics",
-              note: "محاكاة ثلاثية الابعاد تعرض بنية شبكة عصبية وتفعيلها بصريا، مكملة للشرح المفاهيمي اعلاه.",
-              embed: "https://www.youtube-nocookie.com/embed/3JQ3hYko51Y?start=5&rel=0",
-              url: "https://www.youtube.com/watch?v=3JQ3hYko51Y&t=5s"
-            },
-            {
-              type: "فيديو تعليمي",
-              title: "Give Me 40 min, I'll Make Neural Network Click Forever",
-              source: "Zachary Huang",
-              note: "شرح مطول (نحو 40 دقيقة) يبني حدسا لشبكات عصبية من الصفر خطوة بخطوة.",
-              embed: "https://www.youtube-nocookie.com/embed/SXnHqFGLNxA?rel=0",
-              url: "https://www.youtube.com/watch?v=SXnHqFGLNxA"
-            }
-          ]
-        }
-      ]
-    }
-  }
+      topics: [{
+        title: "الشبكات العصبية",
+        items: [
+          { type: "فيديو تعليمي", title: "But what is a neural network? | Deep learning chapter 1", source: "3Blue1Brown - Grant Sanderson",
+            note: "مدخل بصري ممتاز لفكرة العصبونات والطبقات وتمثيل الارقام داخل الشبكة.",
+            embed: "https://www.youtube-nocookie.com/embed/aircAruvnKk?start=664&rel=0", url: "https://www.youtube.com/watch?v=aircAruvnKk&t=664s" },
+          { type: "محاكاة بصرية", title: "Neural Network 3D Simulation", source: "Denis Dmitriev - Deep Robotics",
+            note: "محاكاة ثلاثية الابعاد تعرض بنية شبكة عصبية وتفعيلها بصريا، مكملة للشرح المفاهيمي اعلاه.",
+            embed: "https://www.youtube-nocookie.com/embed/3JQ3hYko51Y?start=5&rel=0", url: "https://www.youtube.com/watch?v=3JQ3hYko51Y&t=5s" },
+          { type: "فيديو تعليمي", title: "Give Me 40 min, I'll Make Neural Network Click Forever", source: "Zachary Huang",
+            note: "شرح مطول (نحو 40 دقيقة) يبني حدسا لشبكات عصبية من الصفر خطوة بخطوة.",
+            embed: "https://www.youtube-nocookie.com/embed/SXnHqFGLNxA?rel=0", url: "https://www.youtube.com/watch?v=SXnHqFGLNxA" },
+          { type: "مصدر اكاديمي", title: "Neural Networks and Deep Learning", source: "Michael Nielsen",
+            note: "كتاب الكتروني مجاني ومرجعي يشرح العصبون الاصطناعي والاوزان والانتشار الخلفي خطوة بخطوة.",
+            link: "http://neuralnetworksanddeeplearning.com/" },
+          { type: "محاضرة بروفيسور", title: "12a: Neural Nets", source: "Patrick H. Winston",
+            note: "محاضرة من معهد ام آي تي تشرح اساسيات الشبكات العصبية والانتشار الخلفي والنزول التدرجي.",
+            embed: "https://www.youtube-nocookie.com/embed/uXt8qF2Zzfo?rel=0", url: "https://www.youtube.com/watch?v=uXt8qF2Zzfo" }
+        ]
+      }]
+    },
+    3: SRC_DL,
+    4: SRC_LLM,
+    5: SRC_APPS,
+    6: {   /* المجموعة 6 = "محطات تاريخية" (لا عالم فرعي مقابل، تبقى محلية) */
+      intro: "مصادر مختارة لمجموعة محطات تاريخية.",
+      topics: [{
+        title: "محطات تاريخية",
+        items: [
+          { type: "فيديو تعليمي", title: "The Turing Test - Computerphile", source: "Computerphile",
+            note: "يشرح اختبار تورينغ الذي اقترحه آلان تورينغ عام 1950 كمقياس لقدرة الآلة على محاكاة التفكير البشري.",
+            embed: "https://www.youtube-nocookie.com/embed/Qbp3LJvcX38?rel=0", url: "https://www.youtube.com/watch?v=Qbp3LJvcX38" },
+          { type: "فيديو تعليمي", title: "AlphaGo - The Movie | Full award-winning documentary", source: "Google DeepMind",
+            note: "وثائقي رسمي من ديب مايند يوثق فوز الفاغو على بطل جو لي سيدول عام 2016.",
+            embed: "https://www.youtube-nocookie.com/embed/WXuK6gekU1Y?rel=0", url: "https://www.youtube.com/watch?v=WXuK6gekU1Y" },
+          { type: "مصدر اكاديمي", title: "A Proposal for the Dartmouth Summer Research Project on Artificial Intelligence", source: "Stanford University (John McCarthy Archive)",
+            note: "النص الاصلي لمقترح مؤتمر دارتموث لعام 1955 الذي صاغ فيه جون مكارثي وزملاؤه مصطلح الذكاء الاصطناعي لاول مرة.",
+            link: "https://www-formal.stanford.edu/jmc/history/dartmouth/dartmouth.html" },
+          { type: "محاضرة بروفيسور", title: "Fei-Fei Li - Where Did ImageNet Come From?", source: "Fei-Fei Li",
+            note: "الباحثة فاي فاي لي تروي قصة انشاء قاعدة بيانات ايمج نت التي مهدت لفوز اليكس نت التاريخي عام 2012.",
+            embed: "https://www.youtube-nocookie.com/embed/Z7naK1uq1F8?rel=0", url: "https://www.youtube.com/watch?v=Z7naK1uq1F8" }
+        ]
+      }]
+    },
+    7: SRC_ETHICS,
+    8: SRC_CLASSIC,
+    9: SRC_PROB
+  },
+  /* عقدة "root" في كل عالم فرعي مغوص اليه = نفس مصادر عقدة المجموعة المقابلة في الخريطة الام، تظهر عند عقدة جذر ذلك العالم */
+  ml: { root: SRC_ML },
+  data: { root: SRC_DATA },
+  dl: { root: SRC_DL },
+  llm: { root: SRC_LLM },
+  apps: { root: SRC_APPS },
+  ethics: { root: SRC_ETHICS },
+  classic: { root: SRC_CLASSIC },
+  prob: { root: SRC_PROB },
+  history: { root: SRC_HISTORY }
 };
 const sourcesBtn = document.getElementById("sourcesBtn");
 const sourcesPanel = document.getElementById("sourcesPanel");
 const sourcesIntro = document.getElementById("sourcesIntro");
 const sourcesList = document.getElementById("sourcesList");
 function sourcesForCard() {
-  if (!cardNode || cardNode.group < 0) return null;
-  const byGroup = SOURCES_BY_GROUP[WORLD];
-  return byGroup ? (byGroup[cardNode.group] || null) : null;
+  const byWorld = SOURCES_BY_GROUP[WORLD];
+  if (!byWorld) return null;
+  /* عالم فرعي مغوص اليه (مثل #dl) بمصدر جذر واحد: يظهر تلقائيا طول الوقت في هذا العالم، بلا ارتباط ببطاقة مفتوحة */
+  if (byWorld.root) return byWorld.root;
+  /* الخريطة الام: عشر مجموعات على نفس الصفحة، فيتبع الزر بطاقة العقدة المفتوحة تحديدا */
+  if (cardNode && cardNode.group >= 0) return byWorld[cardNode.group] || null;
+  return null;
 }
 function renderSourcesPanel() {
   const data = sourcesForCard();
@@ -1808,15 +2231,17 @@ function renderSourcesPanel() {
         '<div class="sourceTitle">' + escapeHtml(item.title) + "</div>" +
         '<div class="sourceNote">' + escapeHtml(item.note) + "</div>" +
         (item.embed
-          ? '<div class="sourceTip">💡 للاستماع بدبلجة عربية ان توفرت: افتحه في يوتيوب مباشرة (⚙️ الاعدادات ← المسار الصوتي). ولترجمة عربية اثناء المشاهدة هنا: جرب اضافة المتصفح Trancy.</div>'
-          : "") +
-        (navigator.onLine && location.protocol !== "file:"
-          ? '<iframe class="sourceFrame" src="' + escapeHtml(item.embed) + '" title="' + escapeHtml(item.title) +
-            '" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>'
-          : '<div class="sourceOffline">🔌 ' + (location.protocol === "file:"
-              ? "هذا فيديو خارجي من يوتيوب، ويوتيوب يمنع تشغيله مضمنا حين تفتح الصفحة كملف من القرص مباشرة (file://) — بصرف النظر عن الاتصال بالانترنت."
-              : "هذا فيديو خارجي ويحتاج اتصالا بالانترنت ليعمل — يبدو انك غير متصل الآن.") +
-            '<br>باقي الاطلس يعمل بلا انترنت كالمعتاد.<br><a class="sourceOfflineLink" href="' + escapeHtml(item.url) + '" target="_blank" rel="noopener noreferrer">افتحه مباشرة في يوتيوب</a></div>');
+          ? ('<div class="sourceTip">💡 للاستماع بدبلجة عربية ان توفرت: افتحه في يوتيوب مباشرة (⚙️ الاعدادات ← المسار الصوتي). ولترجمة عربية اثناء المشاهدة هنا: جرب اضافة المتصفح Trancy.</div>' +
+            (navigator.onLine && location.protocol !== "file:"
+              ? '<iframe class="sourceFrame" src="' + escapeHtml(item.embed) + '" title="' + escapeHtml(item.title) +
+                '" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>'
+              : '<div class="sourceOffline">🔌 ' + (location.protocol === "file:"
+                  ? "هذا فيديو خارجي من يوتيوب، ويوتيوب يمنع تشغيله مضمنا حين تفتح الصفحة كملف من القرص مباشرة (file://) — بصرف النظر عن الاتصال بالانترنت."
+                  : "هذا فيديو خارجي ويحتاج اتصالا بالانترنت ليعمل — يبدو انك غير متصل الآن.") +
+                '<br>باقي الاطلس يعمل بلا انترنت كالمعتاد.<br><a class="sourceOfflineLink" href="' + escapeHtml(item.url) + '" target="_blank" rel="noopener noreferrer">افتحه مباشرة في يوتيوب</a></div>'))
+          : item.link
+            ? '<a class="sourceLinkBox" href="' + escapeHtml(item.link) + '" target="_blank" rel="noopener noreferrer">🔗 فتح المصدر</a>'
+            : "");
       wrap.appendChild(box);
     }
     sourcesList.appendChild(wrap);
@@ -1839,6 +2264,69 @@ sourcesBtn.addEventListener("click", () => {
   updateSourcesVisibility();
 });
 document.getElementById("sourcesClose").addEventListener("click", closeSourcesPanel);
+updateSourcesVisibility();   /* لا تنتظر اول اطار رسم: اظهر الزر فورا لو كان لعالم هذه الصفحة مصدر جذر */
+
+/* ===== المصادر الاكاديمية الكاملة — مرجع ببليوغرافي يظهر في الخريطة الام فقط ===== */
+const ACADEMIC_SOURCES = /*ACADEMIC_SOURCES_START*/{"intro":"كل حقيقة (اسم وتاريخ ورقم واسناد) في هذا الاطلس مرساة على مصدر اولي موثوق. هذه قائمتها الكاملة المدققة، مرتبة حسب خرائط الاطلس الـ11 — اوراق محكمة وكتب اكاديمية ووثائق اولية وصفحات رسمية فقط، بلا فيديوهات ولا مصادر ثانوية.","foundations":[{"a":"Barocas, Hardt & Narayanan","y":2023,"t":"Fairness and Machine Learning: Limitations and Opportunities","v":"MIT Press","k":"book"},{"a":"Bellman","y":1957,"t":"Dynamic Programming","v":"Princeton University Press","k":"book"},{"a":"Bishop","y":2006,"t":"Pattern Recognition and Machine Learning","v":"Springer","k":"book"},{"a":"Bostrom","y":2014,"t":"Superintelligence: Paths, Dangers, Strategies","v":"Oxford University Press","k":"book"},{"a":"Chapman et al.","y":2000,"t":"CRISP-DM 1.0: Step-by-Step Data Mining Guide","v":"CRISP-DM Consortium","k":"primary"},{"a":"Crevier","y":1993,"t":"AI: The Tumultuous History of the Search for Artificial Intelligence","v":"Basic Books","k":"book"},{"a":"DAMA International","y":2017,"t":"DAMA-DMBOK: Data Management Body of Knowledge (2nd ed.)","v":"Technics Publications","k":"book"},{"a":"Goodfellow, Bengio & Courville","y":2016,"t":"Deep Learning","v":"MIT Press","k":"book"},{"a":"Hastie, Tibshirani & Friedman","y":2009,"t":"The Elements of Statistical Learning (2nd ed.)","v":"Springer","k":"book"},{"a":"James, Witten, Hastie & Tibshirani","y":2013,"t":"An Introduction to Statistical Learning","v":"Springer","k":"book"},{"a":"Koller & Friedman","y":2009,"t":"Probabilistic Graphical Models: Principles and Techniques","v":"MIT Press","k":"book"},{"a":"McCarthy, Minsky, Rochester & Shannon","y":1955,"t":"A Proposal for the Dartmouth Summer Research Project on Artificial Intelligence","v":"Dartmouth College (proposal, Aug 31 1955)","k":"primary"},{"a":"McCorduck","y":1979,"t":"Machines Who Think","v":"W. H. Freeman","k":"book"},{"a":"Mitchell","y":1997,"t":"Machine Learning","v":"McGraw-Hill","k":"book"},{"a":"Nilsson","y":2010,"t":"The Quest for Artificial Intelligence: A History of Ideas and Achievements","v":"Cambridge University Press","k":"book"},{"a":"Nilsson","y":1980,"t":"Principles of Artificial Intelligence","v":"Tioga Publishing (repr. Morgan Kaufmann)","k":"book"},{"a":"Russell & Norvig","y":2020,"t":"Artificial Intelligence: A Modern Approach","v":"Pearson (1st ed. 1995, 4th ed. 2020) - the standard AI textbook","k":"book"},{"a":"Sutton & Barto","y":2018,"t":"Reinforcement Learning: An Introduction (2nd ed.)","v":"MIT Press","k":"book"},{"a":"Zhang, Lipton, Li & Smola","y":2023,"t":"Dive into Deep Learning","v":"Cambridge University Press","k":"book"}],"sections":[{"label":"الذكاء الاصطناعي — نظرة عامة","items":[{"a":"Nash","y":1950,"t":"Equilibrium Points in n-Person Games","v":"PNAS 36(1): 48-49","k":"paper"},{"a":"Turing","y":1950,"t":"Computing Machinery and Intelligence","v":"Mind 59(236): 433-460","k":"paper"},{"a":"Boden","y":2004,"t":"The Creative Mind: Myths and Mechanisms (2nd ed.)","v":"Routledge","k":"book"},{"a":"Shoham & Leyton-Brown","y":2008,"t":"Multiagent Systems: Algorithmic, Game-Theoretic, and Logical Foundations","v":"Cambridge University Press","k":"book"},{"a":"DARPA (Gunning)","y":2016,"t":"Explainable Artificial Intelligence (XAI) program (DARPA-BAA-16-53)","v":"DARPA / I2O","k":"official"},{"a":"Ribeiro, Singh & Guestrin","y":2016,"t":"Why Should I Trust You? Explaining the Predictions of Any Classifier (LIME)","v":"Proc. KDD 2016: 1135-1144","k":"paper"},{"a":"Amershi et al.","y":2019,"t":"Guidelines for Human-AI Interaction","v":"Proc. CHI 2019","k":"paper"},{"a":"OECD","y":2019,"t":"Recommendation of the Council on Artificial Intelligence","v":"OECD/LEGAL/0449","k":"official"},{"a":"NIST","y":2023,"t":"Artificial Intelligence Risk Management Framework (AI RMF 1.0)","v":"NIST AI 100-1","k":"official"},{"a":"European Union","y":2024,"t":"Regulation (EU) 2024/1689 laying down harmonised rules on artificial intelligence (AI Act)","v":"Official Journal of the EU","k":"primary"},{"a":"Stanford HAI","y":2025,"t":"Artificial Intelligence Index Report 2025","v":"Stanford University HAI","k":"official"}]},{"label":"تاريخ الذكاء الاصطناعي","items":[{"a":"Lovelace","y":1843,"t":"Notes on the Analytical Engine (trans. of Menabrea)","v":"Taylor's Scientific Memoirs, vol. 3","k":"primary"},{"a":"Boole","y":1854,"t":"An Investigation of the Laws of Thought","v":"Walton and Maberly","k":"book"},{"a":"Frege","y":1879,"t":"Begriffsschrift","v":"Louis Nebert","k":"book"},{"a":"Whitehead & Russell","y":1910,"t":"Principia Mathematica (3 vols., 1910-1913)","v":"Cambridge University Press","k":"book"},{"a":"Godel","y":1931,"t":"Uber formal unentscheidbare Satze der Principia Mathematica und verwandter Systeme I","v":"Monatshefte fur Mathematik und Physik, 38","k":"paper"},{"a":"Turing","y":1936,"t":"On Computable Numbers, with an Application to the Entscheidungsproblem","v":"Proc. London Mathematical Society, ser. 2, 42","k":"paper"},{"a":"McCulloch & Pitts","y":1943,"t":"A Logical Calculus of the Ideas Immanent in Nervous Activity","v":"Bulletin of Mathematical Biophysics, 5","k":"paper"},{"a":"Shannon","y":1948,"t":"A Mathematical Theory of Communication","v":"Bell System Technical Journal, 27","k":"paper"},{"a":"Wiener","y":1948,"t":"Cybernetics: or Control and Communication in the Animal and the Machine","v":"MIT Press","k":"book"},{"a":"Shannon","y":1950,"t":"Programming a Computer for Playing Chess","v":"Philosophical Magazine, ser. 7, 41(314)","k":"paper"},{"a":"McCarthy et al.","y":1955,"t":"A Proposal for the Dartmouth Summer Research Project on Artificial Intelligence","v":"Proposal, Aug 31 1955","k":"primary"},{"a":"Newell & Simon","y":1956,"t":"The Logic Theory Machine: A Complex Information Processing System","v":"IRE Transactions on Information Theory, 2","k":"paper"},{"a":"Rosenblatt","y":1958,"t":"The Perceptron: A Probabilistic Model for Information Storage and Organization in the Brain","v":"Psychological Review, 65(6)","k":"paper"},{"a":"Newell, Shaw & Simon","y":1959,"t":"Report on a General Problem-Solving Program (GPS)","v":"Proc. Intl. Conf. on Information Processing (UNESCO)","k":"paper"},{"a":"Samuel","y":1959,"t":"Some Studies in Machine Learning Using the Game of Checkers","v":"IBM Journal of Research and Development, 3(3)","k":"paper"},{"a":"McCarthy","y":1960,"t":"Recursive Functions of Symbolic Expressions and Their Computation by Machine, Part I (LISP)","v":"Communications of the ACM, 3(4)","k":"paper"},{"a":"ALPAC","y":1966,"t":"Languages and Machines: Computers in Translation and Linguistics (ALPAC Report)","v":"National Academy of Sciences / NRC","k":"primary"},{"a":"Weizenbaum","y":1966,"t":"ELIZA - A Computer Program for the Study of Natural Language Communication between Man and Machine","v":"Communications of the ACM, 9(1)","k":"paper"},{"a":"Hart, Nilsson & Raphael","y":1968,"t":"A Formal Basis for the Heuristic Determination of Minimum Cost Paths (A*)","v":"IEEE Trans. Systems Science and Cybernetics, 4(2)","k":"paper"},{"a":"Minsky & Papert","y":1969,"t":"Perceptrons: An Introduction to Computational Geometry","v":"MIT Press","k":"book"},{"a":"Linnainmaa","y":1970,"t":"The Representation of the Cumulative Rounding Error of an Algorithm (backprop priority)","v":"MSc thesis, University of Helsinki","k":"primary"},{"a":"Fikes & Nilsson","y":1971,"t":"STRIPS: A New Approach to the Application of Theorem Proving to Problem Solving","v":"Artificial Intelligence, 2(3-4)","k":"paper"},{"a":"Vapnik & Chervonenkis","y":1971,"t":"On the Uniform Convergence of Relative Frequencies of Events to Their Probabilities (VC theory)","v":"Theory of Probability and Its Applications, 16(2)","k":"paper"},{"a":"Winograd","y":1972,"t":"Understanding Natural Language (SHRDLU)","v":"Academic Press","k":"book"},{"a":"Lighthill","y":1973,"t":"Artificial Intelligence: A General Survey (Lighthill Report)","v":"Science Research Council (UK)","k":"primary"},{"a":"Werbos","y":1974,"t":"Beyond Regression: New Tools for Prediction and Analysis in the Behavioral Sciences (backprop priority)","v":"PhD thesis, Harvard University","k":"primary"},{"a":"Newell & Simon","y":1976,"t":"Computer Science as Empirical Inquiry: Symbols and Search","v":"Communications of the ACM, 19(3)","k":"paper"},{"a":"Shortliffe","y":1976,"t":"Computer-Based Medical Consultations: MYCIN","v":"American Elsevier","k":"book"},{"a":"Feigenbaum","y":1977,"t":"The Art of Artificial Intelligence: Themes and Case Studies of Knowledge Engineering","v":"Proc. IJCAI-77","k":"paper"},{"a":"Lindsay, Buchanan, Feigenbaum & Lederberg","y":1980,"t":"Applications of Artificial Intelligence for Organic Chemistry: The DENDRAL Project","v":"McGraw-Hill","k":"book"},{"a":"Hopfield","y":1982,"t":"Neural Networks and Physical Systems with Emergent Collective Computational Abilities","v":"PNAS, 79(8)","k":"paper"},{"a":"McDermott","y":1982,"t":"R1: A Rule-Based Configurer of Computer Systems (XCON)","v":"Artificial Intelligence, 19(1)","k":"paper"},{"a":"Moto-oka (ed.)","y":1982,"t":"Fifth Generation Computer Systems","v":"North-Holland","k":"book"},{"a":"Ackley, Hinton & Sejnowski","y":1985,"t":"A Learning Algorithm for Boltzmann Machines","v":"Cognitive Science, 9(1)","k":"paper"},{"a":"Lenat","y":1985,"t":"CYC: Using Common Sense Knowledge to Overcome Brittleness and Knowledge Acquisition Bottlenecks","v":"AI Magazine, 6(4)","k":"paper"},{"a":"Brooks","y":1986,"t":"A Robust Layered Control System for a Mobile Robot (Subsumption Architecture)","v":"IEEE Journal of Robotics and Automation, 2(1)","k":"paper"},{"a":"Rumelhart, Hinton & Williams","y":1986,"t":"Learning Representations by Back-Propagating Errors","v":"Nature, 323(6088)","k":"paper"},{"a":"Rumelhart, McClelland & the PDP Research Group","y":1986,"t":"Parallel Distributed Processing: Explorations in the Microstructure of Cognition","v":"MIT Press","k":"book"},{"a":"Pearl","y":1988,"t":"Probabilistic Reasoning in Intelligent Systems: Networks of Plausible Inference","v":"Morgan Kaufmann","k":"book"},{"a":"LeCun et al.","y":1989,"t":"Backpropagation Applied to Handwritten Zip Code Recognition","v":"Neural Computation, 1(4)","k":"paper"},{"a":"Brooks","y":1991,"t":"Intelligence without Representation","v":"Artificial Intelligence, 47(1-3)","k":"paper"},{"a":"Cortes & Vapnik","y":1995,"t":"Support-Vector Networks","v":"Machine Learning, 20(3)","k":"paper"},{"a":"Tesauro","y":1995,"t":"Temporal Difference Learning and TD-Gammon","v":"Communications of the ACM, 38(3)","k":"paper"},{"a":"LeCun, Bottou, Bengio & Haffner","y":1998,"t":"Gradient-Based Learning Applied to Document Recognition (LeNet)","v":"Proceedings of the IEEE, 86(11)","k":"paper"},{"a":"Campbell, Hoane & Hsu","y":2002,"t":"Deep Blue","v":"Artificial Intelligence, 134(1-2)","k":"paper"},{"a":"Oppy & Dowe","y":2003,"t":"The Turing Test (Stanford Encyclopedia of Philosophy)","v":"Stanford Encyclopedia of Philosophy","k":"official"},{"a":"Deng et al.","y":2009,"t":"ImageNet: A Large-Scale Hierarchical Image Database","v":"Proc. IEEE CVPR 2009","k":"paper"},{"a":"Ferrucci et al.","y":2010,"t":"Building Watson: An Overview of the DeepQA Project","v":"AI Magazine, 31(3)","k":"paper"},{"a":"Mnih et al.","y":2015,"t":"Human-Level Control through Deep Reinforcement Learning (DQN)","v":"Nature, 518","k":"paper"},{"a":"He et al.","y":2016,"t":"Deep Residual Learning for Image Recognition (ResNet)","v":"Proc. IEEE CVPR 2016","k":"paper"},{"a":"Silver et al.","y":2016,"t":"Mastering the Game of Go with Deep Neural Networks and Tree Search (AlphaGo)","v":"Nature, 529","k":"paper"},{"a":"ACM","y":2018,"t":"ACM A.M. Turing Award 2018 - Bengio, Hinton & LeCun (announced 2019)","v":"Association for Computing Machinery","k":"official"},{"a":"Radford et al.","y":2018,"t":"Improving Language Understanding by Generative Pre-Training (GPT-1)","v":"OpenAI technical report","k":"primary"},{"a":"Devlin et al.","y":2019,"t":"BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding","v":"Proc. NAACL-HLT 2019","k":"paper"},{"a":"Radford et al.","y":2019,"t":"Language Models Are Unsupervised Multitask Learners (GPT-2)","v":"OpenAI technical report","k":"primary"},{"a":"Ramesh et al.","y":2021,"t":"Zero-Shot Text-to-Image Generation (DALL-E)","v":"Proc. ICML 2021","k":"paper"},{"a":"OpenAI","y":2022,"t":"Introducing ChatGPT","v":"OpenAI (Nov 30, 2022)","k":"official"},{"a":"Ouyang et al.","y":2022,"t":"Training Language Models to Follow Instructions with Human Feedback (InstructGPT)","v":"NeurIPS 35","k":"paper"},{"a":"OpenAI","y":2023,"t":"GPT-4 Technical Report","v":"arXiv:2303.08774","k":"primary"},{"a":"European Parliament & Council","y":2024,"t":"Regulation (EU) 2024/1689 - Artificial Intelligence Act","v":"Official Journal of the EU","k":"official"},{"a":"Royal Swedish Academy of Sciences","y":2024,"t":"The Nobel Prize in Physics 2024 - Hopfield & Hinton","v":"NobelPrize.org","k":"official"},{"a":"Royal Swedish Academy of Sciences","y":2024,"t":"The Nobel Prize in Chemistry 2024 - Baker, Hassabis & Jumper","v":"NobelPrize.org","k":"official"}]},{"label":"البيانات","items":[{"a":"Wald","y":1943,"t":"A Method of Estimating Plane Vulnerability Based on Damage of Survivors","v":"Statistical Research Group, Columbia University","k":"primary"},{"a":"Laney","y":2001,"t":"3D Data Management: Controlling Data Volume, Velocity and Variety","v":"META Group","k":"primary"},{"a":"Dwork","y":2006,"t":"Differential Privacy","v":"ICALP, Springer","k":"paper"},{"a":"Common Crawl Foundation","y":2007,"t":"Common Crawl (open repository of web crawl data)","v":"commoncrawl.org","k":"official"},{"a":"DAMA UK Working Group","y":2013,"t":"The Six Primary Dimensions for Data Quality Assessment","v":"DAMA UK","k":"official"},{"a":"Gama et al.","y":2014,"t":"A Survey on Concept Drift Adaptation","v":"ACM Computing Surveys","k":"paper"},{"a":"European Union","y":2016,"t":"General Data Protection Regulation (GDPR), Regulation (EU) 2016/679","v":"Official Journal of the EU","k":"official"},{"a":"Wilkinson et al.","y":2016,"t":"The FAIR Guiding Principles for scientific data management and stewardship","v":"Scientific Data","k":"paper"},{"a":"McMahan et al.","y":2017,"t":"Communication-Efficient Learning of Deep Networks from Decentralized Data","v":"AISTATS","k":"paper"},{"a":"Gebru et al.","y":2018,"t":"Datasheets for Datasets","v":"Communications of the ACM (2021)","k":"paper"},{"a":"Johnson, Douze & Jegou","y":2019,"t":"Billion-Scale Similarity Search with GPUs (FAISS)","v":"IEEE Transactions on Big Data","k":"paper"},{"a":"Suresh & Guttag","y":2021,"t":"A Framework for Understanding Sources of Harm throughout the Machine Learning Life Cycle","v":"EAAMO (ACM)","k":"paper"},{"a":"Pushkarna, Zaldivar & Kjartansson","y":2022,"t":"Data Cards: Purposeful and Transparent Dataset Documentation for Responsible AI","v":"ACM FAccT","k":"paper"}]},{"label":"تعلم الآلة","items":[{"a":"Breiman, Friedman, Olshen & Stone","y":1984,"t":"Classification and Regression Trees (CART)","v":"Wadsworth","k":"book"},{"a":"Kohavi","y":1995,"t":"A Study of Cross-Validation and Bootstrap for Accuracy Estimation and Model Selection","v":"IJCAI","k":"paper"},{"a":"Wolpert & Macready","y":1997,"t":"No Free Lunch Theorems for Optimization","v":"IEEE Transactions on Evolutionary Computation, 1(1)","k":"paper"},{"a":"Breiman","y":2001,"t":"Random Forests","v":"Machine Learning, 45(1)","k":"paper"},{"a":"Chawla, Bowyer, Hall & Kegelmeyer","y":2002,"t":"SMOTE: Synthetic Minority Over-sampling Technique","v":"JAIR, 16","k":"paper"},{"a":"Guyon & Elisseeff","y":2003,"t":"An Introduction to Variable and Feature Selection","v":"JMLR, 3","k":"paper"},{"a":"Zou & Hastie","y":2005,"t":"Regularization and Variable Selection via the Elastic Net","v":"J. Royal Statistical Society B, 67(2)","k":"paper"},{"a":"Pedregosa et al.","y":2011,"t":"Scikit-learn: Machine Learning in Python","v":"JMLR, 12","k":"paper"},{"a":"Chen & Guestrin","y":2016,"t":"XGBoost: A Scalable Tree Boosting System","v":"KDD (ACM SIGKDD)","k":"paper"},{"a":"Lundberg & Lee","y":2017,"t":"A Unified Approach to Interpreting Model Predictions (SHAP)","v":"NeurIPS","k":"paper"}]},{"label":"التعلم العميق","items":[{"a":"Polyak","y":1964,"t":"Some Methods of Speeding up the Convergence of Iteration Methods (momentum)","v":"USSR Comp. Math. and Math. Physics, 4(5)","k":"paper"},{"a":"Hochreiter & Schmidhuber","y":1997,"t":"Long Short-Term Memory","v":"Neural Computation, 9(8)","k":"paper"},{"a":"Gers, Schmidhuber & Cummins","y":2000,"t":"Learning to Forget: Continual Prediction with LSTM","v":"Neural Computation, 12(10)","k":"paper"},{"a":"Hinton, Srivastava, Krizhevsky, Sutskever & Salakhutdinov","y":2012,"t":"Improving Neural Networks by Preventing Co-adaptation of Feature Detectors (dropout)","v":"arXiv:1207.0580","k":"paper"},{"a":"Krizhevsky, Sutskever & Hinton","y":2012,"t":"ImageNet Classification with Deep Convolutional Neural Networks (AlexNet)","v":"NeurIPS (NIPS) 25","k":"paper"},{"a":"Mikolov et al.","y":2013,"t":"Efficient Estimation of Word Representations in Vector Space (word2vec)","v":"ICLR Workshop (arXiv:1301.3781)","k":"paper"},{"a":"Pascanu, Mikolov & Bengio","y":2013,"t":"On the Difficulty of Training Recurrent Neural Networks (gradient clipping)","v":"ICML 2013","k":"paper"},{"a":"Sutskever, Martens, Dahl & Hinton","y":2013,"t":"On the Importance of Initialization and Momentum in Deep Learning","v":"ICML 2013","k":"paper"},{"a":"Bahdanau, Cho & Bengio","y":2014,"t":"Neural Machine Translation by Jointly Learning to Align and Translate (attention)","v":"ICLR 2015","k":"paper"},{"a":"Cho et al.","y":2014,"t":"Learning Phrase Representations using RNN Encoder-Decoder for Statistical Machine Translation (GRU)","v":"EMNLP 2014","k":"paper"},{"a":"Chung, Gulcehre, Cho & Bengio","y":2014,"t":"Empirical Evaluation of Gated Recurrent Neural Networks on Sequence Modeling","v":"NeurIPS Deep Learning Workshop","k":"paper"},{"a":"Goodfellow et al.","y":2014,"t":"Generative Adversarial Nets (GAN)","v":"NeurIPS (NIPS) 27","k":"paper"},{"a":"Pennington, Socher & Manning","y":2014,"t":"GloVe: Global Vectors for Word Representation","v":"EMNLP 2014","k":"paper"},{"a":"Sutskever, Vinyals & Le","y":2014,"t":"Sequence to Sequence Learning with Neural Networks","v":"NeurIPS (NIPS) 27","k":"paper"},{"a":"Ioffe & Szegedy","y":2015,"t":"Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift","v":"ICML 2015","k":"paper"},{"a":"Ba, Kiros & Hinton","y":2016,"t":"Layer Normalization","v":"arXiv:1607.06450","k":"paper"},{"a":"He, Zhang, Ren & Sun","y":2016,"t":"Deep Residual Learning for Image Recognition (ResNet)","v":"CVPR 2016","k":"paper"},{"a":"Gilmer, Schoenholz, Riley, Vinyals & Dahl","y":2017,"t":"Neural Message Passing for Quantum Chemistry (MPNN)","v":"ICML 2017","k":"paper"},{"a":"Kipf & Welling","y":2017,"t":"Semi-Supervised Classification with Graph Convolutional Networks (GCN)","v":"ICLR 2017","k":"paper"},{"a":"Vaswani et al.","y":2017,"t":"Attention Is All You Need (Transformer)","v":"NeurIPS (NIPS) 30","k":"paper"},{"a":"Velickovic et al.","y":2018,"t":"Graph Attention Networks (GAT)","v":"ICLR 2018","k":"paper"},{"a":"Ying et al.","y":2018,"t":"Graph Convolutional Neural Networks for Web-Scale Recommender Systems (PinSage)","v":"KDD 2018","k":"paper"},{"a":"Dosovitskiy et al.","y":2020,"t":"An Image Is Worth 16x16 Words: Transformers for Image Recognition at Scale (ViT)","v":"ICLR 2021","k":"paper"},{"a":"Ho, Jain & Abbeel","y":2020,"t":"Denoising Diffusion Probabilistic Models","v":"NeurIPS 33","k":"paper"},{"a":"Derrow-Pinion et al.","y":2021,"t":"ETA Prediction with Graph Neural Networks in Google Maps","v":"CIKM 2021","k":"paper"},{"a":"Merchant et al.","y":2023,"t":"Scaling Deep Learning for Materials Discovery (GNoME)","v":"Nature","k":"paper"}]},{"label":"النماذج اللغوية الكبيرة","items":[{"a":"Hinton et al.","y":2015,"t":"Distilling the Knowledge in a Neural Network","v":"arXiv:1503.02531","k":"paper"},{"a":"Shazeer","y":2019,"t":"Fast Transformer Decoding: One Write-Head is All You Need (MQA)","v":"arXiv:1911.02150","k":"paper"},{"a":"Brown et al.","y":2020,"t":"Language Models Are Few-Shot Learners (GPT-3)","v":"NeurIPS 33","k":"paper"},{"a":"Kaplan et al.","y":2020,"t":"Scaling Laws for Neural Language Models","v":"arXiv:2001.08361","k":"paper"},{"a":"Chen et al.","y":2021,"t":"Evaluating Large Language Models Trained on Code (HumanEval)","v":"arXiv:2107.03374 (OpenAI)","k":"paper"},{"a":"Hendrycks et al.","y":2021,"t":"Measuring Massive Multitask Language Understanding (MMLU)","v":"ICLR","k":"paper"},{"a":"Su et al.","y":2021,"t":"RoFormer: Enhanced Transformer with Rotary Position Embedding (RoPE)","v":"arXiv:2104.09864 (Neurocomputing 2024)","k":"paper"},{"a":"Bai et al.","y":2022,"t":"Training a Helpful and Harmless Assistant with Reinforcement Learning from Human Feedback","v":"arXiv:2204.05862 (Anthropic)","k":"paper"},{"a":"Bai et al.","y":2022,"t":"Constitutional AI: Harmlessness from AI Feedback","v":"arXiv:2212.08073 (Anthropic)","k":"paper"},{"a":"Dao et al.","y":2022,"t":"FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness","v":"NeurIPS","k":"paper"},{"a":"Hoffmann et al.","y":2022,"t":"Training Compute-Optimal Large Language Models (Chinchilla)","v":"NeurIPS","k":"paper"},{"a":"Wei et al.","y":2022,"t":"Chain-of-Thought Prompting Elicits Reasoning in Large Language Models","v":"NeurIPS","k":"paper"},{"a":"Wei et al.","y":2022,"t":"Emergent Abilities of Large Language Models","v":"TMLR","k":"paper"},{"a":"Ainslie et al.","y":2023,"t":"GQA: Training Generalized Multi-Query Transformer Models from Multi-Head Checkpoints","v":"EMNLP","k":"paper"},{"a":"Chen et al.","y":2023,"t":"Extending Context Window of Large Language Models via Position Interpolation","v":"arXiv:2306.15595","k":"paper"},{"a":"Leviathan et al.","y":2023,"t":"Fast Inference from Transformers via Speculative Decoding","v":"ICML","k":"paper"},{"a":"Rafailov et al.","y":2023,"t":"Direct Preference Optimization: Your Language Model is Secretly a Reward Model (DPO)","v":"NeurIPS","k":"paper"},{"a":"Schaeffer et al.","y":2023,"t":"Are Emergent Abilities of Large Language Models a Mirage?","v":"NeurIPS","k":"paper"},{"a":"Zhao et al.","y":2023,"t":"A Survey of Large Language Models","v":"arXiv:2303.18223","k":"paper"},{"a":"OpenAI","y":2024,"t":"Learning to Reason with LLMs (OpenAI o1)","v":"OpenAI","k":"official"},{"a":"DeepSeek-AI","y":2025,"t":"DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning","v":"Nature; arXiv:2501.12948","k":"paper"},{"a":"OpenAI","y":2025,"t":"gpt-oss-120b and gpt-oss-20b Model Card","v":"OpenAI; arXiv:2508.10925","k":"official"}]},{"label":"التعلم المعزز","items":[{"a":"Thorndike","y":1911,"t":"Animal Intelligence: Experimental Studies","v":"Macmillan","k":"book"},{"a":"Thompson","y":1933,"t":"On the Likelihood That One Unknown Probability Exceeds Another in View of the Evidence of Two Samples","v":"Biometrika","k":"paper"},{"a":"Robbins","y":1952,"t":"Some Aspects of the Sequential Design of Experiments","v":"Bulletin of the American Mathematical Society","k":"paper"},{"a":"Howard","y":1960,"t":"Dynamic Programming and Markov Processes","v":"MIT Press","k":"book"},{"a":"Minsky","y":1961,"t":"Steps Toward Artificial Intelligence","v":"Proceedings of the IRE","k":"paper"},{"a":"Barto, Sutton & Anderson","y":1983,"t":"Neuronlike Adaptive Elements That Can Solve Difficult Learning Control Problems","v":"IEEE Transactions on Systems, Man, and Cybernetics","k":"paper"},{"a":"Sutton","y":1988,"t":"Learning to Predict by the Methods of Temporal Differences","v":"Machine Learning","k":"paper"},{"a":"Watkins","y":1989,"t":"Learning from Delayed Rewards","v":"PhD thesis, University of Cambridge","k":"primary"},{"a":"Sutton","y":1990,"t":"Integrated Architectures for Learning, Planning, and Reacting Based on Approximating Dynamic Programming (Dyna)","v":"ICML","k":"paper"},{"a":"Lin","y":1992,"t":"Self-Improving Reactive Agents Based on Reinforcement Learning, Planning and Teaching (experience replay)","v":"Machine Learning","k":"paper"},{"a":"Tesauro","y":1992,"t":"Practical Issues in Temporal Difference Learning","v":"Machine Learning","k":"paper"},{"a":"Watkins & Dayan","y":1992,"t":"Q-learning","v":"Machine Learning","k":"paper"},{"a":"Williams","y":1992,"t":"Simple Statistical Gradient-Following Algorithms for Connectionist Reinforcement Learning (REINFORCE)","v":"Machine Learning","k":"paper"},{"a":"Rummery & Niranjan","y":1994,"t":"On-line Q-learning Using Connectionist Systems (SARSA)","v":"Cambridge Univ. Eng. Dept. TR 166","k":"paper"},{"a":"Ng, Harada & Russell","y":1999,"t":"Policy Invariance Under Reward Transformations: Theory and Application to Reward Shaping","v":"ICML","k":"paper"},{"a":"Sutton et al.","y":2000,"t":"Policy Gradient Methods for Reinforcement Learning with Function Approximation","v":"NeurIPS (NIPS)","k":"paper"},{"a":"Auer, Cesa-Bianchi & Fischer","y":2002,"t":"Finite-time Analysis of the Multiarmed Bandit Problem (UCB)","v":"Machine Learning","k":"paper"},{"a":"van Hasselt","y":2010,"t":"Double Q-learning","v":"NeurIPS (NIPS)","k":"paper"},{"a":"Mnih et al.","y":2013,"t":"Playing Atari with Deep Reinforcement Learning","v":"arXiv:1312.5602","k":"paper"},{"a":"Silver et al.","y":2014,"t":"Deterministic Policy Gradient Algorithms (DPG)","v":"ICML","k":"paper"},{"a":"Schulman et al.","y":2015,"t":"Trust Region Policy Optimization (TRPO)","v":"ICML","k":"paper"},{"a":"Lillicrap et al.","y":2016,"t":"Continuous Control with Deep Reinforcement Learning (DDPG)","v":"ICLR","k":"paper"},{"a":"Mnih et al.","y":2016,"t":"Asynchronous Methods for Deep Reinforcement Learning (A3C)","v":"ICML","k":"paper"},{"a":"Schaul, Quan, Antonoglou & Silver","y":2016,"t":"Prioritized Experience Replay","v":"ICLR","k":"paper"},{"a":"van Hasselt, Guez & Silver","y":2016,"t":"Deep Reinforcement Learning with Double Q-learning (Double DQN)","v":"AAAI","k":"paper"},{"a":"Wang et al.","y":2016,"t":"Dueling Network Architectures for Deep Reinforcement Learning","v":"ICML","k":"paper"},{"a":"Christiano et al.","y":2017,"t":"Deep Reinforcement Learning from Human Preferences","v":"NeurIPS (NIPS)","k":"paper"},{"a":"Schulman et al.","y":2017,"t":"Proximal Policy Optimization Algorithms (PPO)","v":"arXiv:1707.06347","k":"paper"},{"a":"Silver et al.","y":2017,"t":"Mastering the Game of Go without Human Knowledge (AlphaGo Zero)","v":"Nature, 550","k":"paper"},{"a":"Hessel et al.","y":2018,"t":"Rainbow: Combining Improvements in Deep Reinforcement Learning","v":"AAAI","k":"paper"},{"a":"Silver et al.","y":2018,"t":"A General Reinforcement Learning Algorithm That Masters Chess, Shogi, and Go through Self-Play (AlphaZero)","v":"Science","k":"paper"},{"a":"Schrittwieser et al.","y":2020,"t":"Mastering Atari, Go, Chess and Shogi by Planning with a Learned Model (MuZero)","v":"Nature","k":"paper"}]},{"label":"الذكاء الاحتمالي","items":[{"a":"Bayes","y":1763,"t":"An Essay towards solving a Problem in the Doctrine of Chances","v":"Philosophical Transactions of the Royal Society, 53 (comm. by R. Price)","k":"paper"},{"a":"Laplace","y":1774,"t":"Memoire sur la probabilite des causes par les evenemens","v":"Memoires de l'Academie royale des sciences, 6","k":"paper"},{"a":"Kolmogorov","y":1933,"t":"Grundbegriffe der Wahrscheinlichkeitsrechnung (Foundations of the Theory of Probability)","v":"Julius Springer, Berlin","k":"book"},{"a":"Metropolis et al.","y":1953,"t":"Equation of State Calculations by Fast Computing Machines","v":"Journal of Chemical Physics, 21","k":"paper"},{"a":"Kalman","y":1960,"t":"A New Approach to Linear Filtering and Prediction Problems","v":"Trans. ASME-J. of Basic Engineering, 82","k":"paper"},{"a":"Viterbi","y":1967,"t":"Error Bounds for Convolutional Codes and an Asymptotically Optimum Decoding Algorithm","v":"IEEE Transactions on Information Theory, 13(2)","k":"paper"},{"a":"Baum, Petrie, Soules & Weiss","y":1970,"t":"A Maximization Technique Occurring in the Statistical Analysis of Probabilistic Functions of Markov Chains (Baum-Welch)","v":"Annals of Mathematical Statistics, 41","k":"paper"},{"a":"Hastings","y":1970,"t":"Monte Carlo Sampling Methods Using Markov Chains and Their Applications","v":"Biometrika, 57(1)","k":"paper"},{"a":"Dempster, Laird & Rubin","y":1977,"t":"Maximum Likelihood from Incomplete Data via the EM Algorithm","v":"J. Royal Statistical Society B, 39(1)","k":"paper"},{"a":"Pearl","y":1982,"t":"Reverend Bayes on Inference Engines: A Distributed Hierarchical Approach","v":"Proc. 2nd AAAI National Conf. on AI","k":"paper"},{"a":"Geman & Geman","y":1984,"t":"Stochastic Relaxation, Gibbs Distributions, and the Bayesian Restoration of Images","v":"IEEE TPAMI, 6","k":"paper"},{"a":"Cooper","y":1990,"t":"The Computational Complexity of Probabilistic Inference Using Bayesian Belief Networks","v":"Artificial Intelligence, 42(2-3)","k":"paper"},{"a":"Cover & Thomas","y":2006,"t":"Elements of Information Theory (2nd ed.)","v":"Wiley-Interscience","k":"book"},{"a":"Rasmussen & Williams","y":2006,"t":"Gaussian Processes for Machine Learning","v":"MIT Press","k":"book"},{"a":"Pearl","y":2009,"t":"Causality: Models, Reasoning, and Inference (2nd ed.)","v":"Cambridge University Press","k":"book"},{"a":"ACM","y":2011,"t":"A.M. Turing Award to Judea Pearl - for a calculus for probabilistic and causal reasoning","v":"Association for Computing Machinery","k":"official"},{"a":"Kingma & Welling","y":2013,"t":"Auto-Encoding Variational Bayes (VAE)","v":"arXiv:1312.6114 (ICLR 2014)","k":"paper"},{"a":"Pearl & Mackenzie","y":2018,"t":"The Book of Why: The New Science of Cause and Effect","v":"Basic Books","k":"book"}]},{"label":"الذكاء الرمزي الكلاسيكي","items":[{"a":"von Neumann","y":1928,"t":"Zur Theorie der Gesellschaftsspiele (minimax theorem)","v":"Mathematische Annalen, 100","k":"paper"},{"a":"Dijkstra","y":1959,"t":"A Note on Two Problems in Connexion with Graphs (uniform-cost)","v":"Numerische Mathematik, 1","k":"paper"},{"a":"McCarthy","y":1959,"t":"Programs with Common Sense (advice taker)","v":"Proc. Symposium on the Mechanisation of Thought Processes, HMSO","k":"paper"},{"a":"Davis & Putnam","y":1960,"t":"A Computing Procedure for Quantification Theory","v":"Journal of the ACM, 7(3)","k":"paper"},{"a":"Davis, Logemann & Loveland","y":1962,"t":"A Machine Program for Theorem-Proving (DPLL)","v":"Communications of the ACM, 5(7)","k":"paper"},{"a":"McCarthy","y":1963,"t":"Situations, Actions, and Causal Laws (situation calculus)","v":"Stanford AI Memo 2","k":"primary"},{"a":"Robinson","y":1965,"t":"A Machine-Oriented Logic Based on the Resolution Principle","v":"Journal of the ACM, 12(1)","k":"paper"},{"a":"Quillian","y":1968,"t":"Semantic Memory (semantic networks)","v":"in Semantic Information Processing, MIT Press","k":"paper"},{"a":"McCarthy & Hayes","y":1969,"t":"Some Philosophical Problems from the Standpoint of Artificial Intelligence (frame problem)","v":"Machine Intelligence 4, Edinburgh Univ. Press","k":"paper"},{"a":"Cook","y":1971,"t":"The Complexity of Theorem-Proving Procedures (SAT NP-complete)","v":"Proc. 3rd ACM STOC","k":"paper"},{"a":"Holland","y":1975,"t":"Adaptation in Natural and Artificial Systems (genetic algorithms)","v":"University of Michigan Press","k":"book"},{"a":"Knuth & Moore","y":1975,"t":"An Analysis of Alpha-Beta Pruning","v":"Artificial Intelligence, 6(4)","k":"paper"},{"a":"Minsky","y":1975,"t":"A Framework for Representing Knowledge (frames)","v":"in The Psychology of Computer Vision, McGraw-Hill","k":"paper"},{"a":"Sacerdoti","y":1975,"t":"The Nonlinear Nature of Plans (NOAH, partial-order planning)","v":"Proc. IJCAI-75","k":"paper"},{"a":"Mackworth","y":1977,"t":"Consistency in Networks of Relations (AC-3)","v":"Artificial Intelligence, 8(1)","k":"paper"},{"a":"Buchanan & Feigenbaum","y":1978,"t":"DENDRAL and Meta-DENDRAL: Their Applications Dimension","v":"Artificial Intelligence, 11(1-2)","k":"paper"},{"a":"McCarthy","y":1980,"t":"Circumscription - A Form of Non-Monotonic Reasoning","v":"Artificial Intelligence, 13(1-2)","k":"paper"},{"a":"Reiter","y":1980,"t":"A Logic for Default Reasoning","v":"Artificial Intelligence, 13(1-2)","k":"paper"},{"a":"Forgy","y":1982,"t":"Rete: A Fast Algorithm for the Many Pattern/Many Object Pattern Match Problem","v":"Artificial Intelligence, 19(1)","k":"paper"},{"a":"Kirkpatrick, Gelatt & Vecchi","y":1983,"t":"Optimization by Simulated Annealing","v":"Science, 220(4598)","k":"paper"},{"a":"Korf","y":1985,"t":"Depth-First Iterative-Deepening: An Optimal Admissible Tree Search","v":"Artificial Intelligence, 27(1)","k":"paper"},{"a":"Lenat, Prakash & Shepherd","y":1985,"t":"CYC: Using Common Sense Knowledge to Overcome Brittleness and Knowledge Acquisition Bottlenecks","v":"AI Magazine, 6(4)","k":"paper"},{"a":"Minton, Johnston, Philips & Laird","y":1992,"t":"Minimizing Conflicts: A Heuristic Repair Method for Constraint Satisfaction and Scheduling Problems","v":"Artificial Intelligence, 58(1-3)","k":"paper"},{"a":"Colmerauer & Roussel","y":1993,"t":"The Birth of Prolog","v":"HOPL-II / ACM SIGPLAN Notices, 28(3)","k":"paper"},{"a":"Gruber","y":1993,"t":"A Translation Approach to Portable Ontology Specifications","v":"Knowledge Acquisition, 5(2)","k":"paper"},{"a":"Selman, Kautz & Cohen","y":1994,"t":"Noise Strategies for Improving Local Search (WalkSAT)","v":"Proc. AAAI-94","k":"paper"},{"a":"Blum & Furst","y":1995,"t":"Fast Planning Through Planning Graph Analysis (Graphplan)","v":"Proc. IJCAI-95","k":"paper"},{"a":"Coulom","y":2006,"t":"Efficient Selectivity and Backup Operators in Monte-Carlo Tree Search (MCTS)","v":"Computers and Games (CG 2006), Springer","k":"paper"},{"a":"Kocsis & Szepesvari","y":2006,"t":"Bandit Based Monte-Carlo Planning (UCT)","v":"ECML 2006, Springer","k":"paper"},{"a":"Kautz","y":2022,"t":"The Third AI Summer (neuro-symbolic taxonomy)","v":"AI Magazine, 43(1)","k":"paper"},{"a":"Garcez & Lamb","y":2023,"t":"Neurosymbolic AI: The 3rd Wave","v":"Artificial Intelligence Review, 56(11)","k":"paper"}]},{"label":"الاخلاق والامان","items":[{"a":"Abramowitz & Stegun","y":1964,"t":"Handbook of Mathematical Functions (formula 7.1.26, erf approximation)","v":"U.S. National Bureau of Standards","k":"book"},{"a":"EEOC","y":1978,"t":"Four-Fifths Rule (Uniform Guidelines on Employee Selection Procedures)","v":"29 CFR 1607.4(D)","k":"primary"},{"a":"Dwork, McSherry, Nissim & Smith","y":2006,"t":"Calibrating Noise to Sensitivity in Private Data Analysis (differential privacy)","v":"TCC","k":"paper"},{"a":"Dwork, Hardt, Pitassi, Reingold & Zemel","y":2012,"t":"Fairness Through Awareness","v":"ITCS","k":"paper"},{"a":"Szegedy et al.","y":2013,"t":"Intriguing Properties of Neural Networks (adversarial examples)","v":"ICLR 2014","k":"paper"},{"a":"Goodfellow, Shlens & Szegedy","y":2014,"t":"Explaining and Harnessing Adversarial Examples","v":"ICLR 2015","k":"paper"},{"a":"Fredrikson, Jha & Ristenpart","y":2015,"t":"Model Inversion Attacks that Exploit Confidence Information and Basic Countermeasures","v":"ACM CCS","k":"paper"},{"a":"Amodei et al.","y":2016,"t":"Concrete Problems in AI Safety","v":"arXiv:1606.06565","k":"paper"},{"a":"Hardt, Price & Srebro","y":2016,"t":"Equality of Opportunity in Supervised Learning","v":"NeurIPS","k":"paper"},{"a":"Kleinberg, Mullainathan & Raghavan","y":2016,"t":"Inherent Trade-Offs in the Fair Determination of Risk Scores","v":"ITCS 2017","k":"paper"},{"a":"Chouldechova","y":2017,"t":"Fair prediction with disparate impact: A study of bias in recidivism prediction instruments","v":"Big Data","k":"paper"},{"a":"Shokri et al.","y":2017,"t":"Membership Inference Attacks Against Machine Learning Models","v":"IEEE S&P","k":"paper"},{"a":"Buolamwini & Gebru","y":2018,"t":"Gender Shades: Intersectional Accuracy Disparities in Commercial Gender Classification","v":"PMLR (FAccT)","k":"paper"},{"a":"Ensign et al.","y":2018,"t":"Runaway Feedback Loops in Predictive Policing","v":"PMLR (FAccT)","k":"paper"},{"a":"Mitchell et al.","y":2019,"t":"Model Cards for Model Reporting","v":"FAT* (FAccT)","k":"paper"},{"a":"Bender, Gebru, McMillan-Major & Shmitchell","y":2021,"t":"On the Dangers of Stochastic Parrots: Can Language Models Be Too Big?","v":"FAccT","k":"paper"},{"a":"C2PA","y":2022,"t":"C2PA Technical Specification (Content Provenance and Authenticity)","v":"C2PA","k":"official"},{"a":"Elhage et al.","y":2022,"t":"Toy Models of Superposition","v":"Transformer Circuits Thread","k":"paper"},{"a":"Langosco et al.","y":2022,"t":"Goal Misgeneralization in Deep Reinforcement Learning","v":"ICML (PMLR)","k":"paper"},{"a":"Shah et al.","y":2022,"t":"Goal Misgeneralization: Why Correct Specifications Aren't Enough For Correct Goals","v":"arXiv (DeepMind)","k":"paper"},{"a":"Weidinger et al.","y":2022,"t":"Taxonomy of Risks Posed by Language Models","v":"FAccT","k":"paper"},{"a":"Anthropic","y":2023,"t":"Anthropic's Responsible Scaling Policy","v":"Anthropic","k":"primary"},{"a":"Bricken et al.","y":2023,"t":"Towards Monosemanticity: Decomposing Language Models With Dictionary Learning","v":"Transformer Circuits Thread","k":"paper"},{"a":"ISO/IEC","y":2023,"t":"ISO/IEC 42001:2023 - AI Management System","v":"ISO/IEC","k":"official"},{"a":"Morris et al.","y":2023,"t":"Levels of AGI: Operationalizing Progress on the Path to AGI","v":"arXiv (Google DeepMind)","k":"paper"},{"a":"OpenAI","y":2023,"t":"Preparedness Framework","v":"OpenAI","k":"primary"},{"a":"Samuelson","y":2023,"t":"Generative AI Meets Copyright","v":"Science","k":"paper"},{"a":"The New York Times Company v. Microsoft & OpenAI","y":2023,"t":"Complaint, No. 1:23-cv-11195 (filed Dec 27, 2023)","v":"U.S. District Court, S.D.N.Y.","k":"primary"},{"a":"Wei, Haghtalab & Steinhardt","y":2023,"t":"Jailbroken: How Does LLM Safety Training Fail?","v":"NeurIPS","k":"paper"},{"a":"European Parliament & Council","y":2024,"t":"Regulation (EU) 2024/1689 (EU Artificial Intelligence Act), Arts. 14, 50","v":"Official Journal of the EU","k":"primary"},{"a":"NIST","y":2024,"t":"AI Risk Management Framework: Generative AI Profile (NIST AI 600-1)","v":"NIST","k":"official"},{"a":"Bengio et al.","y":2025,"t":"International AI Safety Report","v":"UK Dept. for Science, Innovation and Technology","k":"official"},{"a":"OWASP","y":2025,"t":"OWASP Top 10 for Large Language Model Applications","v":"OWASP Foundation","k":"official"},{"a":"U.S. Copyright Office","y":2025,"t":"Copyright and Artificial Intelligence, Part 3: Generative AI Training","v":"U.S. Copyright Office","k":"official"}]},{"label":"التطبيقات","items":[{"a":"Amershi et al.","y":2014,"t":"Power to the People: The Role of Humans in Interactive Machine Learning","v":"AI Magazine","k":"paper"},{"a":"Gomez-Uribe & Hunt","y":2015,"t":"The Netflix Recommender System: Algorithms, Business Value, and Innovation","v":"ACM TMIS","k":"paper"},{"a":"Sculley et al.","y":2015,"t":"Hidden Technical Debt in Machine Learning Systems","v":"NeurIPS","k":"paper"},{"a":"Buczak & Guven","y":2016,"t":"A Survey of Data Mining and Machine Learning Methods for Cyber Security Intrusion Detection","v":"IEEE Communications Surveys & Tutorials","k":"paper"},{"a":"Redmon et al.","y":2016,"t":"You Only Look Once: Unified, Real-Time Object Detection (YOLO)","v":"CVPR","k":"paper"},{"a":"Wu et al.","y":2016,"t":"Google's Neural Machine Translation System","v":"arXiv:1609.08144","k":"paper"},{"a":"Breck et al.","y":2017,"t":"The ML Test Score: A Rubric for ML Production Readiness and Technical Debt Reduction","v":"IEEE Big Data","k":"paper"},{"a":"Abramoff et al.","y":2018,"t":"Pivotal Trial of an Autonomous AI-Based Diagnostic System for Detection of Diabetic Retinopathy in Primary Care Offices","v":"npj Digital Medicine","k":"paper"},{"a":"Poplin et al.","y":2018,"t":"A Universal SNP and Small-Indel Variant Caller Using Deep Neural Networks (DeepVariant)","v":"Nature Biotechnology","k":"paper"},{"a":"Nayak (Google)","y":2019,"t":"Understanding Searches Better Than Ever Before (BERT in Search)","v":"Google","k":"official"},{"a":"Zanzotto","y":2019,"t":"Human-in-the-loop Artificial Intelligence","v":"JAIR","k":"paper"},{"a":"Lewis et al.","y":2020,"t":"Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks (RAG)","v":"NeurIPS","k":"paper"},{"a":"Bommasani et al.","y":2021,"t":"On the Opportunities and Risks of Foundation Models","v":"arXiv (Stanford CRFM)","k":"paper"},{"a":"GitHub","y":2021,"t":"Introducing GitHub Copilot: Your AI Pair Programmer","v":"GitHub","k":"official"},{"a":"Hu et al.","y":2021,"t":"LoRA: Low-Rank Adaptation of Large Language Models","v":"ICLR 2022","k":"paper"},{"a":"Jumper et al.","y":2021,"t":"Highly Accurate Protein Structure Prediction with AlphaFold","v":"Nature, 596","k":"paper"},{"a":"Radford et al.","y":2022,"t":"Robust Speech Recognition via Large-Scale Weak Supervision (Whisper)","v":"arXiv:2212.04356","k":"paper"},{"a":"Rombach et al.","y":2022,"t":"High-Resolution Image Synthesis with Latent Diffusion Models (Stable Diffusion)","v":"Proc. IEEE CVPR 2022","k":"paper"},{"a":"Varadi et al.","y":2022,"t":"AlphaFold Protein Structure Database","v":"Nucleic Acids Research","k":"paper"},{"a":"Cheng et al.","y":2023,"t":"Accurate Proteome-Wide Missense Variant Effect Prediction with AlphaMissense","v":"Science","k":"paper"},{"a":"Lam et al.","y":2023,"t":"Learning Skillful Medium-Range Global Weather Forecasting (GraphCast)","v":"Science","k":"paper"},{"a":"Watson et al.","y":2023,"t":"De Novo Design of Protein Structure and Function with RFdiffusion","v":"Nature","k":"paper"},{"a":"Anthropic","y":2024,"t":"Introducing the Model Context Protocol (MCP)","v":"Anthropic","k":"official"},{"a":"Google DeepMind","y":2024,"t":"AI Achieves Silver-Medal Standard Solving International Mathematical Olympiad Problems","v":"Google DeepMind","k":"official"},{"a":"Klarna","y":2024,"t":"Klarna AI Assistant Handles Two-Thirds of Customer Service Chats in Its First Month","v":"Klarna","k":"official"},{"a":"Trinh et al.","y":2024,"t":"Solving Olympiad Geometry without Human Demonstrations (AlphaGeometry)","v":"Nature","k":"paper"},{"a":"Price et al.","y":2025,"t":"Probabilistic Weather Forecasting with Machine Learning (GenCast)","v":"Nature","k":"paper"},{"a":"Xu et al.","y":2025,"t":"A Generative AI-Discovered TNIK Inhibitor for Idiopathic Pulmonary Fibrosis: A Randomized Phase 2a Trial","v":"Nature Medicine","k":"paper"}]}]}/*ACADEMIC_SOURCES_END*/;
+(function initAcademicSources() {
+  const refBtn = document.getElementById("refBtn");
+  if (!refBtn) return;
+  /* الخريطة الام فقط: احذف الزر في اي عالم فرعي */
+  if (typeof WORLD !== "undefined" && WORLD !== "ai") { refBtn.remove(); return; }
+  const overlay = document.getElementById("refOverlay");
+  const panel = document.getElementById("refPanel");
+  const body = document.getElementById("refBody");
+  const countEl = document.getElementById("refCount");
+  const searchEl = document.getElementById("refSearch");
+  document.getElementById("refIntro").textContent = ACADEMIC_SOURCES.intro || "";
+  const KIND_LABEL = { paper: "ورقة محكمة", book: "كتاب مرجعي", primary: "وثيقة اولية", official: "صفحة رسمية" };
+
+  const groups = [];
+  if (ACADEMIC_SOURCES.foundations && ACADEMIC_SOURCES.foundations.length) {
+    groups.push({ label: "المراجع التاسيسية والكتب المرجعية", note: "الكتب التي يقوم عليها الحقل", items: ACADEMIC_SOURCES.foundations });
+  }
+  for (const s of (ACADEMIC_SOURCES.sections || [])) if (s.items && s.items.length) groups.push(s);
+  let total = 0; for (const g of groups) total += g.items.length;
+
+  function citeHtml(it) {
+    const yr = it.y ? " (" + escapeHtml(String(it.y)) + ")" : "";
+    const ven = it.v ? ' <span class="refVenue">' + escapeHtml(it.v) + ".</span>" : "";
+    const kind = it.k && KIND_LABEL[it.k] ? '<span class="refKind">' + KIND_LABEL[it.k] + "</span>" : "";
+    return '<div class="refCite"><b>' + escapeHtml(it.a || "") + yr + ".</b> <i>" + escapeHtml(it.t || "") + ".</i>" + ven + kind + "</div>";
+  }
+  function render(q) {
+    const query = (q || "").trim().toLowerCase();
+    body.innerHTML = "";
+    let shown = 0;
+    for (const g of groups) {
+      const matched = query
+        ? g.items.filter((it) => ((it.a || "") + " " + (it.t || "") + " " + (it.v || "") + " " + (it.y || "")).toLowerCase().includes(query))
+        : g.items;
+      if (!matched.length) continue;
+      const sec = document.createElement("section");
+      sec.className = "refSec";
+      sec.innerHTML = "<h3>" + escapeHtml(g.label) + ' <span class="refSecNote">(' + matched.length + (g.note ? " · " + escapeHtml(g.note) : "") + ")</span></h3>";
+      for (const it of matched) {
+        const box = document.createElement("article");
+        box.className = "refItem";
+        box.innerHTML = citeHtml(it);
+        sec.appendChild(box);
+      }
+      body.appendChild(sec);
+      shown += matched.length;
+    }
+    if (!shown) body.innerHTML = '<div class="refEmpty">لا نتيجة مطابقة.</div>';
+    countEl.textContent = query ? shown + " / " + total : total + " مصدرا";
+  }
+  function openRef() { render(searchEl.value); overlay.classList.add("open"); panel.classList.add("open"); setTimeout(() => searchEl.focus(), 30); }
+  function closeRef() { overlay.classList.remove("open"); panel.classList.remove("open"); }
+  refBtn.addEventListener("click", openRef);
+  document.getElementById("refClose").addEventListener("click", closeRef);
+  overlay.addEventListener("click", closeRef);
+  searchEl.addEventListener("input", () => render(searchEl.value));
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && panel.classList.contains("open")) closeRef(); });
+  render("");
+})();
 
 function nodeDimmed(n) {
   if (jIdx >= 0) return !journeySet.has(n.id) && !curRelSet.has(n.id) && n !== root;
@@ -1876,8 +2364,14 @@ function draw(now) {
   }
 
   ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-  ctx.fillStyle = "#070b15";
-  ctx.fillRect(0, 0, W, H);
+  if (CELESTIAL) {
+    ctx.fillStyle = "#000000";
+    ctx.fillRect(0, 0, W, H);
+    if (skyCanvas && skyCanvas.width) ctx.drawImage(skyCanvas, 0, 0, W, H);
+  } else {
+    ctx.fillStyle = "#070b15";
+    ctx.fillRect(0, 0, W, H);
+  }
   ctx.setTransform(DPR * scale, 0, 0, DPR * scale, DPR * tx, DPR * ty);
 
   /* الروابط البنيوية */
@@ -1886,17 +2380,18 @@ function draw(now) {
   ctx.beginPath();
   for (const l of visLinks) {
     if (l.x) continue;
+    if (isCrossCut(l.a) || isCrossCut(l.b)) continue; /* روابط العقد العابرة ترسم متقطعة ادناه، لا صلبة هرمية */
     if (nodeDimmed(l.a) && nodeDimmed(l.b)) continue;
     ctx.moveTo(l.a.x, l.a.y); ctx.lineTo(l.b.x, l.b.y);
   }
   ctx.stroke();
 
-  /* الروابط العابرة (متقطعة) */
+  /* الروابط العابرة (متقطعة) — تشمل روابط العقد العابرة للمجالات كي لا تبدو ابناء هرميين */
   ctx.strokeStyle = LINK_XCOLOR;
   ctx.setLineDash([5 / scale, 6 / scale]);
   ctx.beginPath();
   for (const l of visLinks) {
-    if (!l.x) continue;
+    if (!l.x && !(isCrossCut(l.a) || isCrossCut(l.b))) continue;
     if (nodeDimmed(l.a) && nodeDimmed(l.b)) continue;
     ctx.moveTo(l.a.x, l.a.y); ctx.lineTo(l.b.x, l.b.y);
   }
@@ -1955,7 +2450,7 @@ function draw(now) {
   const t = now * 0.001;
   for (const n of visNodes) {
     const dim = nodeDimmed(n);
-    const sp = sprite(colorOf(n), n.r, n.isHub || n === root);
+    const sp = sprite(colorOf(n), n.r, n.isHub || n === root, isCrossCut(n) ? "umbrella" : "");
     let a = dim ? 0.1 : 1;
     if (jIdx >= 0 && n !== JOURNEY[jIdx].node) {
       if (curRelSet.has(n.id)) a = 0.92;
@@ -1973,7 +2468,7 @@ function draw(now) {
     const pulse = jIdx >= 0 && !reducedMotion ? 2 + Math.sin(t * 3) * 1.5 : 0;
     ctx.beginPath();
     ctx.arc(ringNode.x, ringNode.y, ringNode.r + (5 + pulse) / scale, 0, Math.PI * 2);
-    ctx.strokeStyle = jIdx >= 0 ? GOLD : "#ffffff";
+    ctx.strokeStyle = jIdx >= 0 ? GOLD : (CELESTIAL ? "#f2e5c2" : "#ffffff");
     ctx.lineWidth = (jIdx >= 0 ? 2.2 : 1.5) / scale;
     ctx.stroke();
   }
@@ -1984,7 +2479,7 @@ function draw(now) {
   ctx.textBaseline = "top";
   const showLeaf = scale > 0.75;
   const showEnLeaf = scale > 1.2;
-  const showEnHub = scale > 0.7;
+  const showEnHub = true;   /* المصطلحات الرئيسية (المحورية) تظهر بالعربي والانجليزي دائما، بلا عتبة تقريب */
   for (const n of visNodes) {
     const isMatch = matchSet && matchSet.has(n.id);
     if (nodeDimmed(n) && !isMatch) continue;
@@ -2139,6 +2634,7 @@ const DEEP_LINKS = WORLD === "ai" ? {
   transformer: { label: "🧭 تعمق في المحول: خريطة النماذج اللغوية", world: "#llm" },
   attention:   { label: "🧭 تعمق في الانتباه: خريطة النماذج اللغوية", world: "#llm" },
   dl:          { label: "🧭 غص داخل هذه العقدة: التعلم العميق من الداخل", world: "#dl" },
+  nn:          { label: "🧭 تعمق في الشبكات العصبية: خريطة التعلم العميق", world: "#dl" },
   cnn:         { label: "🧭 تعمق في الشبكات الالتفافية: خريطة التعلم العميق", world: "#dl" },
   ethics:      { label: "🧭 غص داخل هذه العقدة: الاخلاق والامان من الداخل", world: "#ethics" },
   apps:        { label: "🧭 غص داخل هذه العقدة: تطبيقات الذكاء الاصطناعي", world: "#apps" },
@@ -2150,12 +2646,12 @@ const DEEP_LINKS = WORLD === "ai" ? {
   prob:        { label: "🧭 غص داخل هذه العقدة: الذكاء الاحتمالي من الداخل", world: "#prob" },
   "bayes-net": { label: "🧭 تعمق في الشبكات البايزية: عالم الذكاء الاحتمالي", world: "#prob" },
   bayes:       { label: "🧭 تعمق في الاستدلال البايزي: عالم الذكاء الاحتمالي", world: "#prob" },
+  history:     { label: "🧭 غص داخل هذه العقدة: تاريخ الذكاء الاصطناعي كاملا", world: "#history" },
 } : WORLD === "dl" ? {
   transformer: { label: "🧭 تعمق في المحول: خريطة النماذج اللغوية", world: "#llm" },
 } : WORLD === "ml" ? {
   "dl-bridge": { label: "🧭 غص الى التعلم العميق: الفرع الذي يؤتمت هندسة الميزات", world: "#dl" },
 } : {};
-let cardNode = null;
 function openCard(n) {
   closeSourcesPanel();
   cardNode = n;
@@ -2169,7 +2665,9 @@ function openCard(n) {
     n.group >= 0 ? "المجموعة: " + GROUPS[n.group].name : "جذر الشبكة";
   if (n.children.length && n !== root) {
     branchBtn.style.display = "inline-block";
-    branchBtn.textContent = n.collapsed ? "فتح هذا الفرع (+" + descCount(n) + ")" : "طي هذا الفرع";
+    branchBtn.textContent = isCrossCut(n)
+      ? (n.collapsed ? "اظهر محتوى المظلة العابرة (+" + descCount(n) + ")" : "طي محتوى المظلة العابرة")
+      : (n.collapsed ? "فتح هذا الفرع (+" + descCount(n) + ")" : "طي هذا الفرع");
   } else {
     branchBtn.style.display = "none";
   }
@@ -2204,7 +2702,9 @@ branchBtn.addEventListener("click", () => {
   refreshVisibility();
   applySearch();
   alpha = Math.max(alpha, 0.55);
-  branchBtn.textContent = cardNode.collapsed ? "فتح هذا الفرع (+" + descCount(cardNode) + ")" : "طي هذا الفرع";
+  branchBtn.textContent = isCrossCut(cardNode)
+    ? (cardNode.collapsed ? "اظهر محتوى المظلة العابرة (+" + descCount(cardNode) + ")" : "طي محتوى المظلة العابرة")
+    : (cardNode.collapsed ? "فتح هذا الفرع (+" + descCount(cardNode) + ")" : "طي هذا الفرع");
 });
 
 /* ============ الرحلة ============ */

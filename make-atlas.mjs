@@ -74,8 +74,9 @@ const RAW_APPS = /*__DATA_APPS__*/null;
 const RAW_CLASSIC = /*__DATA_CLASSIC__*/null;
 const RAW_RL = /*__DATA_RL__*/null;
 const RAW_PROB = /*__DATA_PROB__*/null;
-const RAW_BY_WORLD = { ai: RAW_AI, llm: RAW_LLM, dl: RAW_DL, ml: RAW_ML, data: RAW_DATA, ethics: RAW_ETHICS, apps: RAW_APPS, classic: RAW_CLASSIC, rl: RAW_RL, prob: RAW_PROB };
-const WORLD = ["llm", "dl", "ml", "data", "ethics", "apps", "classic", "rl", "prob"].includes((location.hash || "").slice(1)) ? location.hash.slice(1) : "ai";
+const RAW_HISTORY = /*__DATA_HISTORY__*/null;
+const RAW_BY_WORLD = { ai: RAW_AI, llm: RAW_LLM, dl: RAW_DL, ml: RAW_ML, data: RAW_DATA, ethics: RAW_ETHICS, apps: RAW_APPS, classic: RAW_CLASSIC, rl: RAW_RL, prob: RAW_PROB, history: RAW_HISTORY };
+const WORLD = ["llm", "dl", "ml", "data", "ethics", "apps", "classic", "rl", "prob", "history"].includes((location.hash || "").slice(1)) ? location.hash.slice(1) : "ai";
 const RAW = RAW_BY_WORLD[WORLD];
 /* واجهة المختبرات المشتركة — يملؤها مختبر العالم النشط فقط */
 let labOpen = false;
@@ -148,6 +149,12 @@ if (WORLD === "prob") {
   document.querySelector("#titlebox .sub").textContent = "فرع متعمق انبثق من عقدة الذكاء الاحتمالي في الخريطة الام — من قاعدة بايز والشبكات البايزية الى الاستدلال والنماذج الزمنية والقرار";
   document.getElementById("journeyBtn").textContent = "✨ ابدأ رحلة الاستدلال: من قاعدة بايز الى الشبكات البايزية الى القرار";
 }
+if (WORLD === "history") {
+  document.title = "تاريخ الذكاء الاصطناعي";
+  document.querySelector("#titlebox h1").textContent = "تاريخ الذكاء الاصطناعي";
+  document.querySelector("#titlebox .sub").textContent = "فرع متعمق انبثق من عقدة محطات تاريخية في الخريطة الام — القصة الكاملة من الجذور المنطقية قبل 1950 الى الذكاء التوليدي ونوبل 2024";
+  document.getElementById("journeyBtn").textContent = "✨ ابدأ رحلة التاريخ: من آلة تورينغ الى نوبل 2024";
+}
 if (WORLD !== "ai") document.getElementById("worldBack").style.display = "block";
 document.getElementById("worldBack").addEventListener("click", () => enterWorld("", null));
 /* دخول ناعم من التعتيم */
@@ -167,6 +174,7 @@ t = replaceOnce(t,
   transformer: { label: "🧭 تعمق في المحول: خريطة النماذج اللغوية", world: "#llm" },
   attention:   { label: "🧭 تعمق في الانتباه: خريطة النماذج اللغوية", world: "#llm" },
   dl:          { label: "🧭 غص داخل هذه العقدة: التعلم العميق من الداخل", world: "#dl" },
+  nn:          { label: "🧭 تعمق في الشبكات العصبية: خريطة التعلم العميق", world: "#dl" },
   cnn:         { label: "🧭 تعمق في الشبكات الالتفافية: خريطة التعلم العميق", world: "#dl" },
   ethics:      { label: "🧭 غص داخل هذه العقدة: الاخلاق والامان من الداخل", world: "#ethics" },
   apps:        { label: "🧭 غص داخل هذه العقدة: تطبيقات الذكاء الاصطناعي", world: "#apps" },
@@ -178,6 +186,7 @@ t = replaceOnce(t,
   prob:        { label: "🧭 غص داخل هذه العقدة: الذكاء الاحتمالي من الداخل", world: "#prob" },
   "bayes-net": { label: "🧭 تعمق في الشبكات البايزية: عالم الذكاء الاحتمالي", world: "#prob" },
   bayes:       { label: "🧭 تعمق في الاستدلال البايزي: عالم الذكاء الاحتمالي", world: "#prob" },
+  history:     { label: "🧭 غص داخل هذه العقدة: تاريخ الذكاء الاصطناعي كاملا", world: "#history" },
 } : WORLD === "dl" ? {
   transformer: { label: "🧭 تعمق في المحول: خريطة النماذج اللغوية", world: "#llm" },
 } : WORLD === "ml" ? {
@@ -243,7 +252,7 @@ t = t.slice(0, jsStart) +
 
 /* تحقق نهائي */
 for (const must of ["labWorld-ai", "labWorld-llm", "labWorld-ml", "labWorld-data", "labWorld-ethics", "labWorld-apps", "labWorld-classic", "labWorld-rl", "labWorld-prob", "enterWorld",
-  "__DATA_AI__", "__DATA_LLM__", "__DATA_DL__", "__DATA_ML__", "__DATA_DATA__", "__DATA_ETHICS__", "__DATA_APPS__", "__DATA_CLASSIC__", "__DATA_RL__", "__DATA_PROB__",
+  "__DATA_AI__", "__DATA_LLM__", "__DATA_DL__", "__DATA_ML__", "__DATA_DATA__", "__DATA_ETHICS__", "__DATA_APPS__", "__DATA_CLASSIC__", "__DATA_RL__", "__DATA_PROB__", "__DATA_HISTORY__",
   "/* ===== LAB MATH:", "/* ===== LLM LAB MATH:", "/* ===== ML LAB MATH:", "/* ===== DATA LAB MATH:", "/* ===== ETHICS LAB MATH:", "/* ===== APPS LAB MATH:", "/* ===== CLASSIC LAB MATH:", "/* ===== RL LAB MATH:", "/* ===== PROB LAB MATH:",
   "mlTreeBuild", "mlKNN", "dataQualityScore", "dataDedupe", "efConfusion", "efLogRegFit", "appDomainAnalysis", "appFindBestThreshold", "csSearch", "rlQLearn", "pbEnumerate", "worldBack", "#warp"]) {
   if (!t.includes(must)) throw new Error("post-check failed: " + must);

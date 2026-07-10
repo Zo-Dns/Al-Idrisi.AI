@@ -50,6 +50,8 @@ let positionsByLayer = [];
 let weightLines = null;
 let activeLines = null;
 let labelSprites = [];
+let outputDigitSprites = [];
+let outputGlowMesh = null;
 let inputSignalMesh = null;
 let inputDigitCanvas = null;
 let inputDigitTexture = null;
@@ -60,6 +62,7 @@ const cubeGeo = new THREE.BoxGeometry(8.5, 8.5, 8.5);
 const inputPanelGeo = new THREE.BoxGeometry(9.5, 9.5, 3.2);
 const inputSignalGeo = new THREE.BoxGeometry(12.6, 12.6, 2.4);
 const outputCubeGeo = new THREE.BoxGeometry(10.5, 10.5, 10.5);
+const outputGlowGeo = new THREE.SphereGeometry(16, 24, 16);
 const tempObj = new THREE.Object3D();
 const tempColor = new THREE.Color();
 
@@ -68,6 +71,7 @@ const mats = {
   inputSignal: new THREE.MeshBasicMaterial({ color: 0xffffff, vertexColors: true, transparent: true, opacity: 1, depthTest: false, depthWrite: false, blending: THREE.AdditiveBlending }),
   hidden: new THREE.MeshStandardMaterial({ color: 0xffffff, vertexColors: true, emissive: 0x050505, roughness: 0.58 }),
   output: new THREE.MeshStandardMaterial({ color: 0xffffff, vertexColors: true, emissive: 0x2d2200, roughness: 0.32 }),
+  outputGlow: new THREE.MeshBasicMaterial({ color: 0xffffff, vertexColors: true, transparent: true, opacity: 0.62, depthTest: false, depthWrite: false, blending: THREE.AdditiveBlending }),
 };
 
 function getInputSide() {
@@ -138,7 +142,7 @@ function makeTextSprite(text, options = {}) {
   ctx.fillStyle = color;
   ctx.fillText(text, width / 2, height / 2);
   const texture = new THREE.CanvasTexture(labelCanvas);
-  const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: texture, transparent: true, depthWrite: false }));
+  const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: texture, transparent: true, depthTest: false, depthWrite: false }));
   sprite.scale.set(scale[0], scale[1], 1);
   sprite.renderOrder = 5;
   labelSprites.push(sprite);
@@ -163,6 +167,8 @@ function buildScene() {
   group.clear();
   cubeMeshes = [];
   labelSprites = [];
+  outputDigitSprites = [];
+  outputGlowMesh = null;
   inputSignalMesh = null;
   inputDigitMesh = null;
   inputDigitBackMesh = null;
@@ -185,6 +191,13 @@ function buildScene() {
   inputSignalMesh.instanceColor = new THREE.InstancedBufferAttribute(new Float32Array(positionsByLayer[0].length * 3), 3);
   inputSignalMesh.renderOrder = 9;
   group.add(inputSignalMesh);
+
+  outputGlowMesh = new THREE.InstancedMesh(outputGlowGeo, mats.outputGlow, positionsByLayer[3].length);
+  outputGlowMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+  outputGlowMesh.instanceColor = new THREE.InstancedBufferAttribute(new Float32Array(positionsByLayer[3].length * 3), 3);
+  outputGlowMesh.renderOrder = 24;
+  group.add(outputGlowMesh);
+
   addInputDigitPlane();
 
   addLabels();
@@ -251,8 +264,11 @@ function addLabels() {
 
   for (let i = 0; i < 10; i++) {
     const p = positionsByLayer[3][i];
-    const sprite = makeTextSprite(String(i), { color: "#ffffff", fontSize: 82, width: 128, height: 128, scale: [32, 32] });
+    const sprite = makeTextSprite(String(i), { color: "#ffffff", fontSize: 82, width: 128, height: 128, scale: [28, 28] });
     sprite.position.set(p.x + 92, p.y, p.z);
+    sprite.renderOrder = 36;
+    sprite.userData.baseScale = 28;
+    outputDigitSprites.push(sprite);
     group.add(sprite);
   }
 }
@@ -336,7 +352,7 @@ function updateCubes() {
       const raw = Math.abs(acts[i] || 0);
       const a = Math.min(1, raw / maxAct);
       const shaped = Math.pow(a, layer === 0 ? 0.95 : 0.45);
-      const scale = layer === 0 ? 0.78 + shaped * 0.74 : (layer === 3 ? 0.55 + shaped * 1.45 : 0.56 + shaped * 1.05);
+      const scale = layer === 0 ? 0.78 + shaped * 0.74 : (layer === 3 ? 0.5 + shaped * 0.82 : 0.56 + shaped * 1.05);
       tempObj.position.copy(p);
       tempObj.scale.setScalar(scale);
       tempObj.updateMatrix();
@@ -345,7 +361,7 @@ function updateCubes() {
       if (layer === 0) {
         tempColor.setRGB(0.025 + shaped * 0.92, 0.055 + shaped * 0.92, 0.07 + shaped * 0.9);
       } else if (layer === 3) {
-        tempColor.setRGB(0.12 + shaped * 0.95, 0.09 + shaped * 0.76, 0.02 + shaped * 0.24);
+        tempColor.setRGB(0.08 + shaped * 1.0, 0.07 + shaped * 0.72, 0.025 + shaped * 0.18);
       } else {
         tempColor.setRGB(0.01 + shaped * 0.62, 0.01 + shaped * 0.62, 0.012 + shaped * 0.68);
       }
@@ -370,6 +386,42 @@ function updateCubes() {
   }
   inputSignalMesh.instanceMatrix.needsUpdate = true;
   inputSignalMesh.instanceColor.needsUpdate = true;
+}
+
+function updateOutputHighlights(time = 0) {
+  if (!state.pass || !outputGlowMesh) return;
+  const probs = state.pass.probs;
+  const pred = argmax(probs);
+  const pulse = 0.5 + 0.5 * Math.sin(time * 0.005);
+
+  for (let i = 0; i < probs.length; i++) {
+    const p = positionsByLayer[3][i];
+    const prob = Math.max(0, Math.min(1, probs[i] || 0));
+    const isPred = i === pred;
+    const glowScale = isPred ? 2.3 + pulse * 0.55 : 0.22 + Math.pow(prob, 0.42) * 1.1;
+    tempObj.position.copy(p);
+    tempObj.scale.setScalar(glowScale);
+    tempObj.updateMatrix();
+    outputGlowMesh.setMatrixAt(i, tempObj.matrix);
+
+    if (isPred) {
+      tempColor.setRGB(1.0, 0.78 + pulse * 0.2, 0.18);
+    } else {
+      const dim = 0.08 + Math.pow(prob, 0.5) * 0.34;
+      tempColor.setRGB(dim, dim * 0.95, dim * 0.7);
+    }
+    outputGlowMesh.setColorAt(i, tempColor);
+
+    const sprite = outputDigitSprites[i];
+    if (sprite) {
+      const labelScale = isPred ? 39 + pulse * 4 : 24 + Math.pow(prob, 0.45) * 12;
+      sprite.scale.set(labelScale, labelScale, 1);
+      sprite.material.opacity = isPred ? 1 : 0.28 + Math.pow(prob, 0.5) * 0.35;
+      sprite.material.color.set(isPred ? 0xffd166 : 0xd7e2f1);
+    }
+  }
+  outputGlowMesh.instanceMatrix.needsUpdate = true;
+  outputGlowMesh.instanceColor.needsUpdate = true;
 }
 
 function updateHud() {
@@ -399,6 +451,7 @@ function updateSample() {
   updateInputDigitPlane(sample.pixels);
   drawBars(probs, pred);
   updateCubes();
+  updateOutputHighlights();
   rebuildLines();
   updateHud();
 }
@@ -449,6 +502,7 @@ function animate(time) {
   controls.autoRotate = state.autoOrbit;
   controls.update();
   group.rotation.y = -0.18 + Math.sin(time * 0.00008) * 0.035;
+  updateOutputHighlights(time);
   renderer.render(scene, camera);
   requestAnimationFrame(animate);
 }

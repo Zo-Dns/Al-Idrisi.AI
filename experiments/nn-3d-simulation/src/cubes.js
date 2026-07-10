@@ -8,6 +8,7 @@ const state = {
   sampleIndex: 0,
   pass: null,
   autoOrbit: true,
+  signalsPlaying: true,
   lineMode: 0,
   shownWeights: 0,
   contributionDots: 0,
@@ -474,6 +475,8 @@ function updateOutputHighlights(time = 0) {
 
 function updateFlowSignals(time = 0) {
   if (!flowSignalDots || flowSignalData.length === 0) return;
+  flowSignalDots.visible = state.signalsPlaying;
+  if (!state.signalsPlaying) return;
   const layers = state.model.weights.length;
   for (let k = 0; k < flowSignalData.length; k++) {
     const c = flowSignalData[k];
@@ -633,6 +636,12 @@ document.getElementById("prevSample").addEventListener("click", () => {
 document.getElementById("toggleOrbit").addEventListener("click", (event) => {
   state.autoOrbit = !state.autoOrbit;
   event.currentTarget.textContent = state.autoOrbit ? "إيقاف الدوران" : "تشغيل الدوران";
+});
+
+document.getElementById("toggleSignals").addEventListener("click", (event) => {
+  state.signalsPlaying = !state.signalsPlaying;
+  if (flowSignalDots) flowSignalDots.visible = state.signalsPlaying;
+  event.currentTarget.textContent = state.signalsPlaying ? "إيقاف الإرسال" : "تشغيل الإرسال";
 });
 
 document.getElementById("toggleLines").addEventListener("click", (event) => {

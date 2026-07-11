@@ -1316,7 +1316,7 @@ const SOURCES_BY_GROUP = {
             note: "مدخل بصري ممتاز لفكرة العصبونات والطبقات وتمثيل الارقام داخل الشبكة.",
             embed: "https://www.youtube-nocookie.com/embed/aircAruvnKk?start=664&rel=0", url: "https://www.youtube.com/watch?v=aircAruvnKk&t=664s" },
           { type: "محاكاة بصرية", title: "Neural Network 3D Simulation", source: "Denis Dmitriev - Deep Robotics",
-            note: "محاكاة ثلاثية الابعاد تعرض بنية شبكة عصبية وتفعيلها بصريا، مكملة للشرح المفاهيمي اعلاه.",
+            note: "محاكاة 3D تعرض بنية شبكة عصبية وتفعيلها بصريا، مكملة للشرح المفاهيمي اعلاه.",
             embed: "https://www.youtube-nocookie.com/embed/3JQ3hYko51Y?start=5&rel=0", url: "https://www.youtube.com/watch?v=3JQ3hYko51Y&t=5s" },
           { type: "فيديو تعليمي", title: "Give Me 40 min, I'll Make Neural Network Click Forever", source: "Zachary Huang",
             note: "شرح مطول (نحو 40 دقيقة) يبني حدسا لشبكات عصبية من الصفر خطوة بخطوة.",
@@ -1842,13 +1842,13 @@ const DEEP_LINKS = {
   attention:   { label: "🧭 تعمق في الانتباه: خريطة النماذج اللغوية", url: "__LLM_MAP_URL__" },
 };
 
-/* مختبر المكعبات ثلاثي الابعاد (تجربة مستقلة في experiments/ بجوار الاطلس):
+/* مختبر 3D (تجربة مستقلة في experiments/ بجوار الاطلس):
    الزر يظهر فقط حين يثبت فحص HEAD ان المجلد متاح فعلا (تشغيل محلي او نشر الشجرة كاملة) —
    وفي نسخة الـartifact المنفردة يفشل الفحص فيبقى الزر مخفيا ولا يعد الاطلس بما لا يبلغه */
 const LAB3D_URL = "experiments/nn-3d-simulation/index.html";
 const LAB3D_LINKS = {
-  "ai:nn": "🧊 مختبر المكعبات: هذه الشبكة ثلاثية الابعاد بنموذج MNIST حقيقي",
-  "dl:mlp": "🧊 مختبر المكعبات: شبكة MLP حقيقية (784←96←48←10) ثلاثية الابعاد",
+  "ai:nn": "🧊 مختبر 3D: تمثيل تفاعلي حي لشبكة عصبية بنموذج MNIST حقيقي",
+  "dl:mlp": "🧊 مختبر 3D: شبكة MLP حقيقية (784←96←48←10) بتمثيل تفاعلي حي",
 };
 let lab3dOk = false;
 fetch(LAB3D_URL, { method: "HEAD" }).then((r) => { lab3dOk = r.ok; }).catch(() => {});

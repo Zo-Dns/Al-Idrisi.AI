@@ -19,8 +19,8 @@ const state = {
 
 const lineRatios = [0.08, 0.22, 0.45];
 const dotBudgets = [260, 560, 980];
-const OUTPUT_DIGIT_OFFSET = 24;
 const OUTPUT_SELECTED_BLUE = 0x2f76d2;
+const OUTPUT_EDGE_PALETTE = [0x63d8ff, 0x4d8dff, 0x9c6dff, 0xdb62ff, 0xff5e9b, 0xff875c, 0xffd166, 0x85e89d, 0x52dcc5, 0xf4f7ff];
 const canvas = document.getElementById("scene");
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
@@ -38,7 +38,7 @@ controls.dampingFactor = 0.055;
 controls.autoRotate = true;
 controls.autoRotateSpeed = 0.36;
 controls.enablePan = false;
-controls.minDistance = 330;
+controls.minDistance = 100;
 controls.maxDistance = 1200;
 
 scene.add(new THREE.AmbientLight(0x9eb4d6, 0.34));
@@ -59,6 +59,7 @@ let weightLines = null;
 let activeLines = null;
 let labelSprites = [];
 let outputDigitSprites = [];
+let outputEdgeMeshes = [];
 let outputGlowMesh = null;
 let flowSignalDots = null;
 let flowSignalData = [];
@@ -68,6 +69,7 @@ const cubeGeo = new THREE.BoxGeometry(8.5, 8.5, 8.5);
 const inputPanelGeo = new THREE.BoxGeometry(9.5, 9.5, 3.2);
 const inputSignalGeo = new THREE.BoxGeometry(12.6, 12.6, 2.4);
 const outputCubeGeo = new THREE.BoxGeometry(10.5, 10.5, 10.5);
+const outputEdgeGeo = new THREE.EdgesGeometry(outputCubeGeo);
 const outputGlowGeo = new THREE.SphereGeometry(16, 24, 16);
 const flowSignalDotGeo = new THREE.SphereGeometry(2.4, 12, 8);
 const tempObj = new THREE.Object3D();
@@ -77,7 +79,7 @@ const mats = {
   input: new THREE.MeshBasicMaterial({ color: 0xffffff, vertexColors: true, transparent: true, opacity: 0.58, depthWrite: false, side: THREE.DoubleSide }),
   inputSignal: new THREE.MeshBasicMaterial({ color: 0x4aa3ff, vertexColors: true, transparent: true, opacity: 1, depthTest: false, depthWrite: false, blending: THREE.AdditiveBlending }),
   hidden: new THREE.MeshStandardMaterial({ color: 0xffffff, vertexColors: true, emissive: 0x050505, roughness: 0.58 }),
-  output: new THREE.MeshStandardMaterial({ color: 0xffffff, vertexColors: true, emissive: 0x2d2200, roughness: 0.32 }),
+  output: new THREE.MeshStandardMaterial({ color: 0xffffff, vertexColors: true, emissive: 0x120d20, transparent: true, opacity: 0.16, depthWrite: false, side: THREE.DoubleSide, metalness: 0.22, roughness: 0.18 }),
   outputGlow: new THREE.MeshBasicMaterial({ color: 0xffffff, vertexColors: true, transparent: true, opacity: 0.62, depthTest: false, depthWrite: false, blending: THREE.AdditiveBlending }),
   flowSignalDot: new THREE.MeshBasicMaterial({ color: 0x010101, transparent: true, opacity: 0.94, depthTest: false, depthWrite: false }),
 };
@@ -199,6 +201,7 @@ function buildScene() {
   cubeMeshes = [];
   labelSprites = [];
   outputDigitSprites = [];
+  outputEdgeMeshes = [];
   outputGlowMesh = null;
   flowSignalDots = null;
   flowSignalData = [];
@@ -230,6 +233,17 @@ function buildScene() {
   outputGlowMesh.visible = false;
   group.add(outputGlowMesh);
 
+  for (let i = 0; i < positionsByLayer[3].length; i++) {
+    const edges = new THREE.LineSegments(
+      outputEdgeGeo,
+      new THREE.LineBasicMaterial({ color: OUTPUT_EDGE_PALETTE[i], transparent: true, opacity: 0.56, depthWrite: false })
+    );
+    edges.position.copy(positionsByLayer[3][i]);
+    edges.renderOrder = 18;
+    outputEdgeMeshes.push(edges);
+    group.add(edges);
+  }
+
   addLabels();
   rebuildLines();
 }
@@ -252,8 +266,8 @@ function addLabels() {
 
   for (let i = 0; i < 10; i++) {
     const p = positionsByLayer[3][i];
-    const sprite = makeTextSprite(String(i), { color: "#ffffff", fontSize: 82, width: 128, height: 128, scale: [22, 22] });
-    sprite.position.set(p.x + OUTPUT_DIGIT_OFFSET, p.y, p.z);
+    const sprite = makeTextSprite(String(i), { color: "#ffffff", fontSize: 82, width: 128, height: 128, scale: [10, 10] });
+    sprite.position.copy(p);
     sprite.renderOrder = 36;
     sprite.userData.baseScale = 22;
     outputDigitSprites.push(sprite);
@@ -462,11 +476,21 @@ function updateOutputHighlights(time = 0) {
     const p = positionsByLayer[3][i];
     const prob = Math.max(0, Math.min(1, probs[i] || 0));
     const isPred = i === pred;
+    const boxScale = 0.52 + Math.pow(prob, 0.45) * 0.82;
+
+    const edges = outputEdgeMeshes[i];
+    if (edges) {
+      edges.position.copy(p);
+      edges.scale.setScalar(boxScale * (isPred ? 1.08 + flashLift * 0.04 : 1.04));
+      edges.material.color.setHex(OUTPUT_EDGE_PALETTE[i]);
+      if (isPred) edges.material.color.lerp(new THREE.Color(0xffffff), 0.44 + flashLift * 0.34);
+      edges.material.opacity = isPred ? 0.88 : 0.30 + Math.pow(prob, 0.35) * 0.30;
+    }
 
     const sprite = outputDigitSprites[i];
     if (sprite) {
-      const labelScale = isPred ? 30 + flashLift * 7 : 21;
-      sprite.position.copy(p).add(new THREE.Vector3(OUTPUT_DIGIT_OFFSET, 0, 0));
+      const labelScale = isPred ? 12 + flashLift * 2 : 9;
+      sprite.position.copy(p);
       sprite.scale.set(labelScale, labelScale, 1);
       sprite.material.opacity = isPred ? 0.72 + flashLift * 0.28 : 0.72 + Math.pow(prob, 0.5) * 0.08;
       sprite.material.color.set(isPred ? OUTPUT_SELECTED_BLUE : 0xffffff);

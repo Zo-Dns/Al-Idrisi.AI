@@ -20,6 +20,7 @@
     <section id="hud" aria-label="لوحة الحسابات">
       <h1>مختبر المكعبات العصبية</h1>
       <p>تمثيل 3D حقيقي لبنية MLP: كل مكعب عصبون أو بكسل، وكل خط وزن مدرب.</p>
+      <p>الخطوط المعروضة عينة بصرية من الأوزان المدربة لتبقى المشاهدة واضحة؛ أما التنبؤ فيستخدم جميع الأوزان البالغ عددها 80,352.</p>
       <div class="stats">
         <div><span>Architecture</span><b id="stArch">-</b></div>
         <div><span>Weights shown</span><b id="stShown">-</b></div>
@@ -64,6 +65,6 @@
 
     <div id="loading">جاري تحميل النموذج الحقيقي...</div>
   </main>
-  <script type="module" src="./src/cubes.js?v=layer-gated-continuous-signal-stream"></script>
+  <script type="module" src="./src/cubes.js?v=output-labels-on-cubes"></script>
 </body>
 </html>

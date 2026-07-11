@@ -1842,16 +1842,19 @@ const DEEP_LINKS = {
   attention:   { label: "🧭 تعمق في الانتباه: خريطة النماذج اللغوية", url: "__LLM_MAP_URL__" },
 };
 
-/* مختبر 3D (تجربة مستقلة في experiments/ بجوار الاطلس):
-   الزر يظهر فقط حين يثبت فحص HEAD ان المجلد متاح فعلا (تشغيل محلي او نشر الشجرة كاملة) —
+/* مختبرات 3D (تجارب مستقلة في experiments/ بجوار الاطلس):
+   زر كل مختبر يظهر فقط حين يثبت فحص HEAD ان رابطه متاح فعلا (تشغيل محلي او نشر الشجرة كاملة) —
    وفي نسخة الـartifact المنفردة يفشل الفحص فيبقى الزر مخفيا ولا يعد الاطلس بما لا يبلغه */
-const LAB3D_URL = "experiments/nn-3d-simulation/index.html";
 const LAB3D_LINKS = {
-  "ai:nn": "🧊 مختبر 3D: تمثيل تفاعلي حي لشبكة عصبية بنموذج MNIST حقيقي",
-  "dl:mlp": "🧊 مختبر 3D: شبكة MLP حقيقية (784←96←48←10) بتمثيل تفاعلي حي",
+  "ai:nn":  { label: "🧊 مختبر 3D: تمثيل تفاعلي حي لشبكة عصبية بنموذج MNIST حقيقي", url: "experiments/nn-3d-simulation/index.html" },
+  "dl:mlp": { label: "🧊 مختبر 3D: شبكة MLP حقيقية (784←96←48←10) بتمثيل تفاعلي حي", url: "experiments/nn-3d-simulation/index.html" },
+  "ai:classification": { label: "🧊 مختبر 3D: صنف صورا حقيقية بخوارزمية اقرب الجيران k-NN", url: "experiments/ml-3d-classifier/index.html" },
+  "ml:knn": { label: "🧊 مختبر 3D: k-NN يصنف ارقام MNIST حقيقية في فضاء الميزات", url: "experiments/ml-3d-classifier/index.html" },
 };
-let lab3dOk = false;
-fetch(LAB3D_URL, { method: "HEAD" }).then((r) => { lab3dOk = r.ok; }).catch(() => {});
+const lab3dOk = {};
+for (const u of new Set(Object.values(LAB3D_LINKS).map((e) => e.url))) {
+  fetch(u, { method: "HEAD" }).then((r) => { lab3dOk[u] = r.ok; }).catch(() => {});
+}
 function openCard(n) {
   closeSourcesPanel();
   cardNode = n;
@@ -1891,12 +1894,12 @@ function openCard(n) {
   } else {
     mapBtn.style.display = "none";
   }
-  const lab3dLabel = LAB3D_LINKS[(typeof WORLD !== "undefined" ? WORLD : "ai") + ":" + n.key];
+  const lab3dEntry = LAB3D_LINKS[(typeof WORLD !== "undefined" ? WORLD : "ai") + ":" + n.key];
   const lab3dBtn = document.getElementById("lab3dBtn");
-  if (lab3dLabel && lab3dOk) {
+  if (lab3dEntry && lab3dOk[lab3dEntry.url]) {
     lab3dBtn.style.display = "inline-block";
-    lab3dBtn.textContent = lab3dLabel;
-    lab3dBtn.onclick = () => window.open(LAB3D_URL, "_blank");
+    lab3dBtn.textContent = lab3dEntry.label;
+    lab3dBtn.onclick = () => window.open(lab3dEntry.url, "_blank");
   } else {
     lab3dBtn.style.display = "none";
   }

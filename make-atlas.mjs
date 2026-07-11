@@ -254,7 +254,7 @@ t = t.slice(0, jsStart) +
 for (const must of ["labWorld-ai", "labWorld-llm", "labWorld-ml", "labWorld-data", "labWorld-ethics", "labWorld-apps", "labWorld-classic", "labWorld-rl", "labWorld-prob", "enterWorld",
   "__DATA_AI__", "__DATA_LLM__", "__DATA_DL__", "__DATA_ML__", "__DATA_DATA__", "__DATA_ETHICS__", "__DATA_APPS__", "__DATA_CLASSIC__", "__DATA_RL__", "__DATA_PROB__", "__DATA_HISTORY__",
   "/* ===== LAB MATH:", "/* ===== LLM LAB MATH:", "/* ===== ML LAB MATH:", "/* ===== DATA LAB MATH:", "/* ===== ETHICS LAB MATH:", "/* ===== APPS LAB MATH:", "/* ===== CLASSIC LAB MATH:", "/* ===== RL LAB MATH:", "/* ===== PROB LAB MATH:",
-  "mlTreeBuild", "mlKNN", "dataQualityScore", "dataDedupe", "efConfusion", "efLogRegFit", "appDomainAnalysis", "appFindBestThreshold", "csSearch", "rlQLearn", "pbEnumerate", "worldBack", "#warp", "lab3dBtn", "LAB3D_URL"]) {
+  "mlTreeBuild", "mlKNN", "dataQualityScore", "dataDedupe", "efConfusion", "efLogRegFit", "appDomainAnalysis", "appFindBestThreshold", "csSearch", "rlQLearn", "pbEnumerate", "worldBack", "#warp", "lab3dBtn", "LAB3D_LINKS"]) {
   if (!t.includes(must)) throw new Error("post-check failed: " + must);
 }
 if (t.includes("window.open(deep.url")) throw new Error("old map-open leaked");

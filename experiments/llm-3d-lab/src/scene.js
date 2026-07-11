@@ -316,10 +316,17 @@ function showFatal(err) {
   box.style.textAlign = "center";
   document.getElementById("retryBtn").onclick = () => location.reload();
 }
-window.addEventListener("error", (e) => { if (!state.model) showFatal(e.message); });
+window.addEventListener("error", (e) => {
+  if (state.model) return;
+  const src = e && e.target && (e.target.src || e.target.href);
+  showFatal((e && e.message) || (src ? "تعذر تحميل: " + src : "خطا في تحميل وحدة"));
+}, true);
+window.addEventListener("unhandledrejection", (e) => { if (!state.model) showFatal(e.reason); });
 
 async function load() {
-  const json = await fetch("./data/tiny-gpt.json").then((r) => {
+  /* النسخة المنفردة (standalone) تضمن البيانات داخل الملف — لا شبكة اطلاقا */
+  const embedded = typeof window !== "undefined" ? window.__TINY_GPT_DATA__ : null;
+  const json = embedded || await fetch("./data/tiny-gpt.json").then((r) => {
     if (!r.ok) throw new Error(`HTTP ${r.status} عند جلب النموذج`);
     return r.json();
   });

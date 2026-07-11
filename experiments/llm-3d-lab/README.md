@@ -59,3 +59,14 @@ held to a strict tolerance.
    released code, tied embeddings, GELU).
 3. D. Hendrycks and K. Gimpel (2016), *Gaussian Error Linear Units (GELUs)*.
    https://arxiv.org/abs/1606.08415
+
+## Standalone (zero-server) build
+
+`standalone.html` is a single self-contained file — Three.js, OrbitControls,
+the math, the scene and the full model JSON are all inlined (data: module
+imports + embedded weights). **Double-click it from disk; no server, no
+network.** Rebuild after source changes:
+
+```powershell
+node experiments\llm-3d-lab\scripts\build_standalone.mjs
+```

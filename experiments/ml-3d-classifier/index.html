@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>مختبر تصنيف الصور بتعلم الآلة</title>
+  <link rel="stylesheet" href="./src/classifier.css">
+</head>
+<body>
+  <main id="app">
+    <canvas id="scene"></canvas>
+
+    <section id="guide" aria-label="دليل الفئات">
+      <span><i class="c1"></i> الرقم 1</span>
+      <span><i class="c4"></i> الرقم 4</span>
+      <span><i class="c7"></i> الرقم 7</span>
+      <span class="dim">PCA → 3D للعرض · k-NN 49D للقرار</span>
+    </section>
+
+    <section id="hud" aria-label="شرح قرار المصنف">
+      <h1>مختبر تصنيف الصور</h1>
+      <p>صور MNIST حقيقية تتحول إلى 49 ميزة، ثم يصوت أقرب 5 أمثلة لاتخاذ القرار.</p>
+      <div class="statGrid">
+        <div><span>النموذج</span><b>k-NN · k=5</b></div>
+        <div><span>دقة الاختبار</span><b id="accuracy">—</b></div>
+        <div><span>أمثلة التدريب</span><b id="trainCount">—</b></div>
+        <div><span>فضاء القرار</span><b>49 ميزة</b></div>
+      </div>
+      <div class="steps">
+        <div><b>1</b><span>الصورة ← تجميع 7×7</span></div>
+        <div><b>2</b><span>مسافة إلى كل مثال تدريب</span></div>
+        <div><b>3</b><span>تصويت موزون لأقرب 5</span></div>
+      </div>
+      <p class="note"><b>إسقاط PCA 3D خريطة شرح فقط.</b> الخطوط تصل إلى أقرب 5 أمثلة وفق المسافة في الميزات الـ49 كاملة، لذلك قد لا يبدو القرب نفسه في مشهد 3D.</p>
+    </section>
+
+    <section id="samplePanel" aria-label="صورة الاختبار والقرار">
+      <canvas id="digit" width="176" height="176"></canvas>
+      <div class="result">
+        <div>الحقيقة <b id="truth">—</b></div>
+        <div>قرار النموذج <b id="prediction">—</b></div>
+        <div>اتفاق الجيران <b id="agreement">—</b></div>
+      </div>
+      <div id="votes" aria-label="أصوات الجيران"></div>
+      <p id="neighbours" class="neighbours">—</p>
+      <div class="controls">
+        <button id="previous" type="button">السابق</button>
+        <button id="next" type="button">صورة جديدة</button>
+        <button id="orbit" type="button">إيقاف الدوران</button>
+      </div>
+    </section>
+
+    <div id="loading">يجري تحميل بيانات الاختبار الحقيقية…</div>
+  </main>
+  <script type="module" src="./src/classifier.js?v=plain-arabic-query-label"></script>
+</body>
+</html>

@@ -10,3 +10,6 @@ atlas-template.html
 # Unrelated stray file from another project
 jeelpixel-file-network.html
 archive/jeelpixel-file-network-standalone.html
+
+# Regenerable raw MNIST archive for the 3D machine-learning lab
+experiments/ml-3d-classifier/data/raw/

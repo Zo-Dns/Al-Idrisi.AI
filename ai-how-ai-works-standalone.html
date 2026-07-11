@@ -365,6 +365,16 @@
     border-radius: 8px; padding: 6px 11px; cursor: pointer;
   }
   #mapBtn:hover { background: rgba(255, 127, 168, 0.26); }
+  #lab3dBtn {
+    margin-top: 10px; margin-inline-start: 6px;
+    display: none;
+    background: rgba(82, 220, 197, 0.13);
+    border: 1px solid rgba(82, 220, 197, 0.5);
+    color: #9df0e2;
+    font-family: var(--font); font-size: 13px; font-weight: 600;
+    border-radius: 8px; padding: 6px 11px; cursor: pointer;
+  }
+  #lab3dBtn:hover { background: rgba(82, 220, 197, 0.25); }
   details.rules { font-size: 12.5px; color: var(--muted); line-height: 1.7; }
   details.rules summary { cursor: pointer; color: #b9c5e2; }
 
@@ -579,7 +589,7 @@
   </div>
   <div class="cdesc" id="cardDesc"></div>
   <div class="crel" id="cardRel"></div>
-  <button id="branchBtn" type="button"></button><button id="labBtn" type="button"></button><button id="mapBtn" type="button"></button>
+  <button id="branchBtn" type="button"></button><button id="labBtn" type="button"></button><button id="mapBtn" type="button"></button><button id="lab3dBtn" type="button"></button>
   <div class="cgroup" id="cardGroup"></div>
 </div>
 
@@ -2734,6 +2744,17 @@ const DEEP_LINKS = WORLD === "ai" ? {
 } : WORLD === "ml" ? {
   "dl-bridge": { label: "🧭 غص الى التعلم العميق: الفرع الذي يؤتمت هندسة الميزات", world: "#dl" },
 } : {};
+
+/* مختبر المكعبات ثلاثي الابعاد (تجربة مستقلة في experiments/ بجوار الاطلس):
+   الزر يظهر فقط حين يثبت فحص HEAD ان المجلد متاح فعلا (تشغيل محلي او نشر الشجرة كاملة) —
+   وفي نسخة الـartifact المنفردة يفشل الفحص فيبقى الزر مخفيا ولا يعد الاطلس بما لا يبلغه */
+const LAB3D_URL = "experiments/nn-3d-simulation/index.html";
+const LAB3D_LINKS = {
+  "ai:nn": "🧊 مختبر المكعبات: هذه الشبكة ثلاثية الابعاد بنموذج MNIST حقيقي",
+  "dl:mlp": "🧊 مختبر المكعبات: شبكة MLP حقيقية (784←96←48←10) ثلاثية الابعاد",
+};
+let lab3dOk = false;
+fetch(LAB3D_URL, { method: "HEAD" }).then((r) => { lab3dOk = r.ok; }).catch(() => {});
 function openCard(n) {
   closeSourcesPanel();
   cardNode = n;
@@ -2772,6 +2793,15 @@ function openCard(n) {
     mapBtn.onclick = () => enterWorld(deep.world, n);
   } else {
     mapBtn.style.display = "none";
+  }
+  const lab3dLabel = LAB3D_LINKS[(typeof WORLD !== "undefined" ? WORLD : "ai") + ":" + n.key];
+  const lab3dBtn = document.getElementById("lab3dBtn");
+  if (lab3dLabel && lab3dOk) {
+    lab3dBtn.style.display = "inline-block";
+    lab3dBtn.textContent = lab3dLabel;
+    lab3dBtn.onclick = () => window.open(LAB3D_URL, "_blank");
+  } else {
+    lab3dBtn.style.display = "none";
   }
   card.style.display = "block";
   updateSourcesVisibility();

@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>مختبر النموذج اللغوي 3D</title>
+  <link rel="stylesheet" href="./src/lab.css">
+</head>
+<body>
+  <main id="app">
+    <canvas id="scene"></canvas>
+
+    <section id="guide" aria-label="دليل المشهد">
+      <span><i style="background:#69c9ff;color:#69c9ff"></i> رأس 1</span>
+      <span><i style="background:#f7a6d9;color:#f7a6d9"></i> رأس 2</span>
+      <span><i style="background:#ffd166;color:#ffd166"></i> رأس 3</span>
+      <span><i style="background:#85e89d;color:#85e89d"></i> رأس 4</span>
+      <span class="dim">قوس الانتباه: سماكته ولمعانه = وزن حقيقي محسوب الآن</span>
+    </section>
+
+    <section id="hud" aria-label="النموذج والبرهان">
+      <h1>مختبر النموذج اللغوي 3D</h1>
+      <p class="honesty">محول GPT <b>حقيقي مصغر</b> تدرب على نصوص هذا الاطلس نفسها — المعادلات معادلات GPT ذاتها (انتباه متعدد الرؤوس، قناع سببي، توليد ذاتي الانحدار)، والحجم اصغر بملايين المرات فلا تنتظر ذكاءه، بل شاهد <b>آليته</b>.</p>
+      <div class="statGrid">
+        <div><span>البنية</span><b id="stArch">—</b></div>
+        <div><span>المعاملات</span><b id="stParams">—</b></div>
+        <div><span>نافذة السياق</span><b id="stBlock">—</b></div>
+        <div><span>المفردات (حروف)</span><b id="stVocab">—</b></div>
+        <div><span>مادة التدريب</span><b id="stCorpus">—</b></div>
+        <div><span>حيرة التحقق ppl</span><b id="stPpl">—</b></div>
+      </div>
+      <div id="proofPanel" aria-label="البرهان الحي">
+        <h2>البرهان الحي</h2>
+        <div class="proofRow"><span>مطابقة اللوغتات لمرجع التدريب</span><b id="prLogits">—</b></div>
+        <div class="proofRow"><span>مجموع softmax لصف الانتباه</span><b id="prRowSum">—</b></div>
+        <div class="proofRow"><span>اعادة حساب q·k/√d يدويا</span><b id="prQK">—</b></div>
+        <div class="proofRow"><span>القناع السببي (وزن للمستقبل)</span><b id="prCausal">—</b></div>
+        <div class="proofRow"><span>الانتروبيا مقابل الحرارة</span><b id="prEntropy">—</b></div>
+      </div>
+    </section>
+
+    <section id="genPanel" aria-label="التوليد">
+      <div class="promptRow">
+        <label for="promptSelect">البداية</label>
+        <select id="promptSelect"></select>
+      </div>
+      <div id="genText" dir="rtl" aria-live="polite"></div>
+      <div class="tempRow">
+        <label for="temp">الحرارة <b id="tempVal">1.0</b></label>
+        <input id="temp" type="range" min="0" max="2" step="0.05" value="1">
+        <span class="entropy">انتروبيا التوزيع: <b id="entropyVal">—</b> بت</span>
+      </div>
+      <div id="topBars" aria-label="ارجح الرموز التالية"></div>
+      <div class="controls">
+        <button id="stepBtn" type="button">ولد رمزا</button>
+        <button id="autoBtn" type="button">توليد تلقائي</button>
+        <button id="resetBtn" type="button">اعادة</button>
+        <button id="headBtn" type="button">كل الرؤوس</button>
+        <button id="layerBtn" type="button">الطبقة 1+2</button>
+        <button id="orbitBtn" type="button">ايقاف الدوران</button>
+      </div>
+    </section>
+
+    <div id="loading">يجري تحميل المحول المصغر الحقيقي…</div>
+  </main>
+  <script type="module" src="./src/scene.js"></script>
+</body>
+</html>

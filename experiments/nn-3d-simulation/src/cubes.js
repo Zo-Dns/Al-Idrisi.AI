@@ -20,7 +20,6 @@ const state = {
 const lineRatios = [0.08, 0.22, 0.45];
 const dotBudgets = [260, 560, 980];
 const OUTPUT_SELECTED_BLUE = 0x2f76d2;
-const OUTPUT_EDGE_PALETTE = [0x63d8ff, 0x4d8dff, 0x9c6dff, 0xdb62ff, 0xff5e9b, 0xff875c, 0xffd166, 0x85e89d, 0x52dcc5, 0xf4f7ff];
 const canvas = document.getElementById("scene");
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
@@ -68,8 +67,7 @@ let inputSignalMesh = null;
 const cubeGeo = new THREE.BoxGeometry(8.5, 8.5, 8.5);
 const inputPanelGeo = new THREE.BoxGeometry(9.5, 9.5, 3.2);
 const inputSignalGeo = new THREE.BoxGeometry(12.6, 12.6, 2.4);
-const outputCubeGeo = new THREE.BoxGeometry(10.5, 10.5, 10.5);
-const outputEdgeGeo = new THREE.EdgesGeometry(outputCubeGeo);
+const outputCubeGeo = new THREE.BoxGeometry(15, 15, 15);
 const outputGlowGeo = new THREE.SphereGeometry(16, 24, 16);
 const flowSignalDotGeo = new THREE.SphereGeometry(2.4, 12, 8);
 const tempObj = new THREE.Object3D();
@@ -140,7 +138,7 @@ function layerPoint(layer, index, count) {
     return new THREE.Vector3(xs[layer], ((side - 1) / 2 - row) * spacing, (col - (side - 1) / 2) * spacing);
   }
   if (layer === 3) {
-    return new THREE.Vector3(xs[layer], (index - 4.5) * 19, 0);
+    return new THREE.Vector3(xs[layer], (index - 4.5) * 25, 0);
   }
 
   const rows = layer === 1 ? 12 : 8;
@@ -182,6 +180,10 @@ function makeTextSprite(text, options = {}) {
   return sprite;
 }
 
+function makeOutputEdgeGeometry(cubeGeometry) {
+  return new THREE.EdgesGeometry(cubeGeometry);
+}
+
 async function loadData() {
   const [model, samples] = await Promise.all([
     fetch("./data/model.json").then((r) => r.json()),
@@ -200,6 +202,9 @@ function buildScene() {
   group.clear();
   cubeMeshes = [];
   labelSprites = [];
+  weightLines = null;
+  activeLines = null;
+  staticLinesMode = -1; /* المشهد اعيد بناؤه: الغ حارس الثبات كي تعاد الخطوط */
   outputDigitSprites = [];
   outputEdgeMeshes = [];
   outputGlowMesh = null;
@@ -235,8 +240,8 @@ function buildScene() {
 
   for (let i = 0; i < positionsByLayer[3].length; i++) {
     const edges = new THREE.LineSegments(
-      outputEdgeGeo,
-      new THREE.LineBasicMaterial({ color: OUTPUT_EDGE_PALETTE[i], transparent: true, opacity: 0.56, depthWrite: false })
+      makeOutputEdgeGeometry(outputCubeGeo),
+      new THREE.LineBasicMaterial({ color: 0x050505, transparent: true, opacity: 0.96, depthWrite: false })
     );
     edges.position.copy(positionsByLayer[3][i]);
     edges.renderOrder = 18;
@@ -275,35 +280,60 @@ function addLabels() {
   }
 }
 
-function collectWeightCandidates() {
+/* الطوبولوجيا المعروضة ثابتة بين العينات: معيار الاختيار |w|+كسر تعادل لا يعتمد على التفعيلات.
+   تبنى مرة لكل وضع كثافة، وتتغير بالعينة الاشارات الحية فقط (rebuildDynamicSignals). */
+let staticShown = [];
+let staticLinesMode = -1;
+
+function collectStaticCandidates() {
   const candidates = [];
   for (let l = 0; l < state.model.weights.length; l++) {
     const W = state.model.weights[l];
     for (let j = 0; j < W.length; j++) {
       for (let i = 0; i < W[j].length; i++) {
         const w = W[j][i];
-        const source = state.pass?.activations?.[l]?.[i] || 0;
-        const contribution = source * w;
-        const signal = Math.abs(contribution);
         const tie = (((i * 1103515245 + j * 12345 + l * 97) >>> 0) % 1000) / 100000;
-        candidates.push({ l, i, j, w, source, contribution, signal, score: Math.abs(w) + tie });
+        candidates.push({ l, i, j, w, score: Math.abs(w) + tie });
       }
     }
   }
   return candidates;
 }
 
-function selectVisibleWeightsByLayer(candidates) {
-  const shown = [];
+function rebuildStaticLines() {
+  if (staticLinesMode === state.lineMode && weightLines) return; /* لا اعادة بناء بين العينات */
+  if (weightLines) { group.remove(weightLines); weightLines.geometry.dispose(); weightLines.material.dispose(); }
+  const candidates = collectStaticCandidates();
   const ratio = lineRatios[state.lineMode];
+  staticShown = [];
   for (let l = 0; l < state.model.weights.length; l++) {
-    const layerCandidates = candidates
-      .filter((c) => c.l === l)
-      .sort((a, b) => b.score - a.score);
+    const layerCandidates = candidates.filter((c) => c.l === l).sort((a, b) => b.score - a.score);
     const count = Math.max(1, Math.floor(layerCandidates.length * ratio));
-    shown.push(...layerCandidates.slice(0, count));
+    staticShown.push(...layerCandidates.slice(0, count));
   }
-  return shown;
+  state.shownWeights = staticShown.length;
+  const positions = [];
+  const colors = [];
+  for (const c of staticShown) {
+    const a = positionsByLayer[c.l][c.i];
+    const b = positionsByLayer[c.l + 1][c.j];
+    positions.push(a.x, a.y, a.z, b.x, b.y, b.z);
+    const weightBrightness = Math.min(1, 0.1 + Math.abs(c.w) * 0.82);
+    const signTint = c.w >= 0 ? [0.72, 0.82, 1.0] : [1.0, 0.74, 0.66];
+    colors.push(
+      signTint[0] * weightBrightness, signTint[1] * weightBrightness, signTint[2] * weightBrightness,
+      signTint[0] * weightBrightness, signTint[1] * weightBrightness, signTint[2] * weightBrightness
+    );
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+  geo.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
+  weightLines = new THREE.LineSegments(
+    geo,
+    new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.105, blending: THREE.AdditiveBlending, depthWrite: false })
+  );
+  group.add(weightLines);
+  staticLinesMode = state.lineMode;
 }
 
 function edgeKey(c) {
@@ -342,50 +372,38 @@ function selectContributionDotsByLayer(visibleCandidates) {
   return dots.sort((a, b) => b.signal - a.signal);
 }
 
-function rebuildLines() {
-  if (weightLines) group.remove(weightLines);
-  if (activeLines) group.remove(activeLines);
-  if (flowSignalDots) group.remove(flowSignalDots);
+function rebuildDynamicSignals() {
+  if (activeLines) { group.remove(activeLines); activeLines.geometry.dispose(); activeLines.material.dispose(); }
+  if (flowSignalDots) { group.remove(flowSignalDots); flowSignalDots.dispose(); }
   flowSignalDots = null;
   flowSignalData = [];
 
-  const totalWeights = state.model.weights.reduce((s, W) => s + W.length * W[0].length, 0);
-  const candidates = collectWeightCandidates();
-  const shown = selectVisibleWeightsByLayer(candidates);
-  state.shownWeights = shown.length;
-  const totalContributionMass = candidates.reduce((sum, c) => sum + c.signal, 0);
-  const visibleContributionMass = shown.reduce((sum, c) => sum + c.signal, 0);
+  /* الاسهامات الحية للمجموعة المعروضة فقط: O(المعروض) لا O(80,352) */
+  const live = staticShown.map((c) => {
+    const source = state.pass?.activations?.[c.l]?.[c.i] || 0;
+    const contribution = source * c.w;
+    return { ...c, source, contribution, signal: Math.abs(contribution) };
+  });
 
-  const positions = [];
-  const colors = [];
-  for (const c of shown) {
-    const a = positionsByLayer[c.l][c.i];
-    const b = positionsByLayer[c.l + 1][c.j];
-    positions.push(a.x, a.y, a.z, b.x, b.y, b.z);
-    const weightBrightness = Math.min(1, 0.1 + Math.abs(c.w) * 0.82);
-    const signTint = c.w >= 0 ? [0.72, 0.82, 1.0] : [1.0, 0.74, 0.66];
-    colors.push(
-      signTint[0] * weightBrightness, signTint[1] * weightBrightness, signTint[2] * weightBrightness,
-      signTint[0] * weightBrightness, signTint[1] * weightBrightness, signTint[2] * weightBrightness
-    );
+  /* كتلة الاسهام الكلية: مرور جمع واحد بلا تخصيص كائنات — يبقي مقياس الامانة دقيقا */
+  let totalContributionMass = 0;
+  for (let l = 0; l < state.model.weights.length; l++) {
+    const W = state.model.weights[l];
+    const acts = state.pass.activations[l];
+    for (let j = 0; j < W.length; j++) {
+      const row = W[j];
+      for (let i = 0; i < row.length; i++) totalContributionMass += Math.abs((acts[i] || 0) * row[i]);
+    }
   }
-  const geo = new THREE.BufferGeometry();
-  geo.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
-  geo.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
-  weightLines = new THREE.LineSegments(
-    geo,
-    new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.105, blending: THREE.AdditiveBlending, depthWrite: false })
-  );
-  group.add(weightLines);
+  const visibleContributionMass = live.reduce((sum, c) => sum + c.signal, 0);
 
-  const active = shown
+  const active = live
     .filter((c) => c.signal > 0)
     .sort((a, b) => b.signal - a.signal)
     .slice(0, Math.max(80, Math.round(dotBudgets[state.lineMode] * 0.8)));
   const activePos = [];
   const activeCol = [];
   for (const c of active) {
-    if (c.signal <= 0) continue;
     const a = positionsByLayer[c.l][c.i];
     const b = positionsByLayer[c.l + 1][c.j];
     activePos.push(a.x, a.y, a.z, b.x, b.y, b.z);
@@ -401,7 +419,7 @@ function rebuildLines() {
   );
   group.add(activeLines);
 
-  const pulseCandidates = selectContributionDotsByLayer(shown);
+  const pulseCandidates = selectContributionDotsByLayer(live);
   const maxPulseSignal = Math.max(1e-9, ...pulseCandidates.map((c) => c.signal));
   const pulseMass = pulseCandidates.reduce((sum, c) => sum + c.signal, 0);
   state.contributionDots = pulseCandidates.length;
@@ -419,6 +437,11 @@ function rebuildLines() {
   group.add(flowSignalDots);
 }
 
+function rebuildLines() {
+  rebuildStaticLines();
+  rebuildDynamicSignals();
+}
+
 function updateCubes() {
   for (let layer = 0; layer < cubeMeshes.length; layer++) {
     const mesh = cubeMeshes[layer];
@@ -429,7 +452,9 @@ function updateCubes() {
       const raw = Math.abs(acts[i] || 0);
       const a = Math.min(1, raw / maxAct);
       const shaped = Math.pow(a, layer === 0 ? 0.95 : 0.45);
-      const scale = layer === 0 ? 0.78 + shaped * 0.74 : (layer === 3 ? 0.5 + shaped * 0.82 : 0.56 + shaped * 1.05);
+      const scale = layer === 0
+        ? 0.78 + shaped * 0.74
+        : (layer === 3 ? 0.88 + Math.pow(Math.min(1, raw), 0.45) * 0.52 : 0.56 + shaped * 1.05);
       tempObj.position.copy(p);
       tempObj.scale.setScalar(scale);
       tempObj.updateMatrix();
@@ -465,34 +490,31 @@ function updateCubes() {
   inputSignalMesh.instanceColor.needsUpdate = true;
 }
 
-function updateOutputHighlights(time = 0) {
+function updateOutputHighlights() {
   if (!state.pass) return;
   const probs = state.pass.probs;
   const pred = argmax(probs);
-  const flash = 0.5 + 0.5 * Math.sin(time * 0.006);
-  const flashLift = Math.pow(flash, 1.8);
 
   for (let i = 0; i < probs.length; i++) {
     const p = positionsByLayer[3][i];
     const prob = Math.max(0, Math.min(1, probs[i] || 0));
     const isPred = i === pred;
-    const boxScale = 0.52 + Math.pow(prob, 0.45) * 0.82;
+    const boxScale = 0.88 + Math.pow(prob, 0.45) * 0.52;
 
     const edges = outputEdgeMeshes[i];
     if (edges) {
       edges.position.copy(p);
-      edges.scale.setScalar(boxScale * (isPred ? 1.08 + flashLift * 0.04 : 1.04));
-      edges.material.color.setHex(OUTPUT_EDGE_PALETTE[i]);
-      if (isPred) edges.material.color.lerp(new THREE.Color(0xffffff), 0.44 + flashLift * 0.34);
-      edges.material.opacity = isPred ? 0.88 : 0.30 + Math.pow(prob, 0.35) * 0.30;
+      edges.scale.setScalar(boxScale * (isPred ? 1.10 : 1.04));
+      edges.material.color.setHex(isPred ? 0xffffff : 0x050505);
+      edges.material.opacity = isPred ? 1 : 0.96;
     }
 
     const sprite = outputDigitSprites[i];
     if (sprite) {
-      const labelScale = isPred ? 12 + flashLift * 2 : 9;
+      const labelScale = isPred ? 21 : 16;
       sprite.position.copy(p);
       sprite.scale.set(labelScale, labelScale, 1);
-      sprite.material.opacity = isPred ? 0.72 + flashLift * 0.28 : 0.72 + Math.pow(prob, 0.5) * 0.08;
+      sprite.material.opacity = isPred ? 1 : 0.84;
       sprite.material.color.set(isPred ? OUTPUT_SELECTED_BLUE : 0xffffff);
     }
   }
@@ -648,7 +670,7 @@ function animate(time) {
   controls.update();
   group.rotation.y = -0.18 + Math.sin(time * 0.00008) * 0.035;
   updateFlowSignals(time);
-  updateOutputHighlights(time);
+  updateOutputHighlights();
   renderer.render(scene, camera);
   requestAnimationFrame(animate);
 }

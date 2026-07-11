@@ -39,4 +39,10 @@ const accuracy = correct / data.testing.length;
 if (Math.abs(accuracy - data.testAccuracy) < 1e-6) pass("reported-test-accuracy", `${correct}/${data.testing.length} = ${(accuracy * 100).toFixed(2)}%`);
 else fail("reported-test-accuracy", `computed=${accuracy} exported=${data.testAccuracy}`);
 
+const rows = labels.map(String);
+const rowSums = rows.map((truth) => rows.reduce((sum, pred) => sum + data.confusion[truth][pred], 0));
+const diagonal = rows.reduce((sum, label) => sum + data.confusion[label][label], 0);
+if (rowSums.every((v) => v === 30) && diagonal === correct) pass("confusion-matrix-consistent", `rows=${rowSums.join("/")} diagonal=${diagonal}`);
+else fail("confusion-matrix-consistent", `rowSums=${rowSums} diagonal=${diagonal} correct=${correct}`);
+
 if (!process.exitCode) console.log("\nALL ML 3D CLASSIFIER TESTS PASSED");

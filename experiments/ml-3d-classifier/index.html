@@ -32,6 +32,10 @@
         <div><b>3</b><span>تصويت موزون لأقرب 5</span></div>
       </div>
       <p class="note"><b>إسقاط PCA 3D خريطة شرح فقط.</b> الخطوط تصل إلى أقرب 5 أمثلة وفق المسافة في الميزات الـ49 كاملة، لذلك قد لا يبدو القرب نفسه في مشهد 3D.</p>
+      <div id="confusionWrap" aria-label="مصفوفة الالتباس">
+        <p class="confTitle">مصفوفة الالتباس — الصف: الحقيقة · العمود: قرار النموذج</p>
+        <div id="confusion"></div>
+      </div>
     </section>
 
     <section id="samplePanel" aria-label="صورة الاختبار والقرار">
@@ -46,6 +50,7 @@
       <div class="controls">
         <button id="previous" type="button">السابق</button>
         <button id="next" type="button">صورة جديدة</button>
+        <button id="nextMiss" type="button">أخطاء النموذج</button>
         <button id="orbit" type="button">إيقاف الدوران</button>
       </div>
     </section>

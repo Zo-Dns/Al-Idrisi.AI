@@ -39,6 +39,14 @@ p { margin: 6px 0 0; color: var(--muted); font-size: 11px; line-height: 1.55; }
 #guide .c1 { color: var(--cyan); background: var(--cyan); } #guide .c4 { color: var(--pink); background: var(--pink); } #guide .c7 { color: var(--gold); background: var(--gold); }
 #guide .dim { border-right: 1px solid var(--line); padding-right: 10px; }
 
+#confusionWrap { margin-top: 10px; }
+.confTitle { margin: 0 0 6px; font: 11px var(--mono); color: var(--muted); }
+.confRow { display: grid; grid-template-columns: 30px repeat(3, 1fr); gap: 4px; margin-bottom: 4px; font: 12px var(--mono); text-align: center; }
+.confRow span { padding: 3px 0; border-radius: 6px; background: rgba(255,255,255,0.03); }
+.confHead span { background: none; color: var(--muted); }
+.confDiag { background: rgba(105,201,255,0.14); font-weight: 700; }
+.confMiss { background: rgba(255,116,116,0.18); color: #ffb3b3; font-weight: 700; }
+
 #samplePanel { bottom: 16px; left: 16px; width: 266px; max-width: calc(100vw - 32px); padding: 10px; }
 #digit { float: left; width: 88px; height: 88px; margin: 0 0 8px 10px; image-rendering: pixelated; border: 1px solid var(--line); border-radius: 8px; background: #03070e; }
 .result { display: grid; gap: 5px; min-height: 90px; }

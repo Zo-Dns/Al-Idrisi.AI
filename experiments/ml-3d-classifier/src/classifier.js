@@ -176,9 +176,26 @@ function buildScene() {
   state.queryLabel.renderOrder = 14;
   state.queryHalo.renderOrder = 10;
   group.add(state.query, state.queryHalo);
-  document.getElementById("accuracy").textContent = `${(state.data.testAccuracy * 100).toFixed(1)}%`;
+  const testing = state.data.testing;
+  const correct = testing.filter((s) => s.exportedPrediction === s.label).length;
+  document.getElementById("accuracy").textContent = `${correct}/${testing.length} = ${(state.data.testAccuracy * 100).toFixed(1)}%`;
   document.getElementById("trainCount").textContent = String(train.length);
+  renderConfusion();
+  state.missIndexes = testing.map((s, i) => (s.exportedPrediction !== s.label ? i : -1)).filter((i) => i >= 0);
+  document.getElementById("nextMiss").textContent = `أخطاء النموذج (${state.missIndexes.length})`;
   updateSample();
+}
+
+function renderConfusion() {
+  const classes = state.data.classes;
+  const labels = Object.keys(classes);
+  const c = state.data.confusion;
+  let html = '<div class="confRow confHead"><span></span>' + labels.map((l) => `<span style="color:${classes[l].color}">${l}</span>`).join("") + "</div>";
+  for (const truth of labels) {
+    html += `<div class="confRow"><span style="color:${classes[truth].color}">${truth}</span>` +
+      labels.map((pred) => `<span class="${truth === pred ? "confDiag" : (c[truth][pred] ? "confMiss" : "")}">${c[truth][pred]}</span>`).join("") + "</div>";
+  }
+  document.getElementById("confusion").innerHTML = html;
 }
 
 async function load() {
@@ -192,6 +209,12 @@ async function load() {
 document.getElementById("next").addEventListener("click", () => { state.sampleIndex = (state.sampleIndex + 1) % state.data.testing.length; updateSample(); });
 document.getElementById("previous").addEventListener("click", () => { state.sampleIndex = (state.sampleIndex + state.data.testing.length - 1) % state.data.testing.length; updateSample(); });
 document.getElementById("orbit").addEventListener("click", (event) => { state.autoOrbit = !state.autoOrbit; event.currentTarget.textContent = state.autoOrbit ? "إيقاف الدوران" : "تشغيل الدوران"; });
+document.getElementById("nextMiss").addEventListener("click", () => {
+  if (!state.missIndexes || !state.missIndexes.length) return;
+  const next = state.missIndexes.find((i) => i > state.sampleIndex);
+  state.sampleIndex = next === undefined ? state.missIndexes[0] : next;
+  updateSample();
+});
 
 function animate(time) {
   controls.autoRotate = state.autoOrbit;

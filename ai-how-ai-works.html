@@ -1670,7 +1670,7 @@ function isCrossCut(nd) { return nd.rt === "cross" || (nd.rt === undefined && nd
 
 /* طبقة الدلالة العلمية (دستور الخريطة الام، المادة 3): سطر التصنيف والعلاقة في بطاقة العقدة.
    nt نوع العقدة (حلقة اولى) · rt نوع العلاقة · sp اب المعنى ان خالف اب العرض · rn جملة معدة تغني عن الجملة الآلية */
-const NT_PHRASE = { field: "فرع علمي", flat: "موضوع بارز بين المتعلمين، وهو علميا ضمن حقل اكبر (يسمى في سطر العلاقة ادناه)", ctx: "وجه سياقي لا فرع من العلم", umbrella: "مظلة عابرة للمجالات", enabler: "طبقة تمكين يقوم عليها العلم", framework: "اطار منظم عام" };
+const NT_PHRASE = { field: "فرع علمي", flat: "موضوع رئيسي معروض مستقلا في الخريطة، لكنه علميا يندرج ضمن مجال أوسع", ctx: "وجه سياقي لا فرع من العلم", umbrella: "مظلة عابرة للمجالات", enabler: "طبقة تمكين يقوم عليها العلم", framework: "اطار منظم عام" };
 const RT_PHRASE = { is: "فرع من", part: "جزء من", cross: "مظلة عابرة تقطع عدة فروع", ctx: "سياق يحيط بـ", enables: "طبقة تمكين لـ" };
 function relLine(nd) {
   const bits = [];
@@ -1704,7 +1704,7 @@ function xlinkLines(nd) {
     if (l.a === nd) out.push("┄ " + XL_PHRASE[l.t].f + " «" + l.b.name + "»");
     else if (l.b === nd) out.push("┄ " + XL_PHRASE[l.t].i + " «" + l.a.name + "»");
   }
-  return out.length ? "روابط عابرة:\n" + out.join("\n") : "";
+  return out.length ? "علاقات بينية:\n" + out.join("\n") : "";
 }
 
 /* ============ التوزيع الابتدائي ============ */

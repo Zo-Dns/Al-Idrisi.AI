@@ -51,7 +51,7 @@ const SCENES = {
       "فعلى سطح بوحدات مئوية يزحف بخطوات ثابتة بينما يقفز النزول التدرجي مع التدرجات الكبيرة؛ سلوك حقيقي لا خطا عرض.",
     f: mse.f, grad: mse.grad,
     domain: { x: [-200, 1100], y: [-600, 600] },
-    axis: { x: "w = H0 (km/s / Mpc)", y: "b = v0 (km/s)" },
+    axis: { x: "w = H₀ (km/s / Mpc)", y: "b = v₀ (km/s)" },
     minima: [{ x: CF.w, y: CF.b, label: "الحل المغلق (المعادلات الطبيعية)" }],
     lr: { min: 1e-3, max: 1.2, def: 0.15 }, threshold: mse.lrMax(),
     logK: 60, start: [0, 0], inset: true,
@@ -141,12 +141,13 @@ function disposeGroup(g) {
     if (child.material) { if (child.material.map) child.material.map.dispose(); child.material.dispose(); }
   }
 }
-function labelSprite(text, color, width = 460, font = 40, scale = 84) {
+function labelSprite(text, color, width = 460, font = 40, scale = 84, dir = "rtl") {
+  /* المستند RTL؛ النصوص اللاتينية (وحدات المحاور) يجب رسمها LTR والا اعاد bidi ترتيب مقاطعها فبدت مبتورة */
   const c = document.createElement("canvas");
   c.width = width; c.height = 100;
   const ctx = c.getContext("2d");
   ctx.font = `700 ${font}px Segoe UI, Tahoma, sans-serif`;
-  ctx.direction = "rtl"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  ctx.direction = dir; ctx.textAlign = "center"; ctx.textBaseline = "middle";
   ctx.shadowColor = color; ctx.shadowBlur = 14; ctx.fillStyle = color;
   ctx.fillText(text, width / 2, 50);
   const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(c), transparent: true, depthTest: false }));
@@ -260,12 +261,12 @@ function buildSurface(sc) {
     pinGroup.add(lb);
   }
 
-  /* تسميات المحاور */
-  const ax1 = labelSprite(sc.axis.x + " ←", "#8ba3c2", 520, 34, 96);
+  /* تسميات المحاور — اللاتينية LTR كي لا يشوهها bidi، وتسمية الارتفاع عربية نقية */
+  const ax1 = labelSprite(sc.axis.x, "#8ba3c2", 520, 34, 96, "ltr");
   ax1.position.set(0, 3, WORLD + 26); axisGroup.add(ax1);
-  const ax2 = labelSprite(sc.axis.y + " ←", "#8ba3c2", 520, 34, 96);
+  const ax2 = labelSprite(sc.axis.y, "#8ba3c2", 520, 34, 96, "ltr");
   ax2.position.set(-(WORLD + 26), 3, 0); ax2.material.rotation = Math.PI / 2; axisGroup.add(ax2);
-  const ax3 = labelSprite("الارتفاع: J (مضغوط log — القراءة الرقمية خام)", "#5f7397", 620, 30, 110);
+  const ax3 = labelSprite("الارتفاع: قيمة الخسارة (مضغوطة لوغارتميا — القراءات الرقمية خام)", "#5f7397", 680, 30, 118);
   ax3.position.set(WORLD + 20, HEIGHT * 0.75, -(WORLD + 20)); axisGroup.add(ax3);
 
   live.grid = grid; live.mesh = mesh; live.wire = wire; live.contours = cGroup;
@@ -407,6 +408,7 @@ function drawInset() {
   const cv = el("insetCv"), ctx = cv.getContext("2d");
   const W = cv.width, H = cv.height;
   ctx.clearRect(0, 0, W, H);
+  ctx.direction = "ltr";   /* الكانفس يرث rtl من المستند فيشوه bidi التسميات اللاتينية */
   const rmax = 2.3, vmin = -450, vmax = 1250;
   const px = (r) => 30 + (W - 40) * r / rmax;
   const py = (v) => H - 22 - (H - 34) * (v - vmin) / (vmax - vmin);

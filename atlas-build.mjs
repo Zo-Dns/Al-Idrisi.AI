@@ -17,99 +17,106 @@ import * as HISTORY from "./history-content.mjs";
 const here = dirname(fileURLToPath(import.meta.url));
 const HARAKAT = /[ً-ْٰ]/;
 
+/* الروابط العابرة منوعة (تتمة المادة 3، 12 يوليو 2026): كل رابط [a, b, نوع] — النوع من XLINK_TYPES ادناه،
+   والاتجاه معياري: في uses المعتمد قبل الركيزة، في hist المحطة الاقدم/المؤرخة اولا، في solves المعالجة قبل المشكلة،
+   في is الصنف قبل الفئة، في part الجزء قبل الكل، في cross المظلة اولا. peer تناظري بلا اتجاه. */
 const XLINKS_AI = [
-  ["rlhf", "rl"], ["transformer", "llm"], ["gpu", "pretraining"], ["databias", "bias"],
-  ["embeddings", "tokens"], ["vision", "cnn"], ["imagegen", "gan"], ["alexnet", "cnn"],
-  ["alphago", "rl"], ["attention2017", "transformer"], ["chatgpt2022", "llm"], ["nlp", "llm"],
-  ["safety", "rlhf"], ["rag", "hallucination"], ["cutoff", "rag"], ["genai", "llm"],
-  ["genai", "imagegen"], ["benchmarks", "evaluation"], ["scaling", "gpu"], ["multimodal", "vision"],
-  ["promptinjection", "redteam"], ["deepblue", "classic"], ["dartmouth", "classic"], ["alphago", "classic"],
-  ["prob", "classic"], ["prob", "ml"], ["prob", "rl"], ["genai", "gan"], ["genai", "dl"],
-  ["agents", "rl"], ["agents", "classic"], ["agents", "llm"],
+  ["rlhf", "rl", "uses"], ["llm", "transformer", "uses"], ["pretraining", "gpu", "uses"], ["databias", "bias", "is"],
+  ["embeddings", "tokens", "uses"], ["vision", "cnn", "uses"], ["imagegen", "gan", "uses"], ["alexnet", "cnn", "hist"],
+  ["alphago", "rl", "hist"], ["attention2017", "transformer", "hist"], ["chatgpt2022", "llm", "hist"], ["nlp", "llm", "uses"],
+  ["safety", "rlhf", "uses"], ["rag", "hallucination", "solves"], ["rag", "cutoff", "solves"], ["genai", "llm", "cross"],
+  ["genai", "imagegen", "cross"], ["benchmarks", "evaluation", "is"], ["scaling", "gpu", "uses"], ["multimodal", "vision", "uses"],
+  ["redteam", "promptinjection", "solves"], ["deepblue", "classic", "hist"], ["dartmouth", "classic", "hist"], ["alphago", "classic", "hist"],
+  ["prob", "classic", "peer"], ["ml", "prob", "uses"], ["rl", "prob", "uses"], ["genai", "gan", "cross"], ["genai", "dl", "cross"],
+  ["agents", "rl", "uses"], ["agents", "classic", "uses"], ["agents", "llm", "uses"],
   /* روابط المراجعة الخبرية الاولى (10 يوليو 2026): عقد فروع-من-الجذر المعروضة تحت اب ملاحي */
-  ["xai", "ml"], ["xai", "governance"], ["multiagent", "agents"], ["multiagent", "rl"],
-  ["education", "llm"],
+  ["xai", "ml", "uses"], ["governance", "xai", "uses"], ["multiagent", "agents", "is"], ["multiagent", "rl", "uses"],
+  ["education", "llm", "uses"],
 ];
 const XLINKS_LLM = [
-  ["temp2", "hallu2"], ["rag2", "hallu2"], ["scaling2", "gpuclusters"], ["rlhf2", "alignment"],
-  ["constitutional", "alignment"], ["cot", "reasoning2"], ["decoder", "autoregressive"],
-  ["moe", "inference2"], ["deepseek", "moe"], ["kvcache", "context2"], ["paper2017", "transformer2"],
-  ["icl", "gpt"], ["nexttoken", "autoregressive"],
+  ["temp2", "hallu2", "affects"], ["rag2", "hallu2", "solves"], ["scaling2", "gpuclusters", "uses"], ["rlhf2", "alignment", "is"],
+  ["constitutional", "alignment", "is"], ["reasoning2", "cot", "uses"], ["decoder", "autoregressive", "uses"],
+  ["moe", "inference2", "solves"], ["deepseek", "moe", "uses"], ["kvcache", "context2", "enables"], ["paper2017", "transformer2", "hist"],
+  ["gpt", "icl", "hist"], ["nexttoken", "autoregressive", "part"],
 ];
 const XLINKS_DL = [
-  ["relu", "vanishing"], ["batchnorm", "vanishing"], ["resnet", "vanishing"],
-  ["backprop", "autograd"], ["adam", "sgd"], ["dropout", "overfitting"],
-  ["augment", "overfitting"], ["cnn", "vision"], ["gan", "genai"], ["diffusion", "genai"],
-  ["gpu", "alexnet"], ["conv", "kernel"], ["lstm", "vanishing"], ["transformer", "genai"],
-  ["backprop-1986", "backprop"], ["alexnet", "cnn"], ["resnet-2015", "resnet"],
-  ["gcn", "conv"], ["gat", "attention2"], ["gnn", "cnn"],
+  ["relu", "vanishing", "solves"], ["batchnorm", "vanishing", "solves"], ["resnet", "vanishing", "solves"],
+  ["backprop", "autograd", "is"], ["adam", "sgd", "is"], ["dropout", "overfitting", "solves"],
+  ["augment", "overfitting", "solves"], ["vision", "cnn", "uses"], ["genai", "gan", "cross"], ["genai", "diffusion", "cross"],
+  ["alexnet", "gpu", "uses"], ["kernel", "conv", "part"], ["lstm", "vanishing", "solves"], ["genai", "transformer", "uses"],
+  ["backprop-1986", "backprop", "hist"], ["alexnet", "cnn", "hist"], ["resnet-2015", "resnet", "hist"],
+  ["gcn", "conv", "is"], ["gat", "attention2", "uses"], ["gnn", "cnn", "peer"],
 ];
 const XLINKS_ML = [
-  ["logreg", "classification"], ["linreg", "regression"], ["knn", "curse-dim"],
-  ["decisiontree", "randomforest"], ["randomforest", "ensemble"], ["pca", "dimreduction"],
-  ["kmeans", "clustering"], ["regularization", "overfitting"], ["biasvariance", "underfitting"],
-  ["crossval", "datasplit"], ["scaling", "knn"], ["leakage", "datasplit"],
-  ["xgboost-2014", "ensemble"], ["svm-era", "svm"], ["mitchell-1997", "what-ml"],
-  ["dl-bridge", "generalization"], ["interpretability", "decisiontree"],
-  ["selfsupervised", "semisupervised"],
+  ["logreg", "classification", "is"], ["linreg", "regression", "is"], ["curse-dim", "knn", "affects"],
+  ["decisiontree", "randomforest", "part"], ["randomforest", "ensemble", "is"], ["pca", "dimreduction", "is"],
+  ["kmeans", "clustering", "is"], ["regularization", "overfitting", "solves"], ["underfitting", "biasvariance", "part"],
+  ["crossval", "datasplit", "is"], ["knn", "scaling", "uses"], ["datasplit", "leakage", "solves"],
+  ["xgboost-2014", "ensemble", "hist"], ["svm-era", "svm", "hist"], ["mitchell-1997", "what-ml", "hist"],
+  ["dl-bridge", "generalization", "uses"], ["decisiontree", "interpretability", "is"],
+  ["selfsupervised", "semisupervised", "peer"],
 ];
 const XLINKS_DATA = [
-  ["cleaning", "quality"], ["imputation", "completeness"], ["duplicates", "leakage-d"],
-  ["consistency", "cleaning"], ["outliers", "noise"], ["imagenet-d", "publicdata"],
-  ["commoncrawl", "webscraping"], ["llm-data", "textdata"], ["synthetic", "imbalance"],
-  ["gdpr", "privacy-d"], ["diffprivacy", "anonymization"], ["datacentric", "quality"],
-  ["bigdata-era", "bigdata"], ["databias", "sampling"], ["tabular", "structured"],
-  ["normalization", "datasplit-d"],
+  ["cleaning", "quality", "part"], ["imputation", "completeness", "solves"], ["duplicates", "leakage-d", "affects"],
+  ["cleaning", "consistency", "affects"], ["outliers", "noise", "peer"], ["imagenet-d", "publicdata", "is"],
+  ["commoncrawl", "webscraping", "uses"], ["llm-data", "textdata", "is"], ["synthetic", "imbalance", "solves"],
+  ["gdpr", "privacy-d", "hist"], ["diffprivacy", "anonymization", "peer"], ["datacentric", "quality", "uses"],
+  ["bigdata-era", "bigdata", "hist"], ["sampling", "databias", "affects"], ["tabular", "structured", "is"],
+  ["normalization", "datasplit-d", "uses"],
 ];
 const XLINKS_ETHICS = [
-  ["gender-shades", "algorithmic-auditing"], ["fairness-metrics", "algorithmic-auditing"], ["gdpr-e", "machine-unlearning"],
-  ["differential-privacy", "privacy-attacks"], ["red-teaming-e", "dangerous-capability-evals"], ["owasp-llm-top10", "data-poisoning"],
-  ["reward-hacking", "scalable-oversight"], ["mechanistic-interpretability", "explainability-xai"], ["eu-ai-act", "human-oversight"],
-  ["nist-ai-rmf", "ai-risk-management"], ["responsible-scaling-policies", "catastrophic-cbrn-risk"], ["agi-e", "alignment-control"],
-  ["rlhf-e", "alignment-problem"], ["constitutional-ai-e", "scalable-oversight"],
-  ["human-oversight", "alignment-control"], ["human-oversight", "governance-regulation"],
+  ["gender-shades", "algorithmic-auditing", "hist"], ["algorithmic-auditing", "fairness-metrics", "uses"], ["gdpr-e", "machine-unlearning", "affects"],
+  ["differential-privacy", "privacy-attacks", "solves"], ["red-teaming-e", "dangerous-capability-evals", "peer"], ["data-poisoning", "owasp-llm-top10", "part"],
+  ["scalable-oversight", "reward-hacking", "solves"], ["mechanistic-interpretability", "explainability-xai", "is"], ["human-oversight", "eu-ai-act", "part"],
+  ["nist-ai-rmf", "ai-risk-management", "is"], ["responsible-scaling-policies", "catastrophic-cbrn-risk", "solves"], ["agi-e", "alignment-control", "affects"],
+  ["rlhf-e", "alignment-problem", "solves"], ["constitutional-ai-e", "scalable-oversight", "is"],
+  ["human-oversight", "alignment-control", "part"], ["human-oversight", "governance-regulation", "part"],
 ];
 const XLINKS_APPS = [
-  ["object-detection", "self-driving-cars"], ["medical-imaging", "object-detection"], ["conversational-assistants", "rag-knowledge-assistants"],
-  ["conversational-assistants", "coding-assistants"], ["speech-recognition-asr", "text-to-speech"], ["text-to-image", "generative-editing"],
-  ["protein-structure", "drug-discovery"], ["genomics-ai", "drug-discovery"], ["recommendation-engines", "computational-advertising"],
-  ["fraud-detection", "demand-forecasting"], ["coding-assistants", "agentic-coding"], ["rag-knowledge-assistants", "semantic-search"],
-  ["foundation-model-apis", "model-adaptation"], ["inference-serving", "edge-on-device"],
-  ["ai-tutoring", "conversational-assistants"],
+  ["self-driving-cars", "object-detection", "uses"], ["medical-imaging", "object-detection", "uses"], ["rag-knowledge-assistants", "conversational-assistants", "is"],
+  ["conversational-assistants", "coding-assistants", "peer"], ["speech-recognition-asr", "text-to-speech", "peer"], ["generative-editing", "text-to-image", "uses"],
+  ["drug-discovery", "protein-structure", "uses"], ["drug-discovery", "genomics-ai", "uses"], ["computational-advertising", "recommendation-engines", "uses"],
+  ["fraud-detection", "demand-forecasting", "peer"], ["agentic-coding", "coding-assistants", "is"], ["rag-knowledge-assistants", "semantic-search", "uses"],
+  ["model-adaptation", "foundation-model-apis", "uses"], ["inference-serving", "edge-on-device", "peer"],
+  ["ai-tutoring", "conversational-assistants", "uses"],
 ];
 const XLINKS_CLASSIC = [
-  ["astar", "heuristic"], ["astar", "ucs"], ["astar", "admissibility"], ["minimax", "alpha-beta"],
-  ["minimax", "mcts"], ["deep-blue", "alpha-beta"], ["csp", "sat-dpll"], ["csp", "local-search"],
-  ["resolution", "fol"], ["resolution", "inference"], ["strips", "fol"], ["planning", "astar"],
-  ["expert-systems", "kr"], ["neuro-symbolic", "alphago-bridge"],
-  ["combinatorial-explosion", "game-tree"], ["combinatorial-explosion", "state-space-planning"], ["combinatorial-explosion", "inference"],
-  ["min-conflicts", "local-search"], ["walksat", "local-search"],
+  ["astar", "heuristic", "uses"], ["ucs", "astar", "is"], ["astar", "admissibility", "uses"], ["alpha-beta", "minimax", "is"],
+  ["minimax", "mcts", "peer"], ["deep-blue", "alpha-beta", "uses"], ["sat-dpll", "csp", "is"], ["csp", "local-search", "uses"],
+  ["resolution", "fol", "uses"], ["resolution", "inference", "is"], ["strips", "fol", "uses"], ["planning", "astar", "uses"],
+  ["expert-systems", "kr", "uses"], ["alphago-bridge", "neuro-symbolic", "is"],
+  ["combinatorial-explosion", "game-tree", "affects"], ["combinatorial-explosion", "state-space-planning", "affects"], ["combinatorial-explosion", "inference", "affects"],
+  ["min-conflicts", "local-search", "is"], ["walksat", "local-search", "is"],
 ];
 const XLINKS_RL = [
-  ["q-learning", "td-learning"], ["sarsa", "q-learning"], ["dqn", "q-learning"], ["actor-critic", "td-learning"],
-  ["value-iteration", "bellman-optimality"], ["td-error", "q-learning"], ["ucb", "exploration-exploitation"], ["deadly-triad", "q-learning"],
-  ["ppo", "rlhf-bridge"], ["td-gammon", "td-learning"], ["alphago", "self-play"], ["dqn", "function-approximation"], ["ppo", "trpo"],
-  ["muzero", "model-based-rl"],
+  ["q-learning", "td-learning", "is"], ["sarsa", "q-learning", "peer"], ["dqn", "q-learning", "is"], ["actor-critic", "td-learning", "uses"],
+  ["value-iteration", "bellman-optimality", "uses"], ["td-error", "q-learning", "part"], ["ucb", "exploration-exploitation", "solves"], ["deadly-triad", "q-learning", "affects"],
+  ["rlhf-bridge", "ppo", "uses"], ["td-gammon", "td-learning", "hist"], ["alphago", "self-play", "uses"], ["dqn", "function-approximation", "uses"], ["ppo", "trpo", "is"],
+  ["muzero", "model-based-rl", "is"],
 ];
 const XLINKS_PROB = [
-  ["bayes-rule", "conditional-prob"], ["bayes-net", "conditional-independence"], ["d-separation", "conditional-independence"],
-  ["gibbs-sampling", "markov-blanket"], ["variable-elimination", "bn-factorization"], ["mcmc", "mcmc-history"],
-  ["kalman-filter", "kalman-1960"], ["bayes-net", "pearl-1988"], ["em-algorithm", "forward-backward"],
-  ["vae-p", "variational-inference"], ["naive-bayes-p", "conditional-independence"], ["pomdp", "temporal-models"],
-  ["enumeration-inference", "marginalization"], ["bayes-1763", "bayes-rule"], ["diffusion-p", "variational-inference"],
-  ["markov-random-field", "bayes-net"], ["causal-inference", "bayes-net"], ["belief-propagation", "approx-inference"],
+  ["bayes-rule", "conditional-prob", "uses"], ["bayes-net", "conditional-independence", "uses"], ["d-separation", "conditional-independence", "uses"],
+  ["gibbs-sampling", "markov-blanket", "uses"], ["variable-elimination", "bn-factorization", "uses"], ["mcmc-history", "mcmc", "hist"],
+  ["kalman-1960", "kalman-filter", "hist"], ["pearl-1988", "bayes-net", "hist"], ["em-algorithm", "forward-backward", "uses"],
+  ["vae-p", "variational-inference", "uses"], ["naive-bayes-p", "conditional-independence", "uses"], ["pomdp", "temporal-models", "is"],
+  ["enumeration-inference", "marginalization", "uses"], ["bayes-1763", "bayes-rule", "hist"], ["diffusion-p", "variational-inference", "uses"],
+  ["markov-random-field", "bayes-net", "peer"], ["causal-inference", "bayes-net", "uses"], ["belief-propagation", "approx-inference", "is"],
 ];
+/* عالم التاريخ: سلاسل تاثير زمنية بين محطات مؤرخة — الاتجاه دائما من الاقدم الى الاحدث */
 const XLINKS_HISTORY = [
-  ["turing-1950", "turing-machine"], ["mcculloch-pitts", "perceptron"], ["perceptrons-book", "perceptron"],
-  ["backprop-1986", "perceptrons-book"], ["deep-blue", "shannon-chess"], ["lecun-convnet", "alexnet"],
-  ["imagenet", "alexnet"], ["alphago", "dqn-atari"], ["alphago", "deep-blue"],
-  ["transformer", "gpt-series"], ["chatgpt", "eliza"], ["turing-award-2018", "backprop-1986"],
-  ["nobel-2024", "hopfield-net"], ["nobel-2024", "alphafold2"],
+  ["turing-machine", "turing-1950", "hist"], ["mcculloch-pitts", "perceptron", "hist"], ["perceptron", "perceptrons-book", "hist"],
+  ["perceptrons-book", "backprop-1986", "hist"], ["shannon-chess", "deep-blue", "hist"], ["lecun-convnet", "alexnet", "hist"],
+  ["imagenet", "alexnet", "hist"], ["dqn-atari", "alphago", "hist"], ["deep-blue", "alphago", "hist"],
+  ["transformer", "gpt-series", "hist"], ["eliza", "chatgpt", "hist"], ["backprop-1986", "turing-award-2018", "hist"],
+  ["hopfield-net", "nobel-2024", "hist"], ["alphafold2", "nobel-2024", "hist"],
 ];
 
 /* طبقة الدلالة (دستور الخريطة الام، README المادة 3): rt نوع العلاقة، nt نوع عقدة الحلقة الاولى، sp اب المعنى، rn جملة العلاقة */
 const REL_TYPES = new Set(["is", "part", "uses", "cross", "ctx", "enables"]);
 const NODE_TYPES = new Set(["field", "flat", "ctx", "umbrella", "enabler", "framework"]);
+/* انواع الروابط العابرة (تعديل المادة 3 الموثق، 12 يوليو 2026): الدستورية الخمسة القابلة للتطبيق
+   + hist محطة-تاريخية · solves معالجة-مشكلة · peer نظير-مقابل · affects مؤثر-مباشر */
+const XLINK_TYPES = new Set(["is", "part", "uses", "enables", "cross", "hist", "solves", "peer", "affects"]);
 
 function compile(name, { GROUPS, NODES, JOURNEY }, XLINKS) {
   for (const nd of NODES) for (const v of [nd.n, nd.d, nd.e, nd.rn]) {
@@ -150,9 +157,10 @@ function compile(name, { GROUPS, NODES, JOURNEY }, XLINKS) {
     }
     return out;
   });
-  const xlinks = XLINKS.map(([a, b]) => {
+  const xlinks = XLINKS.map(([a, b, t]) => {
     if (!keyToIdx.has(a) || !keyToIdx.has(b)) throw new Error(name + " رابط مجهول: " + a + "-" + b);
-    return [keyToIdx.get(a), keyToIdx.get(b)];
+    if (!XLINK_TYPES.has(t)) throw new Error(name + " رابط عابر بلا نوع معتمد (" + t + "): " + a + "-" + b);
+    return [keyToIdx.get(a), keyToIdx.get(b), t];
   });
   const journey = JOURNEY.map((s) => {
     if (!keyToIdx.has(s.k)) throw new Error(name + " خطوة مجهولة: " + s.k);

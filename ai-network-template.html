@@ -562,6 +562,7 @@
   </div>
   <div class="cdesc" id="cardDesc"></div>
   <div class="crel" id="cardRel"></div>
+  <div class="crel" id="cardX"></div>
   <button id="branchBtn" type="button"></button><button id="labBtn" type="button"></button><button id="mapBtn" type="button"></button><button id="lab3dBtn" type="button"></button>
   <div class="cgroup" id="cardGroup"></div>
 </div>
@@ -782,7 +783,7 @@ function descCount(nd) {
 
 const links = [];
 for (const nd of nodes) if (nd.parent >= 0) links.push({ a: nodes[nd.parent], b: nd, x: false });
-for (const [ai, bi] of RAW.xlinks) links.push({ a: nodes[ai], b: nodes[bi], x: true });
+for (const [ai, bi, xt] of RAW.xlinks) links.push({ a: nodes[ai], b: nodes[bi], x: true, t: xt });
 
 const JOURNEY = RAW.journey.map(s => ({ node: nodes[s.i], text: s.t, rel: (s.r || []).map(ix => nodes[ix]) }));
 
@@ -805,6 +806,29 @@ function relLine(nd) {
     else if (target) bits.push("العلاقة: " + (nd.rt === "uses" ? "علاقة اعتماد مع" : (RT_PHRASE[nd.rt] || "")) + " «" + target.name + "»");
   }
   return bits.join("\n");
+}
+
+/* الروابط العابرة منوعة (تتمة المادة 3، 12 يوليو 2026): نوع كل رابط عابر يعرض نصا في بطاقتي طرفيه.
+   لكل نوع صيغتا اتجاه (f من طرف a، i من طرف b) — عبارات اسمية محايدة نحويا تصلح لاي اسم عقدة */
+const XL_PHRASE = {
+  is:      { f: "صنف او مثال من", i: "فئة تضم" },
+  part:    { f: "مكون او مرحلة في", i: "بنية اوسع تضم" },
+  uses:    { f: "اعتماد على", i: "ركيزة لـ" },
+  enables: { f: "تمكين تقني لـ", i: "قائم على طبقة التمكين" },
+  cross:   { f: "مظلة تمتد الى", i: "تحت مظلة" },
+  hist:    { f: "محطة مؤثرة في مسار", i: "محطة بارزة في المسار:" },
+  solves:  { f: "معالجة لمشكلة", i: "مشكلة تعالج بـ" },
+  peer:    { f: "نظير مقابل", i: "نظير مقابل" },
+  affects: { f: "مؤثر مباشر في", i: "تحت التاثير المباشر لـ" },
+};
+function xlinkLines(nd) {
+  const out = [];
+  for (const l of links) {
+    if (!l.x || !l.t || !XL_PHRASE[l.t]) continue;
+    if (l.a === nd) out.push("┄ " + XL_PHRASE[l.t].f + " «" + l.b.name + "»");
+    else if (l.b === nd) out.push("┄ " + XL_PHRASE[l.t].i + " «" + l.a.name + "»");
+  }
+  return out.length ? "روابط عابرة:\n" + out.join("\n") : "";
 }
 
 /* ============ التوزيع الابتدائي ============ */
@@ -1870,6 +1894,10 @@ function openCard(n) {
   const relTxt = relLine(n);
   relEl.textContent = relTxt;
   relEl.style.display = relTxt ? "block" : "none";
+  const xEl = document.getElementById("cardX");
+  const xTxt = xlinkLines(n);
+  xEl.textContent = xTxt;
+  xEl.style.display = xTxt ? "block" : "none";
   const col = colorOf(n);
   const dot = document.getElementById("cardDot");
   dot.style.background = col; dot.style.color = col;
@@ -2045,8 +2073,8 @@ GROUPS.forEach((g, i) => {
   legend.appendChild(el);
 });
 
-/* شرح لغة الخطوط (دستور الخريطة الام، المادة 3) */
-for (const [sym, txt] of [["━", "خط صلب: شجرة العرض الهرمية — نوع كل علاقة في بطاقة عقدتها"], ["┄", "خط متقطع: رابط عابر او مظلة تقطع الفروع"]]) {
+/* شرح لغة الخطوط والمواضع (دستور الخريطة الام، المادة 3 وتعديلها 12 يوليو 2026) */
+for (const [sym, txt] of [["━", "خط صلب: شجرة العرض الهرمية — نوع كل علاقة في بطاقة عقدتها"], ["┄", "خط متقطع: رابط عابر منوع (نوعه في بطاقتي طرفيه) او مظلة تقطع الفروع"], ["↔", "مواضع العقد ومسافاتها فيزياء عرض حية (شد وتنافر) لا مقياس علمي — الدلالة في الخطوط والبطاقات"]]) {
   const el = document.createElement("div");
   el.className = "lg lglegend";
   const s = document.createElement("span"); s.className = "lsym"; s.textContent = sym;

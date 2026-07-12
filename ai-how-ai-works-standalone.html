@@ -72,13 +72,15 @@
     color: var(--ink); font-size: 13px; line-height: 1; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
   }
+  #titleboxLabel { display: none; font-size: 13px; font-weight: 700; color: var(--ink); white-space: nowrap; }
   #titlebox.collapsed {
-    width: 40px; height: 40px; padding: 8px;
-    display: flex; align-items: center; justify-content: center;
+    width: auto; height: auto; padding: 8px 12px;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
     overflow: hidden;
   }
-  #titlebox.collapsed > *:not(#titleboxToggle) { display: none; }
+  #titlebox.collapsed > *:not(#titleboxToggle):not(#titleboxLabel) { display: none; }
   #titlebox.collapsed #titleboxToggle { position: static; }
+  #titlebox.collapsed #titleboxLabel { display: inline; }
   #titlebox h1 { margin: 0 0 2px; font-size: 19px; font-weight: 700; }
   #titlebox .sub { font-size: 13px; color: var(--muted); line-height: 1.5; }
   #stats { display: flex; gap: 14px; margin-top: 10px; font-size: 13px; color: var(--muted); }
@@ -542,6 +544,7 @@
 
 <div class="hud" id="titlebox" dir="rtl">
   <button id="titleboxToggle" type="button" aria-label="طي اللوحة">‹</button>
+  <span id="titleboxLabel">الاطلس</span>
   <h1>كيف يعمل الذكاء الاصطناعي</h1>
   <div class="sub">شبكة تفاعلية من البيانات الى الجواب — اسحب، قرب، وانقر اي مفهوم لشرحه</div>
   <button id="worldBack" type="button" style="display:none">◂ عودة الى خريطة الذكاء الاصطناعي الام</button>

@@ -99,61 +99,61 @@ if (WORLD === "llm") {
   document.title = "كيف تعمل النماذج اللغوية الكبيرة";
   document.querySelector("#titlebox h1").textContent = "كيف تعمل النماذج اللغوية الكبيرة";
   document.querySelector("#titlebox .sub").textContent = "فرع متعمق انبثق من عقدة النماذج اللغوية في الخريطة الام — يفتح الصندوق الاسود لنماذج مثل ChatGPT وClaude";
-  document.getElementById("journeyBtn").textContent = "🌌 ابدأ رحلة النموذج اللغوي: من بنائه وتدريبه الى جوابه";
+  document.getElementById("journeyBtn").textContent = "🪐 ابدأ رحلة النموذج اللغوي: من بنائه وتدريبه الى جوابه";
 }
 if (WORLD === "dl") {
   document.title = "كيف يعمل التعلم العميق";
   document.querySelector("#titlebox h1").textContent = "كيف يعمل التعلم العميق";
   document.querySelector("#titlebox .sub").textContent = "فرع متعمق انبثق من عقدة التعلم العميق في الخريطة الام — من العصبون الى الشبكة الالتفافية";
-  document.getElementById("journeyBtn").textContent = "🌌 ابدأ رحلة التعلم العميق: من العصبون الى النماذج التوليدية";
+  document.getElementById("journeyBtn").textContent = "🪐 ابدأ رحلة التعلم العميق: من العصبون الى النماذج التوليدية";
 }
 if (WORLD === "ml") {
   document.title = "كيف يعمل تعلم الآلة";
   document.querySelector("#titlebox h1").textContent = "كيف يعمل تعلم الآلة";
   document.querySelector("#titlebox .sub").textContent = "الاب الذي تفرع منه التعلم العميق والنماذج اللغوية — الخوارزميات الكلاسيكية والتقييم والمقايضات";
-  document.getElementById("journeyBtn").textContent = "🌌 ابدأ رحلة النموذج: من مشكلة الى اداة موثوقة";
+  document.getElementById("journeyBtn").textContent = "🪐 ابدأ رحلة النموذج: من مشكلة الى اداة موثوقة";
 }
 if (WORLD === "data") {
   document.title = "البيانات: وقود الذكاء الاصطناعي";
   document.querySelector("#titlebox h1").textContent = "البيانات: وقود الذكاء الاصطناعي";
   document.querySelector("#titlebox .sub").textContent = "المادة الخام التي يتعلم منها كل نظام — من فوضى العالم الى وقود جاهز للتدريب";
-  document.getElementById("journeyBtn").textContent = "🌌 ابدأ رحلة البيانات: من العالم الى النموذج";
+  document.getElementById("journeyBtn").textContent = "🪐 ابدأ رحلة البيانات: من العالم الى النموذج";
 }
 if (WORLD === "ethics") {
   document.title = "الاخلاق والامان في الذكاء الاصطناعي";
   document.querySelector("#titlebox h1").textContent = "الاخلاق والامان في الذكاء الاصطناعي";
   document.querySelector("#titlebox .sub").textContent = "فرع متعمق انبثق من عقدة الاخلاق والامان في الخريطة الام — من التحيز والخصوصية الى المواءمة والحوكمة ومخاطر الحدود";
-  document.getElementById("journeyBtn").textContent = "🌌 ابدأ رحلة المسؤولية: من الحوكمة الى المراجعة المستمرة";
+  document.getElementById("journeyBtn").textContent = "🪐 ابدأ رحلة المسؤولية: من الحوكمة الى المراجعة المستمرة";
 }
 if (WORLD === "apps") {
   document.title = "تطبيقات الذكاء الاصطناعي";
   document.querySelector("#titlebox h1").textContent = "تطبيقات الذكاء الاصطناعي";
   document.querySelector("#titlebox .sub").textContent = "فرع متعمق انبثق من عقدة التطبيقات في الخريطة الام — اين يستخدم الذكاء الاصطناعي في العالم الحقيقي";
-  document.getElementById("journeyBtn").textContent = "🌌 ابدأ جولة التطبيقات: اين يستخدم الذكاء الاصطناعي";
+  document.getElementById("journeyBtn").textContent = "🪐 ابدأ جولة التطبيقات: اين يستخدم الذكاء الاصطناعي";
 }
 if (WORLD === "classic") {
   document.title = "الذكاء الاصطناعي الكلاسيكي: البحث والمنطق";
   document.querySelector("#titlebox h1").textContent = "الذكاء الاصطناعي الكلاسيكي: البحث والمنطق";
   document.querySelector("#titlebox .sub").textContent = "فرع متعمق انبثق من عقدة الذكاء الرمزي في الخريطة الام — البحث والمنطق والتخطيط قبل موجة التعلم، والجسر العصبي-الرمزي الى اليوم";
-  document.getElementById("journeyBtn").textContent = "🌌 ابدأ جولة الذكاء الرمزي: من البحث الى الجسر العصبي-الرمزي";
+  document.getElementById("journeyBtn").textContent = "🪐 ابدأ جولة الذكاء الرمزي: من البحث الى الجسر العصبي-الرمزي";
 }
 if (WORLD === "rl") {
   document.title = "التعلم المعزز: التعلم بالتجربة والمكافأة";
   document.querySelector("#titlebox h1").textContent = "التعلم المعزز: التعلم بالتجربة والمكافأة";
   document.querySelector("#titlebox .sub").textContent = "فرع متعمق انبثق من عقدة التعلم المعزز في الخريطة الام — من الوكيل والمكافأة ومعادلات بلمان الى تعلم Q والتعلم المعزز العميق والفاغو";
-  document.getElementById("journeyBtn").textContent = "🌌 ابدأ رحلة الوكيل: من المكافأة الى تعلم Q الى الفاغو";
+  document.getElementById("journeyBtn").textContent = "🪐 ابدأ رحلة الوكيل: من المكافأة الى تعلم Q الى الفاغو";
 }
 if (WORLD === "prob") {
   document.title = "الذكاء الاحتمالي: الاستدلال تحت اللايقين";
   document.querySelector("#titlebox h1").textContent = "الذكاء الاحتمالي: الاستدلال تحت اللايقين";
   document.querySelector("#titlebox .sub").textContent = "فرع متعمق انبثق من عقدة الذكاء الاحتمالي في الخريطة الام — من قاعدة بايز والشبكات البايزية الى الاستدلال والنماذج الزمنية والقرار";
-  document.getElementById("journeyBtn").textContent = "🌌 ابدأ رحلة الاستدلال: من قاعدة بايز الى الشبكات البايزية الى القرار";
+  document.getElementById("journeyBtn").textContent = "🪐 ابدأ رحلة الاستدلال: من قاعدة بايز الى الشبكات البايزية الى القرار";
 }
 if (WORLD === "history") {
   document.title = "تاريخ الذكاء الاصطناعي";
   document.querySelector("#titlebox h1").textContent = "تاريخ الذكاء الاصطناعي";
   document.querySelector("#titlebox .sub").textContent = "فرع متعمق انبثق من عقدة محطات تاريخية في الخريطة الام — القصة الكاملة من الجذور المنطقية قبل 1950 الى الذكاء التوليدي ونوبل 2024";
-  document.getElementById("journeyBtn").textContent = "🌌 ابدأ رحلة التاريخ: من آلة تورينغ الى نوبل 2024";
+  document.getElementById("journeyBtn").textContent = "🪐 ابدأ رحلة التاريخ: من آلة تورينغ الى نوبل 2024";
 }
 if (WORLD !== "ai") document.getElementById("worldBack").style.display = "block";
 document.getElementById("worldBack").addEventListener("click", () => enterWorld("", null));

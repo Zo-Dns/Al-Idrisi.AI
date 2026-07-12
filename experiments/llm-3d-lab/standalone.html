@@ -219,16 +219,24 @@ function charSprite(text, color = "#eaf4ff", size = 13) {
   return sp;
 }
 
-function labelSprite(text, color, width = 512, font = 44, scale = 96) {
+/* الكانفس في مستند RTL يرث الاتجاه؛ والنص المختلط (عربي + softmax) او الاعرض من الكانفس
+   الثابت كان يقص او يعاد ترتيبه فيبدو مبتورا. الحل: نقيس النص ونوسع الكانفس ليتسع له تماما
+   (لا قص ابدا)، ونحدد الحجم بارتفاع عالمي ثابت فالعرض يتبع نسبة النص، مع اتجاه صريح. */
+function labelSprite(text, color, worldH = 22, font = 40, dir = "rtl") {
+  const m = (labelSprite._ctx || (labelSprite._ctx = document.createElement("canvas").getContext("2d")));
+  m.font = `700 ${font}px Segoe UI, Tahoma, sans-serif`;
+  const pad = Math.round(font * 0.7);
+  const w = Math.ceil(m.measureText(text).width) + pad * 2;
+  const h = Math.round(font * 1.9);
   const c = document.createElement("canvas");
-  c.width = width; c.height = 110;
+  c.width = w; c.height = h;
   const ctx = c.getContext("2d");
   ctx.font = `700 ${font}px Segoe UI, Tahoma, sans-serif`;
-  ctx.direction = "rtl"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  ctx.direction = dir; ctx.textAlign = "center"; ctx.textBaseline = "middle";
   ctx.shadowColor = color; ctx.shadowBlur = 16; ctx.fillStyle = color;
-  ctx.fillText(text, width / 2, 55);
+  ctx.fillText(text, w / 2, h / 2);
   const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(c), transparent: true, depthTest: false }));
-  sp.scale.set(scale, scale * 110 / width, 1);
+  sp.scale.set(worldH * w / h, worldH, 1);
   return sp;
 }
 
@@ -242,11 +250,11 @@ function disposeGroup(g) {
 
 /* ---------- static decor ---------- */
 function buildStatic() {
-  const mk = (text, y, color) => { const s = labelSprite(text, color, 560, 40, 120); s.position.set(0, y, -60); group.add(s); };
-  mk("المدخل: رموز (حرف = رمز)", -26, "#8ba3c2");
-  mk("طبقة الانتباه 1 — اربعة رؤوس", LAYER_Y[0] + 26, "#b7d9ff");
-  mk("طبقة الانتباه 2 — اربعة رؤوس", LAYER_Y[1] + 26, "#b7d9ff");
-  mk("الرمز التالي (توزيع softmax حي)", 205, "#ffd166");
+  const mk = (text, y, color) => { const s = labelSprite(text, color, 24, 40); s.position.set(0, y, -60); group.add(s); };
+  mk("المدخل: كل حرف هو رمز", -26, "#8ba3c2");
+  mk("طبقة الانتباه الاولى: اربعة رؤوس", LAYER_Y[0] + 26, "#b7d9ff");
+  mk("طبقة الانتباه الثانية: اربعة رؤوس", LAYER_Y[1] + 26, "#b7d9ff");
+  mk("الرمز التالي: توزيع softmax حي", 205, "#ffd166");
 }
 
 /* orb الرمز التالي */

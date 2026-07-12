@@ -65,7 +65,7 @@ const SCENES = {
   rosenbrock: {
     title: "روزنبروك 1960",
     badge: "دالة اختبار قياسية — ليست خسارة نموذج", badgeClass: "test",
-    desc: "f = (1−x)² + 100(y−x²)² (Rosenbrock 1960): وادٍ منحنٍ ضيق يقود الى قاع شامل وحيد عند (1,1). " +
+    desc: "f = (1−x)² + 100(y−x²)² (Rosenbrock 1960): واد منحن ضيق يقود الى قاع شامل وحيد عند (1,1). " +
       "درسها: النزول التدرجي الخام يتعرج ويزحف في الوادي، والزخم يراكم السرعة على طوله — " +
       "قارن المسارات بنفسك من نفس نقطة البداية.",
     f: rosenbrock.f, grad: rosenbrock.grad,
@@ -74,12 +74,13 @@ const SCENES = {
     minima: [{ x: 1, y: 1, label: "القاع الشامل (1,1)" }],
     lr: { min: 1e-5, max: 3e-3, def: 1e-3 }, threshold: null,
     logK: 400, start: [-1.2, 1], inset: false,
-    stats: [["القاع الشامل", "(1, 1)"], ["f عند القاع", "0 (جبريا)"], ["البنية", "وادٍ منحنٍ ضيق"]],
+    stats: [["القاع الشامل", "(1, 1)"], ["f عند القاع", "0 (جبريا)"], ["البنية", "واد منحن ضيق"]],
   },
   himmelblau: {
     title: "هيملبلاو 1972",
     badge: "دالة اختبار قياسية — ليست خسارة نموذج", badgeClass: "test",
-    desc: "f = (x²+y−11)² + (x+y²−7)² (Himmelblau 1972): اربعة قيعان شاملة متساوية كلها f=0. " +
+    desc: "f = (x²+y−11)² + (x+y²−7)² (Himmelblau 1972): اربعة قيعان شاملة متساوية كلها f=0 " +
+      "(وللسطح ايضا اربع نقاط سرج وقمة محلية واحدة عند نحو (−0.27, −0.92) — النزول التدرجي يبلغ القيعان لا هذه). " +
       "درسها: اي قاع تبلغه يقرره موضع البداية — انقر على السطح وغير البداية لترى احواض الجذب، " +
       "وهذا جوهر حساسية تدريب الشبكات العصبية للتهيئة.",
     f: himmelblau.f, grad: himmelblau.grad,
@@ -292,7 +293,7 @@ function makeOpts(sc) {
       color: OPT_COLORS[key], transparent: true, opacity: 0.85 }));
     trail.frustumCulled = false;
     trailGroup.add(trail);
-    live.opts[key] = { o: defs[key], ball, trail, pts: [], enabled: el(`chip-${key}`).classList.contains("off") === false, diverged: false };
+    live.opts[key] = { o: defs[key], ball, trail, pts: [], jhist: [], enabled: el(`chip-${key}`).classList.contains("off") === false, diverged: false };
   }
   if (!live.arrow) {
     live.arrow = new THREE.ArrowHelper(new THREE.Vector3(1, 0, 0), new THREE.Vector3(0, 1, 0), 20, 0xeaf4ff, 6, 3.4);
@@ -308,6 +309,7 @@ function resetOpts(x, y) {
     L.o.init(x, y);
     L.diverged = false;
     L.pts = [];
+    L.jhist = [live.sc.f(x, y)];
     placeBall(L);
     pushTrail(L);
   }
@@ -327,10 +329,20 @@ function placeBall(L) {
   L.trail.visible = L.enabled;
 }
 
+/* سقف رؤوس المسار: Adam يحتاج آلاف الخطوات على سطح هابل (نحو 7800 الى القاع)،
+   فعند التجاوز نخفف كثافة المسار القديم (نبقي كل نقطة ثانية) بدل قص بدايته —
+   يحفظ نقطة الانطلاق وكامل امتداد المسار مع تنازل رشيق عن الدقة في التشغيل الطويل جدا */
+const TRAIL_MAX = 12000;
 function pushTrail(L) {
   const p = L.ball.position;
   L.pts.push(p.x, p.y + 0.8, p.z);
-  if (L.pts.length > 3 * 4000) L.pts.splice(0, 3 * 400);
+  if (L.pts.length > 3 * TRAIL_MAX) {
+    const kept = [];
+    for (let i = 0; i < L.pts.length; i += 6) { kept.push(L.pts[i], L.pts[i + 1], L.pts[i + 2]); }
+    const lastBase = L.pts.length - 3;   /* الابقاء دائما على آخر نقطة (الموضع الحالي) */
+    kept.push(L.pts[lastBase], L.pts[lastBase + 1], L.pts[lastBase + 2]);
+    L.pts = kept;
+  }
   const g = new THREE.BufferGeometry();
   g.setAttribute("position", new THREE.BufferAttribute(new Float32Array(L.pts), 3));
   L.trail.geometry.dispose();
@@ -354,6 +366,8 @@ function stepAll(n = 1) {
       const [x, y] = L.o.p;
       const J = sc.f(x, y);
       if (outOfRange(sc, x, y, J)) { L.diverged = true; }
+      L.jhist.push(J);
+      if (L.jhist.length > 24) L.jhist.shift();
       placeBall(L);
       pushTrail(L);
     }
@@ -371,9 +385,26 @@ function updateReadout() {
     const J = sc.f(x, y);
     const [gx, gy] = sc.grad(x, y);
     const gn = Math.hypot(gx, gy);
-    const st = !L.enabled ? "—" : L.diverged
-      ? `<span class="st bad">تباعد ↑</span>`
-      : (gn < 1e-6 ? `<span class="st">استقر ✓</span>` : `<span class="st">ينزل…</span>`);
+    /* الحالة تفحص تقدم J الفعلي لا مجرد التدرج: عند معدل تعلم كبير يعلق النزول التدرجي في
+       حلقة دورية محدودة (period-2 في وادي روزنبروك: J ثابت والتدرج كبير الى ما لا نهاية) —
+       فلا نزعم «ينزل» وهو لا يتقدم. المعيار متين ضد طور النافذة: هل ادنى J في النافذة الحديثة
+       اقل من ادناه في النافذة السابقة (تقدم فعلي)؟ ان لا مع تدرج غير صفري = تذبذب عالق. */
+    let st;
+    if (!L.enabled) st = "—";
+    else if (L.diverged) st = `<span class="st bad">تباعد ↑</span>`;
+    else if (gn < 1e-6) st = `<span class="st">استقر ✓</span>`;
+    else {
+      const h = L.jhist;
+      if (h.length < 16) st = `<span class="st">ينزل…</span>`;   /* بيانات غير كافية بعد */
+      else {
+        const recentMin = Math.min(...h.slice(-8));
+        const olderMin = Math.min(...h.slice(-16, -8));
+        const progressing = recentMin < olderMin - Math.max(1e-9, 1e-6 * Math.abs(olderMin));
+        st = progressing
+          ? `<span class="st">ينزل…</span>`
+          : `<span class="st bad">يتذبذب ↕</span>`;   /* لا تقدم مع تدرج كبير = حلقة عالقة */
+      }
+    }
     html += `<div class="rrow" data-o="${key}"><span class="nm">${OPT_NAMES[key]}</span>` +
       `<span>${L.enabled ? fmt(J) : "—"}</span><span>${L.enabled ? fmt(gn) : "—"}</span>` +
       `<span>${L.enabled ? L.o.k ?? L.o.t : "—"}</span><span>${st}</span></div>`;
@@ -541,13 +572,19 @@ el("contourChk").addEventListener("change", (e) => { live.contours.visible = e.t
 el("wireChk").addEventListener("change", (e) => { live.wire.visible = e.target.checked; });
 el("orbitChk").addEventListener("change", (e) => { controls.autoRotate = e.target.checked; });
 for (const key of ["gd", "momentum", "adam"]) {
-  el(`chip-${key}`).addEventListener("click", () => {
-    const chip = el(`chip-${key}`);
+  const chip = el(`chip-${key}`);
+  const toggle = () => {
     chip.classList.toggle("off");
+    const on = !chip.classList.contains("off");
+    chip.setAttribute("aria-pressed", String(on));
     const L = live.opts[key];
-    L.enabled = !chip.classList.contains("off");
+    L.enabled = on;
     placeBall(L);
     updateReadout(); updateArrow(); drawInset();
+  };
+  chip.addEventListener("click", toggle);
+  chip.addEventListener("keydown", (e) => {   /* رقائق المحسنات مشغلة بلوحة المفاتيح (Enter/مسافة) */
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); }
   });
 }
 for (const key of Object.keys(SCENES)) {

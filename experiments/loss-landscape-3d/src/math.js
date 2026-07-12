@@ -3,7 +3,6 @@
 
    المصادر الاولية:
    - Cauchy (1847), "Méthode générale pour la résolution des systèmes d'équations simultanées" — اصل النزول التدرجي.
-   - Robbins & Monro (1951), "A Stochastic Approximation Method", Ann. Math. Statist. 22(3).
    - Polyak (1964), "Some methods of speeding up the convergence of iteration methods" — الزخم (الكرة الثقيلة)؛
      والصيغة المنفذة هي Goodfellow, Bengio & Courville (2016), Deep Learning, Algorithm 8.2.
    - Kingma & Ba (2015), "Adam: A Method for Stochastic Optimization", ICLR (arXiv:1412.6980), Algorithm 1 حرفيا.
@@ -13,7 +12,8 @@
    - Hubble (1929), "A relation between distance and radial velocity among extra-galactic nebulae",
      PNAS 15(3):168–173 — الجدول 1 (24 سديما).
    - نظرية عتبة التقارب على الدوال التربيعية: التدرج بخطوة ثابتة يتقارب اذا وفقط اذا lr < 2/λmax(H)
-     (تحليل الانماط الذاتية القياسي؛ انظر Goodfellow واخرون 2016، الفصل 4). */
+     — نتيجة قياسية في تحسين الدوال التربيعية (تحليل الانماط الذاتية للهسيان؛ يقارب في
+     Goodfellow واخرون 2016 §4.3 عبر رقم الشرط، ويرد صريحا في مراجع التحسين المحدب). */
 
 /* ============ بيانات هابل 1929 (الجدول 1 كاملا: الاسم، المسافة Mpc، السرعة km/s) ============
    ملاحظة امانة تاريخية: مسافات 1929 تحمل خطا منهجيا معروفا في معايرة الشموع القياسية،
@@ -73,7 +73,7 @@ export function makeMSE(rows) {
 
 /* ============ دالتا الاختبار القياسيتان (معلنتان: ليستا خسارة نموذج مدرب) ============ */
 
-/* Rosenbrock (1960): f = (1−x)² + 100(y−x²)² — قاع شامل وحيد عند (1,1) بقيمة 0، داخل وادٍ منحنٍ ضيق. */
+/* Rosenbrock (1960): f = (1−x)² + 100(y−x²)² — قاع شامل وحيد عند (1,1) بقيمة 0، داخل واد منحن ضيق. */
 export const rosenbrock = {
   f: (x, y) => { const a = 1 - x, b = y - x * x; return a * a + 100 * b * b; },
   grad: (x, y) => [-2 * (1 - x) - 400 * x * (y - x * x), 200 * (y - x * x)],
@@ -196,7 +196,7 @@ export function buildGrid(f, xmin, xmax, ymin, ymax, nx = 121, ny = 121) {
   return { J, nx, ny, xmin, xmax, ymin, ymax, jmin, jmax };
 }
 
-/* خطوط الكنتور (مربعات زاحفة مبسطة) — مستويات J تُرجع قطعا [x1,y1,x2,y2] بوحدات المعاملات */
+/* خطوط الكنتور (مربعات زاحفة مبسطة) — مستويات J ترجع قطعا [x1,y1,x2,y2] بوحدات المعاملات */
 export function contourSegments(grid, level) {
   const { J, nx, ny, xmin, xmax, ymin, ymax } = grid;
   const dx = (xmax - xmin) / (nx - 1), dy = (ymax - ymin) / (ny - 1);

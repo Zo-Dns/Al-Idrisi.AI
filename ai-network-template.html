@@ -815,7 +815,7 @@ function isCrossCut(nd) { return nd.rt === "cross" || (nd.rt === undefined && nd
 
 /* طبقة الدلالة العلمية (دستور الخريطة الام، المادة 3): سطر التصنيف والعلاقة في بطاقة العقدة.
    nt نوع العقدة (حلقة اولى) · rt نوع العلاقة · sp اب المعنى ان خالف اب العرض · rn جملة معدة تغني عن الجملة الآلية */
-const NT_PHRASE = { field: "فرع علمي", ml_field: "فرع علمي رئيسي.", flat: "موضوع رئيسي معروض مستقلا في الخريطة، لكنه علميا يندرج ضمن مجال أوسع.", ctx: "وجه سياقي لا فرع من العلم", applied: "محور تطبيقي للذكاء الاصطناعي، وليس فرعا علميا مستقلا.", historical: "محور تاريخي توثيقي للمجال، وليس فرعا علميا مستقلا.", ethical: "محور أخلاقي وتقني عابر لمجالات الذكاء الاصطناعي.", probabilistic: "منهج علمي رئيسي للاستدلال في ظل عدم اليقين.", data_enabler: "ركيزة تمكينية أساسية لأنظمة الذكاء الاصطناعي.", generative: "فئة وظيفية عابرة للمجالات والمعماريات.", umbrella: "مظلة عابرة للمجالات", enabler: "طبقة تمكين يقوم عليها العلم", framework: "اطار منظم عام" };
+const NT_PHRASE = { field: "فرع علمي", ml_field: "فرع علمي رئيسي.", llm_family: "عائلة نماذج لغوية عصبية واسعة النطاق.", agent_architecture: "إطار معماري لأنظمة هادفة ومستقلة نسبيا.", symbolic_method: "منهج علمي رئيسي قائم على التمثيل الرمزي.", flat: "موضوع رئيسي معروض مستقلا في الخريطة، لكنه علميا يندرج ضمن مجال أوسع.", ctx: "وجه سياقي لا فرع من العلم", applied: "محور تطبيقي للذكاء الاصطناعي، وليس فرعا علميا مستقلا.", historical: "محور تاريخي توثيقي للمجال، وليس فرعا علميا مستقلا.", ethical: "محور أخلاقي وتقني عابر لمجالات الذكاء الاصطناعي.", probabilistic: "منهج علمي رئيسي للاستدلال في ظل عدم اليقين.", data_enabler: "ركيزة تمكينية أساسية لأنظمة الذكاء الاصطناعي.", generative: "فئة وظيفية عابرة للمجالات والمعماريات.", umbrella: "مظلة عابرة للمجالات", enabler: "طبقة تمكين يقوم عليها العلم", framework: "اطار منظم عام" };
 const RT_PHRASE = { is: "فرع من", part: "جزء من", cross: "مظلة عابرة تقطع عدة فروع", ctx: "سياق يحيط بـ", enables: "طبقة تمكين لـ" };
 function relLine(nd) {
   const bits = [];
@@ -835,6 +835,8 @@ const XL_PHRASE = {
   is:      { f: "صنف او مثال من", i: "فئة تضم" },
   part:    { f: "مكون او مرحلة في", i: "بنية اوسع تضم" },
   uses:    { f: "اعتماد على", i: "ركيزة لـ" },
+  typically_uses: { f: "تعتمد نماذجه الحديثة غالبا على", i: "معمارية سائدة في" },
+  may_use: { f: "قد يستخدم", i: "قد يستخدم ضمن" },
   enables: { f: "تمكين تقني لـ", i: "قائم على طبقة التمكين" },
   cross:   { f: "مظلة تمتد الى", i: "تحت مظلة" },
   hist:    { f: "محطة مؤثرة في مسار", i: "محطة بارزة في المسار:" },
@@ -1168,9 +1170,18 @@ const SRC_ML = {
       { type: "فيديو تعليمي", title: "A Gentle Introduction to Machine Learning", source: "StatQuest with Josh Starmer",
         note: "مقدمة سهلة عن فكرة النموذج والتدريب والاختبار وخطر فرط التخصيص.",
         embed: "https://www.youtube-nocookie.com/embed/Gv9_4yMHFhI?rel=0", url: "https://www.youtube.com/watch?v=Gv9_4yMHFhI" },
+      { type: "مرجع أكاديمي", title: "Machine Learning Basics", source: "Goodfellow, Bengio & Courville — MIT Press",
+        note: "فصل أكاديمي مرجعي في التعلم الموجه وغير الموجه، والتعميم، وفرط التخصيص، والتحقق.",
+        link: "https://www.deeplearningbook.org/contents/ml.html" },
+      { type: "مرجع أكاديمي", title: "Reinforcement Learning: An Introduction", source: "Sutton & Barto — MIT Press",
+        note: "المرجع القياسي لتعريف الوكيل والبيئة والمكافأة والعائد والسياسة في التعلم المعزز.",
+        link: "https://www.incompleteideas.net/book/bookdraft2018mar21.pdf" },
       { type: "مصدر اكاديمي", title: "CS229: Machine Learning", source: "Stanford University",
         note: "الصفحة الرسمية لمقرر تعلم الآلة الشهير في جامعة ستانفورد، يغطي التعلم الموجه وغير الموجه والمعزز.",
         link: "https://cs229.stanford.edu/" },
+      { type: "توثيق تقني رسمي", title: "Model Selection and Evaluation", source: "scikit-learn",
+        note: "مرجع رسمي لفصل التدريب عن التحقق والاختبار واختيار مقاييس التقييم الملائمة.",
+        link: "https://scikit-learn.org/stable/model_selection.html" },
       { type: "محاضرة بروفيسور", title: "Lecture 1 | Machine Learning (Stanford)", source: "Andrew Ng",
         note: "المحاضرة الاولى لاندرو نج في ستانفورد عن دوافع تعلم الآلة وتطبيقاته.",
         embed: "https://www.youtube-nocookie.com/embed/UzxYlbK2c7E?rel=0", url: "https://www.youtube.com/watch?v=UzxYlbK2c7E" }
@@ -1188,9 +1199,18 @@ const SRC_DATA = {
       { type: "فيديو تعليمي", title: "Algorithmic Bias and Fairness: Crash Course AI #18", source: "CrashCourse",
         note: "يوضح كيف ينتقل التحيز الموجود في البيانات الى قرارات الانظمة الذكية.",
         embed: "https://www.youtube-nocookie.com/embed/gV0_raKR2UQ?rel=0", url: "https://www.youtube.com/watch?v=gV0_raKR2UQ" },
+      { type: "بحث أكاديمي", title: "Datasheets for Datasets", source: "Gebru et al. — Communications of the ACM",
+        note: "إطار مرجعي لتوثيق دوافع مجموعة البيانات وتركيبها وجمعها ومعالجتها واستخداماتها وقيودها.",
+        link: "https://arxiv.org/abs/1803.09010" },
+      { type: "مقرر أكاديمي", title: "Dataset Creation and Curation", source: "MIT Data-Centric AI",
+        note: "مرجع لإنشاء مجموعات البيانات والمعاينة والوسم وتقييم اتفاق المعلقين وجودة التسميات.",
+        link: "https://dcai.csail.mit.edu/2024/dataset-creation-curation/" },
       { type: "مصدر اكاديمي", title: "Introduction to Data-Centric AI", source: "MIT",
         note: "مقرر رسمي من معهد ام آي تي عن تحسين جودة البيانات وتنظيفها ووسمها لبناء نماذج افضل.",
         link: "https://dcai.csail.mit.edu/" },
+      { type: "توثيق تقني رسمي", title: "Common Pitfalls and Data Leakage", source: "scikit-learn",
+        note: "مرجع رسمي للتقسيم قبل المعالجة ومنع تسرب معلومات الاختبار إلى التدريب أو اختيار النموذج.",
+        link: "https://scikit-learn.org/stable/common_pitfalls.html" },
       { type: "محاضرة بروفيسور", title: "A Chat with Andrew on MLOps: From Model-centric to Data-centric AI", source: "Andrew Ng",
         note: "اندرو نج يشرح اهمية الانتقال من التركيز على النموذج الى التركيز على جودة البيانات.",
         embed: "https://www.youtube-nocookie.com/embed/06-AZXmwHjo?rel=0", url: "https://www.youtube.com/watch?v=06-AZXmwHjo" }
@@ -1211,6 +1231,12 @@ const SRC_DL = {
       { type: "مصدر اكاديمي", title: "MIT 6.S191: Introduction to Deep Learning", source: "MIT",
         note: "مقرر معهد ماساتشوستس الرسمي الذي يغطي الشبكات المتكررة والالتفافية والنماذج التوليدية.",
         link: "https://introtodeeplearning.com/" },
+      { type: "بحث أصلي", title: "Attention Is All You Need", source: "Vaswani et al. — NeurIPS 2017",
+        note: "الورقة التي قدمت معمارية المحول القائمة على الانتباه.", link: "https://arxiv.org/abs/1706.03762" },
+      { type: "بحث أصلي", title: "Generative Adversarial Nets", source: "Goodfellow et al. — NeurIPS 2014",
+        note: "الورقة المؤسسة للشبكات التوليدية التنافسية.", link: "https://papers.neurips.cc/paper/5423-generative-adversarial-nets" },
+      { type: "بحث أصلي", title: "Denoising Diffusion Probabilistic Models", source: "Ho, Jain & Abbeel — NeurIPS 2020",
+        note: "مرجع أساسي لنماذج الانتشار الاحتمالية وإزالة الضوضاء المتعلمة.", link: "https://proceedings.neurips.cc/paper/2020/hash/4c5bcfec8584af0d967f1ab10179ca4b-Abstract.html" },
       { type: "محاضرة بروفيسور", title: "Geoffrey Hinton and Yann LeCun, 2018 ACM A.M. Turing Award Lecture \"The Deep Learning Revolution\"", source: "Geoffrey Hinton و Yann LeCun",
         note: "محاضرة جائزة تورينغ لرائدي التعلم العميق يستعرضان فيها تطور هذا المجال.",
         embed: "https://www.youtube-nocookie.com/embed/VsnQf7exv5I?rel=0", url: "https://www.youtube.com/watch?v=VsnQf7exv5I" }
@@ -1371,6 +1397,15 @@ const SOURCES_BY_GROUP = {
           { type: "مصدر اكاديمي", title: "Neural Networks and Deep Learning", source: "Michael Nielsen",
             note: "كتاب الكتروني مجاني ومرجعي يشرح العصبون الاصطناعي والاوزان والانتشار الخلفي خطوة بخطوة.",
             link: "http://neuralnetworksanddeeplearning.com/" },
+          { type: "مرجع أكاديمي", title: "Deep Feedforward Networks", source: "Goodfellow, Bengio & Courville — MIT Press",
+            note: "مرجع لبنية الشبكات الأمامية والطبقات ودوال التفعيل ودالة الخسارة والانتشار الأمامي.",
+            link: "https://www.deeplearningbook.org/contents/mlp.html" },
+          { type: "مرجع أكاديمي", title: "Optimization for Training Deep Models", source: "Goodfellow, Bengio & Courville — MIT Press",
+            note: "مرجع للنزول التدرجي والدفعات ومعدل التعلم وتحسين الشبكات العصبية.",
+            link: "https://www.deeplearningbook.org/contents/optimization.html" },
+          { type: "بحث أصلي", title: "Learning Representations by Back-Propagating Errors", source: "Rumelhart, Hinton & Williams — Nature (1986)",
+            note: "الورقة الأصلية المرجعية للانتشار الخلفي وتعلم التمثيلات في الوحدات المخفية.",
+            link: "https://www.nature.com/articles/323533a0" },
           { type: "محاضرة بروفيسور", title: "12a: Neural Nets", source: "Patrick H. Winston",
             note: "محاضرة من معهد ام آي تي تشرح اساسيات الشبكات العصبية والانتشار الخلفي والنزول التدرجي.",
             embed: "https://www.youtube-nocookie.com/embed/uXt8qF2Zzfo?rel=0", url: "https://www.youtube.com/watch?v=uXt8qF2Zzfo" }
@@ -1904,9 +1939,11 @@ const LAB3D_LINKS = {
   "ml:knn": { label: "🧊 مختبر 3D: k-NN يصنف ارقام MNIST حقيقية في فضاء الميزات", url: "experiments/ml-3d-classifier/index.html" },
   "ai:gd": { label: "🧊 مختبر 3D: انزل سطح خسارة حقيقيا (بيانات هابل 1929) — تقارب مبرهن الى الحل المغلق", url: "experiments/loss-landscape-3d/index.html" },
   "ai:loss": { label: "🧊 مختبر 3D: سطح دالة الخسارة مجسما — MSE محدبة حقيقية ودالتا اختبار قياسيتان", url: "experiments/loss-landscape-3d/index.html" },
-  "dl:sgd": { label: "🧊 مختبر 3D: سباق SGD والزخم وAdam على سطح الخسارة نفسه من نفس البداية", url: "experiments/loss-landscape-3d/index.html" },
-  "dl:adam": { label: "🧊 مختبر 3D: تصحيح انحياز Adam وخطوته المحدودة مقابل الزخم وSGD — مسارات حية", url: "experiments/loss-landscape-3d/index.html" },
+  "dl:sgd": { label: "🧊 مختبر 3D: سباق النزول التدرجي والزخم وAdam على سطح الخسارة نفسه من نفس البداية", url: "experiments/loss-landscape-3d/index.html" },
+  "dl:momentum": { label: "🧊 مختبر 3D: شاهد الزخم يخترق وادي روزنبروك اسرع من النزول التدرجي الخام", url: "experiments/loss-landscape-3d/index.html" },
+  "dl:adam": { label: "🧊 مختبر 3D: تصحيح انحياز Adam وخطوته المحدودة مقابل الزخم والنزول التدرجي — مسارات حية", url: "experiments/loss-landscape-3d/index.html" },
   "dl:lr": { label: "🧊 مختبر 3D: عتبة معدل التعلم 2/λmax محسوبة نظريا — جرب التقارب والتباعد حولها", url: "experiments/loss-landscape-3d/index.html" },
+  "ml:linreg": { label: "🧊 مختبر 3D: سطح خسارة الانحدار الخطي حقيقيا على بيانات هابل 1929 — قاع = حل المربعات الصغرى", url: "experiments/loss-landscape-3d/index.html" },
 };
 const lab3dOk = {};
 for (const u of new Set(Object.values(LAB3D_LINKS).map((e) => e.url))) {

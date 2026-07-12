@@ -55,13 +55,14 @@ section { position: fixed; z-index: 10; background: var(--panel); border: 1px so
 .chip { flex: 1; display: flex; align-items: center; gap: 6px; justify-content: center; background: rgba(255,255,255,0.04); border: 1.5px solid var(--line); border-radius: 9px; padding: 6px 4px; font-size: 12px; font-weight: 700; cursor: pointer; user-select: none; }
 .chip i { width: 9px; height: 9px; border-radius: 50%; box-shadow: 0 0 9px currentColor; }
 .chip.off { opacity: 0.35; }
+.chip:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
 .chip[data-o="gd"] { border-color: rgba(105,201,255,0.55); color: #cfeaff; }
 .chip[data-o="momentum"] { border-color: rgba(247,166,217,0.55); color: #ffdcf1; }
 .chip[data-o="adam"] { border-color: rgba(255,209,102,0.55); color: #ffedbe; }
 
 #readout { display: flex; flex-direction: column; gap: 2px; margin-bottom: 8px; }
 .rrow { display: grid; grid-template-columns: 86px 1fr 1fr 62px 84px; gap: 6px; font: 11px var(--mono); color: var(--muted); align-items: center; direction: ltr; text-align: left; }
-.rrow.head { color: #5f7397; font-size: 10px; }
+.rrow.head { color: #93a7c6; font-size: 10.5px; }   /* اغمق درجة كانت 5f7397 ترسب دون تباين AA */
 .rrow .nm { font-family: var(--font); font-weight: 700; text-align: right; direction: rtl; }
 .rrow[data-o="gd"] .nm { color: var(--cyan); }
 .rrow[data-o="momentum"] .nm { color: var(--pink); }

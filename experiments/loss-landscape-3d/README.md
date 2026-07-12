@@ -79,17 +79,21 @@ shipped math itself.
    extra-galactic nebulae*, PNAS 15(3):168–173 (Table 1).
 2. A. Cauchy (1847), *Méthode générale pour la résolution des systèmes
    d'équations simultanées*, C. R. Acad. Sci. Paris 25:536–538.
-3. H. Robbins & S. Monro (1951), *A Stochastic Approximation Method*,
-   Ann. Math. Statist. 22(3):400–407.
-4. B. T. Polyak (1964), *Some methods of speeding up the convergence of
+3. B. T. Polyak (1964), *Some methods of speeding up the convergence of
    iteration methods*, USSR Comput. Math. & Math. Phys. 4(5):1–17.
-5. D. P. Kingma & J. Ba (2015), *Adam: A Method for Stochastic
+4. D. P. Kingma & J. Ba (2015), *Adam: A Method for Stochastic
    Optimization*, ICLR. https://arxiv.org/abs/1412.6980
-6. H. H. Rosenbrock (1960), *An automatic method for finding the greatest
+5. H. H. Rosenbrock (1960), *An automatic method for finding the greatest
    or least value of a function*, The Computer Journal 3(3):175–184.
-7. D. M. Himmelblau (1972), *Applied Nonlinear Programming*, McGraw-Hill.
-8. I. Goodfellow, Y. Bengio & A. Courville (2016), *Deep Learning*,
+6. D. M. Himmelblau (1972), *Applied Nonlinear Programming*, McGraw-Hill.
+7. I. Goodfellow, Y. Bengio & A. Courville (2016), *Deep Learning*,
    MIT Press — ch. 4 (numerical optimization, quadratic analysis) and
    ch. 8 (Algorithm 8.2, optimizer families).
-9. H. Li et al. (2018), *Visualizing the Loss Landscape of Neural Nets*,
+8. H. Li et al. (2018), *Visualizing the Loss Landscape of Neural Nets*,
    NeurIPS — context for loss-surface visualization practice.
+
+Note on scope: every optimizer here is **full-batch** (deterministic) — the
+gradient is computed over all data points each step. Stochastic / minibatch
+gradient descent (Robbins & Monro 1951) is deliberately not implemented, so
+it is not cited as a basis; the UI and wiring name plain "gradient descent",
+never "SGD".

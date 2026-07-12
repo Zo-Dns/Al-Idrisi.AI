@@ -14,7 +14,8 @@
       <span><i style="background:#69c9ff;color:#69c9ff"></i> نزول تدرجي</span>
       <span><i style="background:#f7a6d9;color:#f7a6d9"></i> زخم (بولياك)</span>
       <span><i style="background:#ffd166;color:#ffd166"></i> Adam</span>
-      <span class="dim">الارتفاع = قيمة الخسارة J المحسوبة فعلا (مضغوط لوغارتميا للعرض)</span>
+      <span>➜ سهم: اتجاه اشد انحدار (−التدرج)، عمودي دائما على خطوط الكنتور</span>
+      <span class="dim">الارتفاع والكنتور = قيمة الخسارة J المحسوبة فعلا (مضغوطة لوغارتميا للعرض)</span>
     </section>
 
     <section id="hud" aria-label="اللوحة العلمية">
@@ -36,14 +37,14 @@
         <div id="proofRows"></div>
       </div>
 
-      <p id="srcNote">المصادر الاولية في README: Hubble 1929 (PNAS)؛ Cauchy 1847؛ Robbins-Monro 1951؛ Polyak 1964؛ Kingma-Ba 2015 (Adam)؛ Rosenbrock 1960؛ Himmelblau 1972؛ Goodfellow et al. 2016 ف4/8.</p>
+      <p id="srcNote">المصادر الاولية في README: Hubble 1929 (PNAS)؛ Cauchy 1847؛ Polyak 1964؛ Kingma-Ba 2015 (Adam)؛ Rosenbrock 1960؛ Himmelblau 1972؛ Goodfellow et al. 2016 ف4/8. كل المحسنات كاملة الدفعة (حتمية) لا عشوائية.</p>
     </section>
 
     <section id="ctl" aria-label="التحكم">
       <div id="chips">
-        <span class="chip" data-o="gd" id="chip-gd"><i style="background:#69c9ff;color:#69c9ff"></i> نزول تدرجي</span>
-        <span class="chip" data-o="momentum" id="chip-momentum"><i style="background:#f7a6d9;color:#f7a6d9"></i> زخم α</span>
-        <span class="chip" data-o="adam" id="chip-adam"><i style="background:#ffd166;color:#ffd166"></i> Adam</span>
+        <span class="chip" data-o="gd" id="chip-gd" role="button" tabindex="0" aria-pressed="true"><i style="background:#69c9ff;color:#69c9ff"></i> نزول تدرجي</span>
+        <span class="chip" data-o="momentum" id="chip-momentum" role="button" tabindex="0" aria-pressed="true"><i style="background:#f7a6d9;color:#f7a6d9"></i> زخم α</span>
+        <span class="chip" data-o="adam" id="chip-adam" role="button" tabindex="0" aria-pressed="true"><i style="background:#ffd166;color:#ffd166"></i> Adam</span>
       </div>
 
       <div id="readout"></div>

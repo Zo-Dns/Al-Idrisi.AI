@@ -815,7 +815,7 @@ function isCrossCut(nd) { return nd.rt === "cross" || (nd.rt === undefined && nd
 
 /* طبقة الدلالة العلمية (دستور الخريطة الام، المادة 3): سطر التصنيف والعلاقة في بطاقة العقدة.
    nt نوع العقدة (حلقة اولى) · rt نوع العلاقة · sp اب المعنى ان خالف اب العرض · rn جملة معدة تغني عن الجملة الآلية */
-const NT_PHRASE = { field: "فرع علمي", flat: "موضوع رئيسي معروض مستقلا في الخريطة، لكنه علميا يندرج ضمن مجال أوسع", ctx: "وجه سياقي لا فرع من العلم", umbrella: "مظلة عابرة للمجالات", enabler: "طبقة تمكين يقوم عليها العلم", framework: "اطار منظم عام" };
+const NT_PHRASE = { field: "فرع علمي", ml_field: "فرع علمي رئيسي.", flat: "موضوع رئيسي معروض مستقلا في الخريطة، لكنه علميا يندرج ضمن مجال أوسع.", ctx: "وجه سياقي لا فرع من العلم", applied: "محور تطبيقي للذكاء الاصطناعي، وليس فرعا علميا مستقلا.", historical: "محور تاريخي توثيقي للمجال، وليس فرعا علميا مستقلا.", ethical: "محور أخلاقي وتقني عابر لمجالات الذكاء الاصطناعي.", probabilistic: "منهج علمي رئيسي للاستدلال في ظل عدم اليقين.", data_enabler: "ركيزة تمكينية أساسية لأنظمة الذكاء الاصطناعي.", generative: "فئة وظيفية عابرة للمجالات والمعماريات.", umbrella: "مظلة عابرة للمجالات", enabler: "طبقة تمكين يقوم عليها العلم", framework: "اطار منظم عام" };
 const RT_PHRASE = { is: "فرع من", part: "جزء من", cross: "مظلة عابرة تقطع عدة فروع", ctx: "سياق يحيط بـ", enables: "طبقة تمكين لـ" };
 function relLine(nd) {
   const bits = [];
@@ -841,6 +841,8 @@ const XL_PHRASE = {
   solves:  { f: "معالجة لمشكلة", i: "مشكلة تعالج بـ" },
   peer:    { f: "نظير مقابل", i: "نظير مقابل" },
   affects: { f: "مؤثر مباشر في", i: "تحت التاثير المباشر لـ" },
+  method:  { f: "ارتباط منهجي وثيق بـ", i: "ارتباط منهجي وثيق بـ" },
+  explains:{ f: "تفسير نماذج", i: "تمثل نماذجه موضوعا رئيسيا لأساليب" },
 };
 function xlinkLines(nd) {
   const out = [];
@@ -1895,11 +1897,16 @@ const LAB3D_LINKS = {
   "dl:mlp": { label: "🧊 مختبر 3D: شبكة MLP حقيقية (784←96←48←10) بتمثيل تفاعلي حي", url: "experiments/nn-3d-simulation/index.html" },
   "ai:ml": { label: "🧊 مثال 3D: شاهد خوارزمية كلاسيكية (k-NN) تصنف صورا حقيقية", url: "experiments/ml-3d-classifier/index.html" },
   "ai:classification": { label: "🧊 مختبر 3D: صنف صورا حقيقية بخوارزمية اقرب الجيران k-NN", url: "experiments/ml-3d-classifier/index.html" },
-  "ai:llm": { label: "🧊 مختبر 3D: محول مصغر حقيقي مدرب على نصوص هذا الاطلس — توليد ذاتي الانحدار حيا في المتصفح", url: "experiments/llm-3d-lab/index.html" },
-  "ai:transformer": { label: "🧊 مختبر 3D: شاهد اقواس الانتباه حية داخل محول حقيقي مصغر", url: "experiments/llm-3d-lab/index.html" },
-  "llm:transformer2": { label: "🧊 مختبر 3D: محول مصغر حقيقي — الانتباه الذاتي السببي وتوليد ذاتي الانحدار حيا", url: "experiments/llm-3d-lab/index.html" },
-  "dl:transformer": { label: "🧊 مختبر 3D: شاهد المحول يعمل حيا (انتباه + توليد ذاتي الانحدار)", url: "experiments/llm-3d-lab/index.html" },
+  "ai:llm": { label: "🧊 مختبر 3D: محول مصغر حقيقي مدرب على نصوص هذا الاطلس — توليد ذاتي الانحدار حيا في المتصفح", url: "/experiments/llm-3d-lab/standalone.html" },
+  "ai:transformer": { label: "🧊 مختبر 3D: شاهد اقواس الانتباه حية داخل محول حقيقي مصغر", url: "/experiments/llm-3d-lab/standalone.html" },
+  "llm:transformer2": { label: "🧊 مختبر 3D: محول مصغر حقيقي — الانتباه الذاتي السببي وتوليد ذاتي الانحدار حيا", url: "/experiments/llm-3d-lab/standalone.html" },
+  "dl:transformer": { label: "🧊 مختبر 3D: شاهد المحول يعمل حيا (انتباه + توليد ذاتي الانحدار)", url: "/experiments/llm-3d-lab/standalone.html" },
   "ml:knn": { label: "🧊 مختبر 3D: k-NN يصنف ارقام MNIST حقيقية في فضاء الميزات", url: "experiments/ml-3d-classifier/index.html" },
+  "ai:gd": { label: "🧊 مختبر 3D: انزل سطح خسارة حقيقيا (بيانات هابل 1929) — تقارب مبرهن الى الحل المغلق", url: "experiments/loss-landscape-3d/index.html" },
+  "ai:loss": { label: "🧊 مختبر 3D: سطح دالة الخسارة مجسما — MSE محدبة حقيقية ودالتا اختبار قياسيتان", url: "experiments/loss-landscape-3d/index.html" },
+  "dl:sgd": { label: "🧊 مختبر 3D: سباق SGD والزخم وAdam على سطح الخسارة نفسه من نفس البداية", url: "experiments/loss-landscape-3d/index.html" },
+  "dl:adam": { label: "🧊 مختبر 3D: تصحيح انحياز Adam وخطوته المحدودة مقابل الزخم وSGD — مسارات حية", url: "experiments/loss-landscape-3d/index.html" },
+  "dl:lr": { label: "🧊 مختبر 3D: عتبة معدل التعلم 2/λmax محسوبة نظريا — جرب التقارب والتباعد حولها", url: "experiments/loss-landscape-3d/index.html" },
 };
 const lab3dOk = {};
 for (const u of new Set(Object.values(LAB3D_LINKS).map((e) => e.url))) {

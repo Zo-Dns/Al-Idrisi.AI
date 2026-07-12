@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>مختبر سطح الخسارة 3D</title>
+  <link rel="stylesheet" href="./src/lab.css">
+</head>
+<body>
+  <main id="app">
+    <canvas id="scene"></canvas>
+
+    <section id="guide" aria-label="دليل المشهد">
+      <span><i style="background:#69c9ff;color:#69c9ff"></i> نزول تدرجي</span>
+      <span><i style="background:#f7a6d9;color:#f7a6d9"></i> زخم (بولياك)</span>
+      <span><i style="background:#ffd166;color:#ffd166"></i> Adam</span>
+      <span class="dim">الارتفاع = قيمة الخسارة J المحسوبة فعلا (مضغوط لوغارتميا للعرض)</span>
+    </section>
+
+    <section id="hud" aria-label="اللوحة العلمية">
+      <h1>مختبر سطح الخسارة 3D</h1>
+      <p class="honesty">الاسطح تحسب من <b>دوالها الفعلية</b> نقطة نقطة عند التحميل، والمحسنات تنفذ <b>الصيغ المنشورة حرفيا</b> (كوشي 1847؛ بولياك 1964؛ Kingma-Ba 2015) — لا مسارات مسجلة. الارتفاع مضغوط لوغارتميا للعرض؛ كل القراءات الرقمية خام.</p>
+
+      <div id="sceneTabs">
+        <button id="tab-hubble" type="button">هابل 1929</button>
+        <button id="tab-rosenbrock" type="button">روزنبروك</button>
+        <button id="tab-himmelblau" type="button">هيملبلاو</button>
+      </div>
+      <span id="sceneBadge" class="badge model">—</span>
+      <p id="sceneDesc">—</p>
+
+      <div class="statGrid" id="stats"></div>
+
+      <div id="proofPanel" aria-label="البرهان الحي">
+        <h2>البرهان الحي (يعاد حسابه في متصفحك الآن)</h2>
+        <div id="proofRows"></div>
+      </div>
+
+      <p id="srcNote">المصادر الاولية في README: Hubble 1929 (PNAS)؛ Cauchy 1847؛ Robbins-Monro 1951؛ Polyak 1964؛ Kingma-Ba 2015 (Adam)؛ Rosenbrock 1960؛ Himmelblau 1972؛ Goodfellow et al. 2016 ف4/8.</p>
+    </section>
+
+    <section id="ctl" aria-label="التحكم">
+      <div id="chips">
+        <span class="chip" data-o="gd" id="chip-gd"><i style="background:#69c9ff;color:#69c9ff"></i> نزول تدرجي</span>
+        <span class="chip" data-o="momentum" id="chip-momentum"><i style="background:#f7a6d9;color:#f7a6d9"></i> زخم α</span>
+        <span class="chip" data-o="adam" id="chip-adam"><i style="background:#ffd166;color:#ffd166"></i> Adam</span>
+      </div>
+
+      <div id="readout"></div>
+
+      <div class="sliderRow">
+        <label for="lr">معدل التعلم lr</label>
+        <span class="lrWrap"><input id="lr" type="range" min="-3" max="0" step="0.01" value="-0.82"><span id="lrTick">▲</span></span>
+        <b id="lrVal">0.15</b>
+      </div>
+      <div id="thresholdNote"></div>
+      <div class="sliderRow">
+        <label for="alpha">زخم α (بولياك)</label>
+        <input id="alpha" type="range" min="0" max="0.99" step="0.01" value="0.9">
+        <b id="alphaVal">0.90</b>
+      </div>
+      <div class="sliderRow">
+        <label for="rate">خطوات في الثانية</label>
+        <input id="rate" type="range" min="1" max="60" step="1" value="12">
+        <b id="rateVal">12</b>
+      </div>
+
+      <div class="controls">
+        <button id="runBtn" type="button">تشغيل</button>
+        <button id="stepBtn" type="button">خطوة واحدة</button>
+        <button id="resetBtn" type="button">اعادة من البداية</button>
+        <button id="randBtn" type="button">بداية عشوائية</button>
+        <label><input id="contourChk" type="checkbox" checked> كنتور</label>
+        <label><input id="wireChk" type="checkbox"> اسلاك</label>
+        <label><input id="orbitChk" type="checkbox"> دوران</label>
+      </div>
+      <p id="pickHint"><b>انقر اي نقطة على السطح</b> لنقل نقطة البداية اليها — في هيملبلاو جرب بدايات مختلفة لترى احواض الجذب الاربعة.</p>
+    </section>
+
+    <section id="inset" aria-label="فضاء البيانات">
+      <h3>فضاء البيانات: كل نقطة على السطح = خط كامل (الذهبي المقطع: الحل المغلق)</h3>
+      <canvas id="insetCv" width="252" height="158"></canvas>
+    </section>
+
+    <div id="loading">يجري حساب سطح الخسارة من الدالة الفعلية…</div>
+  </main>
+  <script type="module" src="./src/scene.js"></script>
+</body>
+</html>

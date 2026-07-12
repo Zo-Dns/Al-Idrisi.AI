@@ -86,9 +86,9 @@ function labelSprite(text, color, worldH = 22, font = 40, dir = "rtl") {
   const ctx = c.getContext("2d");
   ctx.font = `700 ${font}px Segoe UI, Tahoma, sans-serif`;
   ctx.direction = dir; ctx.textAlign = "center"; ctx.textBaseline = "middle";
-  ctx.shadowColor = color; ctx.shadowBlur = 16; ctx.fillStyle = color;
+  ctx.shadowColor = color; ctx.shadowBlur = 6; ctx.fillStyle = color;
   ctx.fillText(text, w / 2, h / 2);
-  const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(c), transparent: true, depthTest: false }));
+  const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(c), transparent: true, opacity: 0.9, depthTest: false }));
   sp.scale.set(worldH * w / h, worldH, 1);
   return sp;
 }
@@ -103,7 +103,7 @@ function disposeGroup(g) {
 
 /* ---------- static decor ---------- */
 function buildStatic() {
-  const mk = (text, y, color) => { const s = labelSprite(text, color, 24, 40); s.position.set(0, y, -60); group.add(s); };
+  const mk = (text, y, color) => { const s = labelSprite(text, color, 15, 38); s.position.set(0, y, -60); group.add(s); };
   mk("المدخل: كل حرف هو رمز", -26, "#8ba3c2");
   mk("طبقة الانتباه الاولى: اربعة رؤوس", LAYER_Y[0] + 26, "#b7d9ff");
   mk("طبقة الانتباه الثانية: اربعة رؤوس", LAYER_Y[1] + 26, "#b7d9ff");

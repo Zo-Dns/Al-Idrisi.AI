@@ -40,6 +40,7 @@ const checks = [
   [html.includes('rel="canonical"'), "canonical URL"],
   [html.includes("Al-Idrisi.AI"), "Al-Idrisi.AI project identity"],
   [html.includes('href="https://jeelpixel.com/"') && readme.includes("https://jeelpixel.com/"), "JeelPixel attribution links"],
+  [html.includes('id="titleboxHeading"') && html.includes("max-height: calc(100vh - 100px)"), "responsive title panel avoids footer overlap"],
   [html.includes("https://zo-dns.github.io/Al-Idrisi.AI/"), "renamed canonical URL"],
   [!build.includes("claude.ai/code/artifact"), "no Claude Artifact redirect in builder"],
   [!existsSync(join(ROOT, "pages/llm-how-llms-work.html")), "no obsolete LLM redirect page"],

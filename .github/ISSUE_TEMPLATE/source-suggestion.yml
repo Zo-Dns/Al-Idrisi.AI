@@ -1,0 +1,36 @@
+name: اقتراح مصدر
+description: اقترح مصدرا أكاديميا أو أوليا مع بيان ما الذي يدعمه.
+title: "[مصدر]: "
+body:
+  - type: input
+    id: citation
+    attributes:
+      label: بيانات المصدر
+      placeholder: "المؤلف، السنة، العنوان، الناشر أو الدورية"
+    validations:
+      required: true
+  - type: input
+    id: url
+    attributes:
+      label: الرابط الأصلي أو DOI
+    validations:
+      required: true
+  - type: textarea
+    id: supports
+    attributes:
+      label: ما الذي يدعمه المصدر؟
+      description: حدد العالم والعقدة والادعاء والصفحة أو القسم ذي الصلة.
+    validations:
+      required: true
+  - type: dropdown
+    id: type
+    attributes:
+      label: نوع المصدر
+      options:
+        - بحث أصلي أو محكم
+        - كتاب أكاديمي
+        - وثيقة أولية
+        - صفحة مؤسسة رسمية
+        - مادة تعليمية إضافية
+    validations:
+      required: true

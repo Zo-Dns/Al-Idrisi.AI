@@ -1,6 +1,6 @@
-/* ==================== مختبر التعلم المعزز — تعلم Q حي على شبكة ==================== */
-/* ===== RL LAB MATH: تعلم Q الجدولي + عراف تكرار القيمة (بلا DOM؛ يختبر آليا) ===== */
-/* الوكيل يتعلم من التجربة (تعلم Q) سياسة تطابق ما يحسبه التخطيط (تكرار القيمة) — برهان «التعلم = التخطيط». */
+/* ==================== مختبر التعلم المعزز — Q-Learning حية على شبكة ==================== */
+/* ===== RL LAB MATH: Q-Learning الجدولية + عراف تكرار القيمة (بلا DOM؛ يختبر آليا) ===== */
+/* الوكيل يتعلم من التجربة باستخدام Q-Learning، ثم تقارن قيمه بما يحسبه التخطيط (تكرار القيمة). */
 
 function rlMulberry32(seed) {                     /* مولد مشترك: Node والمتصفح متطابقان */
   let t = seed >>> 0;
@@ -80,7 +80,7 @@ function rlRollout(g, Q, maxSteps) {               /* المسار الجشع م
   return { steps: -1, reached: "timeout" };
 }
 
-/* ---- تعلم Q: ببذرة، ببدايات استكشافية، بابسيلون-الجشعة (تحكم TD خارج السياسة) ---- */
+/* ---- Q-Learning: ببذرة، ببدايات استكشافية، بابسيلون-الجشعة (تحكم TD خارج السياسة) ---- */
 function rlNewQ(g) { const Q = {}; for (const { x, y } of rlStates(g)) Q[rlIdx(g, x, y)] = [0, 0, 0, 0]; return Q; }
 function rlQLearn(g, Q, cfg, rng) {
   const { alpha, gamma, epsilon, episodes, maxSteps } = cfg, S = rlStates(g);
@@ -92,7 +92,7 @@ function rlQLearn(g, Q, cfg, rng) {
       const a = (rng() < epsilon) ? Math.floor(rng() * 4) : rlGreedy(Q[k]);
       const { nx, ny, r, done } = rlStep(g, x, y, a), nk = rlIdx(g, nx, ny);
       const future = done ? 0 : Math.max(Q[nk][0], Q[nk][1], Q[nk][2], Q[nk][3]);
-      Q[k][a] += alpha * (r + gamma * future - Q[k][a]);   /* قاعدة تحديث تعلم Q */
+      Q[k][a] += alpha * (r + gamma * future - Q[k][a]);   /* قاعدة تحديث Q-Learning */
       x = nx; y = ny; step++; if (done) break;
     }
   }
@@ -115,7 +115,7 @@ const LAB_MAP = {
   "rl-problem": 0, mdp: 0, "value-v": 0, "action-q": 0, "bellman-optimality": 0, "bellman-expectation": 0,
   dp: 0, "policy-iteration": 0, "value-iteration": 0, "model-free": 0, "td-learning": 0, "q-learning": 0, sarsa: 0,
 };
-const LAB_BTN_TEXT = ["🔬 جرب التعلم المعزز حيا: وكيل يتعلم Q ويطابق التخطيط"];
+const LAB_BTN_TEXT = ["🔬 جرب التعلم المعزز حيا: وكيل يستخدم Q-Learning ونقارن نتائجه بالتخطيط"];
 let labOpen = false;
 const labEl = document.getElementById("lab");
 

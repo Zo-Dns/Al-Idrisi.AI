@@ -1,8 +1,8 @@
 # 3D Neural Network Simulation
 
-Independent side experiment for a scientific 3D neural-network visualization.
-It is isolated from the Atlas code and can be removed without touching the main
-project.
+Independent scientific 3D neural-network visualization linked from the Atlas
+laboratory directory. Its code remains isolated from the main Atlas build, but
+the published Atlas expects this directory to remain available.
 
 ## Current Model
 
@@ -24,14 +24,13 @@ the output probabilities.
 From the project root:
 
 ```powershell
-cd E:\AI-Atlas-Project
-python -m http.server 8765 --bind 127.0.0.1
+npm run serve
 ```
 
 Open:
 
 ```text
-http://127.0.0.1:8765/experiments/nn-3d-simulation/
+http://127.0.0.1:8087/experiments/nn-3d-simulation/
 ```
 
 The earlier prototype interface was removed; the directory URL now opens the
@@ -39,8 +38,8 @@ current cube-based visualization directly.
 
 ## Regenerate Data
 
-Use the bundled Codex Python if NumPy is not installed in the system Python:
+Install NumPy in your Python environment, then run:
 
 ```powershell
-& "C:\Users\larjo\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe" experiments\nn-3d-simulation\scripts\train_mnist.py
+python experiments/nn-3d-simulation/scripts/train_mnist.py
 ```

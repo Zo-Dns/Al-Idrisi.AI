@@ -1,0 +1,33 @@
+name: خلل تقني
+description: أبلغ عن مشكلة في العرض أو الغوص أو المختبرات أو البناء.
+title: "[خلل]: "
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: وصف الخلل
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: خطوات إعادة الإنتاج
+      placeholder: "1. افتح...\n2. انقر...\n3. تظهر المشكلة..."
+    validations:
+      required: true
+  - type: input
+    id: url
+    attributes:
+      label: الصفحة أو العالم
+      placeholder: "مثال: #ml أو مسار المختبر"
+  - type: input
+    id: environment
+    attributes:
+      label: المتصفح ونظام التشغيل
+      placeholder: "Chrome 000 — Windows 11"
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: لقطة شاشة أو سجل الأخطاء

@@ -43,7 +43,7 @@ logits checkpoint), and entropy rising monotonically with temperature.
 ## Regenerate (train from scratch)
 
 ```powershell
-& "C:\Users\larjo\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe" experiments\llm-3d-lab\scripts\train_tiny_gpt.py
+python experiments/llm-3d-lab/scripts/train_tiny_gpt.py
 ```
 
 Fixed seed; the gradient check runs first and aborts on failure. References in

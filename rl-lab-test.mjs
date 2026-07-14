@@ -1,4 +1,4 @@
-// اختبار صحة رياضيات مختبر التعلم المعزز (تعلم Q + تكرار القيمة) — مستخرجة من الاطلس المبني، مبرهنة ضد حساب يدوي
+// اختبار صحة رياضيات مختبر التعلم المعزز (Q-Learning + تكرار القيمة) — مستخرجة من الاطلس المبني، مبرهنة ضد حساب يدوي
 import { readFileSync, writeFileSync } from "node:fs";
 import { createRequire } from "node:module";
 const require2 = createRequire(import.meta.url);
@@ -44,7 +44,7 @@ const S = g.start;
     "residual=" + res.toExponential(1) + " V*(S)=" + vi.V[S.y][S.x].toFixed(3));
 }
 
-/* 3) الرايةFLAG: التعلم = التخطيط. تعلم Q ببذرة 12345 وبدايات استكشافية يطابق Q* الى دقة الآلة */
+/* 3) الرايةFLAG: Q-Learning ببذرة 12345 وبدايات استكشافية تطابق Q* الى دقة الآلة في هذا المثال */
 {
   const Q = M.rlNewQ(g);
   M.rlQLearn(g, Q, { alpha: 0.5, gamma: 0.9, epsilon: 0.3, episodes: 5000, maxSteps: 100 }, M.rlMulberry32(12345));

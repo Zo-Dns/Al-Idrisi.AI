@@ -11,5 +11,8 @@ atlas-template.html
 jeelpixel-file-network.html
 archive/jeelpixel-file-network-standalone.html
 
+# Local development-server logs
+.dev-server-*.log
+
 # Regenerable raw MNIST archive for the 3D machine-learning lab
 experiments/ml-3d-classifier/data/raw/

@@ -46,6 +46,7 @@ const XLINKS_PROB = [
   ["kalman-filter", "kalman-1960"], ["bayes-net", "pearl-1988"], ["em-algorithm", "forward-backward"],
   ["vae-p", "variational-inference"], ["naive-bayes-p", "conditional-independence"], ["pomdp", "temporal-models"],
   ["enumeration-inference", "marginalization"], ["bayes-1763", "bayes-rule"], ["diffusion-p", "variational-inference"],
+  ["markov-random-field", "bayes-net"], ["causal-inference", "bayes-net"], ["belief-propagation", "approx-inference"],
 ];
 for (const [a, b] of XLINKS_PROB) {
   if (!keys.has(a)) bad("رابط متقاطع مفتاح مجهول: " + a);

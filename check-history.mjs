@@ -34,11 +34,11 @@ for (const s of JOURNEY) {
 }
 
 const XLINKS_HISTORY = [
-  ["turing-1950", "turing-machine"], ["mcculloch-pitts", "perceptron"], ["perceptrons-book", "perceptron"],
-  ["backprop-1986", "perceptrons-book"], ["deep-blue", "shannon-chess"], ["lecun-convnet", "alexnet"],
-  ["imagenet", "alexnet"], ["alphago", "dqn-atari"], ["alphago", "deep-blue"],
-  ["transformer", "gpt-series"], ["chatgpt", "eliza"], ["turing-award-2018", "backprop-1986"],
-  ["nobel-2024", "hopfield-net"], ["nobel-2024", "alphafold2"],
+  ["turing-machine", "turing-1950"], ["mcculloch-pitts", "perceptron"], ["perceptron", "perceptrons-book"],
+  ["perceptron", "backprop-1986"], ["shannon-chess", "deep-blue"], ["lecun-convnet", "alexnet"],
+  ["imagenet", "alexnet"], ["dqn-atari", "alphago"], ["deep-blue", "alphago"],
+  ["transformer", "gpt-series"], ["eliza", "chatgpt"], ["backprop-1986", "turing-award-2018"],
+  ["hopfield-net", "nobel-2024"], ["alphafold2", "nobel-2024"],
 ];
 for (const [a, b] of XLINKS_HISTORY) {
   if (!keys.has(a)) bad("رابط متقاطع مفتاح مجهول: " + a);

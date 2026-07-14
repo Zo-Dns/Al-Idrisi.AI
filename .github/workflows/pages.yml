@@ -1,0 +1,65 @@
+name: Deploy GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Build atlas and run all tests
+        run: npm run verify
+
+      - name: Prepare static site
+        shell: bash
+        run: |
+          mkdir -p _site
+          cp ai-how-ai-works.html _site/index.html
+          cp ai-how-ai-works.html _site/ai-how-ai-works.html
+          cp llm-how-llms-work.html llm-how-llms-work-standalone.html _site/
+          cp LICENSE CONTENT_LICENSE.md THIRD_PARTY_NOTICES.md PRIVACY.md _site/
+          cp -R licenses _site/licenses
+          rsync -a experiments/ _site/experiments/ \
+            --exclude='**/raw/**' \
+            --exclude='**/scripts/**' \
+            --exclude='**/*-test.mjs' \
+            --exclude='**/README.md'
+          touch _site/.nojekyll
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

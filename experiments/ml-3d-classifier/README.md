@@ -43,7 +43,7 @@ classifier uses all 49 standardized features.
 ## Generate the local data
 
 ```powershell
-& "C:\Users\larjo\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe" experiments\ml-3d-classifier\scripts\prepare_mnist_knn.py
+python experiments/ml-3d-classifier/scripts/prepare_mnist_knn.py
 ```
 
 The raw MNIST files are downloaded only for generation and are ignored by Git.

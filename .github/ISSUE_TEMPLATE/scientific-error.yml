@@ -1,0 +1,39 @@
+name: خطأ أو ملاحظة علمية
+description: أبلغ عن تعريف أو علاقة أو تاريخ أو ادعاء يحتاج مراجعة علمية.
+title: "[علمي]: "
+body:
+  - type: input
+    id: location
+    attributes:
+      label: العالم والعقدة
+      placeholder: "مثال: تعلم الآلة ← الخصوصية"
+    validations:
+      required: true
+  - type: textarea
+    id: current
+    attributes:
+      label: النص أو العلاقة الحالية
+      description: انسخ الجزء محل المراجعة كما يظهر في الأطلس.
+    validations:
+      required: true
+  - type: textarea
+    id: concern
+    attributes:
+      label: موضع المشكلة
+      description: اشرح بدقة لماذا قد يكون النص غير صحيح أو مطلقا أو صعب الفهم.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: الدليل المقترح
+      description: أضف رابط البحث الأصلي أو الكتاب أو الوثيقة الرسمية والصفحة أو القسم إن أمكن.
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: تحقق قبل الإرسال
+      options:
+        - label: تحققت من أن المصدر حقيقي ويدعم الملاحظة مباشرة.
+          required: true

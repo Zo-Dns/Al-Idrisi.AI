@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "إذا استخدمت أطلس الذكاء الاصطناعي في بحث أو تدريس، يرجى الاستشهاد به بهذه البيانات."
+title: "AI Atlas — أطلس الذكاء الاصطناعي التفاعلي"
+type: software
+authors:
+  - name: "AI Atlas contributors"
+version: "1.0.0-rc.1"
+repository-code: "https://github.com/Zo-Dns/AI-Atlas"
+url: "https://zo-dns.github.io/AI-Atlas/"
+abstract: "أطلس عربي تفاعلي لمفاهيم الذكاء الاصطناعي، يضم خرائط غوص ومختبرات حية ومكتبة مصادر رسمية وأكاديمية موثقة."
+keywords:
+  - artificial intelligence
+  - machine learning
+  - Arabic education
+  - interactive visualization
+  - concept map
+license: MIT

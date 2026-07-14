@@ -22,6 +22,51 @@ const probLabHtml = readFileSync(join(here, "prob-lab.html"), "utf8");
 let probLabJs = readFileSync(join(here, "prob-lab.js"), "utf8");
 const appsLabHtml = readFileSync(join(here, "apps-lab.html"), "utf8");
 let appsLabJs = readFileSync(join(here, "apps-lab.js"), "utf8");
+const academicVerification = JSON.parse(readFileSync(join(here, "academic-source-verification.json"), "utf8"));
+
+if (academicVerification.total !== 389 || academicVerification.results?.length !== 389 || academicVerification.archived?.length !== 2) {
+  throw new Error("academic-source-verification.json: expected 389 live records and 2 provenance-only archives");
+}
+const evidencePriority = [
+  "original-url",
+  "manual-primary-or-institutional-evidence",
+  "publisher-or-catalog-web-result",
+  "crossref-doi",
+  "crossref",
+  "semantic-scholar"
+];
+function acceptedEvidenceUrl(audit) {
+  const accepted = (audit?.evidence || []).filter((evidence) => evidence.ok);
+  for (const source of evidencePriority) {
+    const evidence = accepted.find((candidate) => candidate.source === source);
+    const url = evidence?.url || evidence?.match?.url;
+    if (url) return url;
+  }
+  const fallback = accepted.find((evidence) => evidence.url || evidence.match?.url);
+  return fallback?.url || fallback?.match?.url || "";
+}
+const academicCatalog = academicVerification.results.map(({ audit, ...record }) => ({
+  ...record,
+  url: record.url || acceptedEvidenceUrl(audit)
+}));
+if (new Set(academicCatalog.map((record) => record.id)).size !== academicCatalog.length) {
+  throw new Error("academic-source-verification.json: source IDs must be unique");
+}
+if (academicCatalog.some((record) => !record.a || !record.t || !record.v || !record.k || !record.id || !Array.isArray(record.u) || !record.u.length)) {
+  throw new Error("academic-source-verification.json: a canonical source record is incomplete");
+}
+if (academicCatalog.some((record) => record.url && !record.url.startsWith("https://"))) {
+  throw new Error("academic-source-verification.json: source URLs must use HTTPS");
+}
+if (academicCatalog.some((record) => !record.url)) {
+  throw new Error("academic-source-verification.json: every live source needs an accepted evidence URL");
+}
+function inlineJson(value) {
+  return JSON.stringify(value)
+    .replaceAll("<", "\\u003c")
+    .replaceAll("\u2028", "\\u2028")
+    .replaceAll("\u2029", "\\u2029");
+}
 
 function replaceOnce(hay, from, to, name) {
   const i = hay.indexOf(from);
@@ -44,7 +89,7 @@ t = replaceOnce(t, "  /* ============ المختبر الحي ============ */",
     background: rgba(79, 200, 248, 0.12);
     border: 1px solid rgba(79, 200, 248, 0.45);
     color: #9fdcff;
-    font-family: var(--font); font-size: 13.5px; font-weight: 600;
+    font-family: "Cairo Atlas Directory", "Cairo", "Segoe UI", Tahoma, sans-serif; font-size: 13.5px; font-weight: 600;
     border-radius: 10px; padding: 8px 12px; cursor: pointer;
   }
   #worldBack:hover { background: rgba(79, 200, 248, 0.22); }
@@ -53,7 +98,7 @@ t = replaceOnce(t, "  /* ============ المختبر الحي ============ */",
 
 /* 2) طبقة الغوص في الـDOM */
 t = replaceOnce(t, '<canvas id="stage"></canvas>',
-  '<canvas id="stage"></canvas>\n\n<div id="warp" class="on"></div>', "warp-div");
+  '<canvas id="stage" role="img" aria-label="خريطة مفاهيم تفاعلية للذكاء الاصطناعي؛ استخدم لوحة المجموعات والبحث لاستكشاف محتواها."></canvas>\n\n<div id="warp" class="on"></div>', "warp-div");
 
 /* 3) زر العودة داخل لوحة العنوان */
 t = replaceOnce(t,
@@ -78,6 +123,7 @@ const RAW_HISTORY = /*__DATA_HISTORY__*/null;
 const RAW_BY_WORLD = { ai: RAW_AI, llm: RAW_LLM, dl: RAW_DL, ml: RAW_ML, data: RAW_DATA, ethics: RAW_ETHICS, apps: RAW_APPS, classic: RAW_CLASSIC, rl: RAW_RL, prob: RAW_PROB, history: RAW_HISTORY };
 const WORLD = ["llm", "dl", "ml", "data", "ethics", "apps", "classic", "rl", "prob", "history"].includes((location.hash || "").slice(1)) ? location.hash.slice(1) : "ai";
 const RAW = RAW_BY_WORLD[WORLD];
+document.documentElement.classList.toggle("deep-world", WORLD !== "ai");
 /* واجهة المختبرات المشتركة — يملؤها مختبر العالم النشط فقط */
 let labOpen = false;
 let LAB_MAP = {};
@@ -140,8 +186,8 @@ if (WORLD === "classic") {
 if (WORLD === "rl") {
   document.title = "التعلم المعزز: التعلم بالتجربة والمكافأة";
   document.querySelector("#titlebox h1").textContent = "التعلم المعزز: التعلم بالتجربة والمكافأة";
-  document.querySelector("#titlebox .sub").textContent = "فرع متعمق انبثق من عقدة التعلم المعزز في الخريطة الام — من الوكيل والمكافأة ومعادلات بلمان الى تعلم Q والتعلم المعزز العميق والفاغو";
-  document.getElementById("journeyBtn").textContent = "🪐 ابدأ رحلة الوكيل: من المكافأة الى تعلم Q الى الفاغو";
+  document.querySelector("#titlebox .sub").textContent = "فرع متعمق انبثق من عقدة التعلم المعزز في الخريطة الام — من الوكيل والمكافأة ومعادلات بلمان الى Q-Learning والتعلم المعزز العميق وAlphaGo";
+  document.getElementById("journeyBtn").textContent = "🪐 ابدأ رحلة الوكيل: من المكافأة وQ-Learning الى دمج التعلم والبحث في AlphaGo";
 }
 if (WORLD === "prob") {
   document.title = "الذكاء الاحتمالي: الاستدلال تحت اللايقين";
@@ -181,7 +227,7 @@ t = replaceOnce(t,
   classic:     { label: "🧭 غص داخل هذه العقدة: الذكاء الرمزي الكلاسيكي", world: "#classic" },
   rl:          { label: "🧭 غص داخل هذه العقدة: التعلم المعزز من الداخل", world: "#rl" },
   reward:      { label: "🧭 تعمق في المكافأة: عالم التعلم المعزز", world: "#rl" },
-  alphago:     { label: "🧭 تعمق في الفاغو: عالم التعلم المعزز", world: "#rl" },
+  alphago:     { label: "🧭 تعمق في AlphaGo: عالم التعلم المعزز", world: "#rl" },
   rlhf:        { label: "🧭 تعمق في محرك المواءمة: عالم التعلم المعزز", world: "#rl" },
   prob:        { label: "🧭 غص داخل هذه العقدة: الذكاء الاحتمالي من الداخل", world: "#prob" },
   "bayes-net": { label: "🧭 تعمق في الشبكات البايزية: عالم الذكاء الاحتمالي", world: "#prob" },
@@ -249,6 +295,10 @@ t = t.slice(0, jsStart) +
   'if (WORLD === "rl") {\n' + rlLabJs + "\n}\n\n" +
   'if (WORLD === "prob") {\n' + probLabJs + "\n}\n" +
   t.slice(jsEnd);
+
+/* اشحن نتيجة التدقيق المرجعي الموثقة في القالب المولد؛ لا تعتمد النسخة النهائية على ملف خارجي وقت العرض. */
+t = replaceOnce(t, "/*__ACADEMIC_CATALOG__*/[]", inlineJson(academicCatalog), "academic-catalog");
+t = replaceOnce(t, "/*__ACADEMIC_ARCHIVED__*/[]", inlineJson(academicVerification.archived), "academic-archive");
 
 /* تحقق نهائي */
 for (const must of ["labWorld-ai", "labWorld-llm", "labWorld-ml", "labWorld-data", "labWorld-ethics", "labWorld-apps", "labWorld-classic", "labWorld-rl", "labWorld-prob", "enterWorld",

@@ -31,6 +31,7 @@ const html = read("pages/ai-how-ai-works.html");
 const build = read("scripts/atlas-build.mjs");
 const server = read("scripts/dev-server.mjs");
 const pages = read(".github/workflows/pages.yml");
+const readme = read("README.md");
 
 const checks = [
   [html.includes('<html lang="ar" dir="rtl">'), "Arabic document direction"],
@@ -38,6 +39,7 @@ const checks = [
   [html.includes('property="og:title"'), "Open Graph metadata"],
   [html.includes('rel="canonical"'), "canonical URL"],
   [html.includes("Al-Idrisi.AI"), "Al-Idrisi.AI project identity"],
+  [html.includes('href="https://jeelpixel.com/"') && readme.includes("https://jeelpixel.com/"), "JeelPixel attribution links"],
   [html.includes("https://zo-dns.github.io/Al-Idrisi.AI/"), "renamed canonical URL"],
   [!build.includes("claude.ai/code/artifact"), "no Claude Artifact redirect in builder"],
   [!existsSync(join(ROOT, "pages/llm-how-llms-work.html")), "no obsolete LLM redirect page"],

@@ -184,6 +184,13 @@
   #btns button:hover { background: rgba(79, 200, 248, 0.16); border-color: rgba(79,200,248,0.4); }
   button:focus-visible, #search:focus-visible, .lg:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
   #btns label { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); cursor: pointer; padding: 6px 2px; }
+  #jeelPixelCredit {
+    margin-top: 10px; padding-top: 8px;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    color: var(--muted); font-size: 11.5px; line-height: 1.55;
+  }
+  #jeelPixelCredit a { color: #bfeeff; font-weight: 700; text-decoration: none; direction: ltr; unicode-bidi: isolate; }
+  #jeelPixelCredit a:hover { color: #fff; text-decoration: underline; text-underline-offset: 3px; }
 
   #hint {
     bottom: 16px; right: 18px;
@@ -655,6 +662,7 @@
     <label><input id="liveChk" type="checkbox" checked /> حركة حية</label>
     <button id="refBtn" type="button">📚 المصادر الرسمية والأكاديمية</button>
   </div>
+  <div id="jeelPixelCredit">مشروع معرفي مفتوح المصدر من <a href="https://jeelpixel.com/" target="_blank" rel="noopener noreferrer">JeelPixel</a></div>
 </div>
 
 <div class="hud" id="hint">

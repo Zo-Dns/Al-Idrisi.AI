@@ -1,5 +1,7 @@
 # Al-Idrisi.AI
 
+![Al-Idrisi.AI — أطلس معرفي تفاعلي للذكاء الاصطناعي](assets/al-idrisi-ai-cover.png)
+
 [![Build and test](https://github.com/Zo-Dns/Al-Idrisi.AI/actions/workflows/ci.yml/badge.svg)](https://github.com/Zo-Dns/Al-Idrisi.AI/actions/workflows/ci.yml)
 [![GitHub Pages](https://github.com/Zo-Dns/Al-Idrisi.AI/actions/workflows/pages.yml/badge.svg)](https://github.com/Zo-Dns/Al-Idrisi.AI/actions/workflows/pages.yml)
 

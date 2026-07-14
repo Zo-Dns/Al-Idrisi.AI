@@ -71,7 +71,7 @@ for (const file of ["ai-how-ai-works.html"]) {
 }
 
 const readme = readFileSync(new URL("./README.md", import.meta.url), "utf8");
-assert.ok(readme.includes("**AI الام=14**"), "README لا يوثق العدد الحالي للجولة");
-assert.ok(!readme.includes("**AI الام=12**"), "README ما زال يوثق العدد القديم للجولة");
+assert.ok(readme.includes("جولة كبرى من 14 خطوة"), "README لا يوثق العدد الحالي للجولة بصياغة موجزة");
+assert.ok(!readme.includes("جولة كبرى من 12 خطوة"), "README ما زال يوثق العدد القديم للجولة");
 
 console.log(`AI mother journey review: ${JOURNEY.length} steps, ${EXPECTED_MAIN_GROUPS.length} main groups, ${usedSources.size} documented academic/primary sources verified.`);

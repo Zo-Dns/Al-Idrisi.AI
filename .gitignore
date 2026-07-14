@@ -4,15 +4,12 @@
 # Regenerated build intermediate (make-atlas.mjs builds it from ai-network-template.html; atlas-build.mjs consumes it — run make-atlas before atlas-build on a fresh clone)
 atlas-template.html
 
-# Local Claude Code config (machine-specific paths, local permissions)
+# Local assistant configuration (machine-specific paths and permissions)
 .claude/
-
-# Unrelated stray file from another project
-jeelpixel-file-network.html
-archive/jeelpixel-file-network-standalone.html
 
 # Local development-server logs
 .dev-server-*.log
 
-# Regenerable raw MNIST archive for the 3D machine-learning lab
+# Regenerable raw MNIST archives used only while rebuilding trained lab data
 experiments/ml-3d-classifier/data/raw/
+experiments/nn-3d-simulation/data/raw/

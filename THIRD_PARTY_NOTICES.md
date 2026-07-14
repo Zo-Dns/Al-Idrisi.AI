@@ -41,17 +41,6 @@ Copyright 2009 The Cairo Project Authors
 Licensed under the SIL Open Font License 1.1. The complete notice and license
 are preserved in `licenses/Cairo-OFL-1.1.txt`.
 
-## Optical Recognition of Handwritten Digits (Optdigits)
-
-Development data under `experiments/nn-3d-simulation/data/raw/` originates
-from the UCI Machine Learning Repository:
-
-E. Alpaydin & C. Kaynak (1998), *Optical Recognition of Handwritten Digits*,
-DOI: https://doi.org/10.24432/C50P49.
-
-UCI marks this dataset as CC BY 4.0. The raw development inputs are excluded
-from the GitHub Pages deployment artifact.
-
 ## MNIST
 
 The neural-network and image-classification laboratories use MNIST handwritten
@@ -66,7 +55,8 @@ https://yann.lecun.com/exdb/mnist/
 The upstream documentation page does not provide an explicit software-style
 license statement. Consequently, MNIST files and data derived from them are
 not relicensed under MIT or CC BY by this project. Raw development archives
-are excluded from the GitHub Pages deployment. Redistributors remain
+are downloaded only when rebuilding the derived lab data, are ignored by Git,
+and are excluded from the GitHub Pages deployment. Redistributors remain
 responsible for confirming the terms applicable to their use.
 
 ## External academic and learning resources

@@ -9,6 +9,10 @@
 [![Build and test](https://github.com/Zo-Dns/Al-Idrisi.AI/actions/workflows/ci.yml/badge.svg)](https://github.com/Zo-Dns/Al-Idrisi.AI/actions/workflows/ci.yml)
 [![GitHub Pages](https://github.com/Zo-Dns/Al-Idrisi.AI/actions/workflows/pages.yml/badge.svg)](https://github.com/Zo-Dns/Al-Idrisi.AI/actions/workflows/pages.yml)
 
+## المشروع في لمحة
+
+![جولة سريعة في الخريطة الأم لمشروع Al-Idrisi.AI](assets/demos/atlas-overview.gif)
+
 ## لماذا بُني Al-Idrisi.AI؟
 
 بدأ المشروع من سؤال: كيف يمكن رؤية الذكاء الاصطناعي بوصفه منظومة مترابطة بدلا من قائمة مصطلحات منفصلة؟ بُني `Al-Idrisi.AI` ليجمع الخريطة العامة، وعوالم الغوص، والرحلات التعليمية، والمختبرات، والمصادر في تجربة واحدة.
@@ -26,6 +30,10 @@
 - مكتبة من 389 مصدرا رسميا وأكاديميا موثقا، مع روابط ومواضع الاستخدام.
 
 تشمل عوالم الغوص: البيانات، تعلم الآلة، التعلم العميق، النماذج اللغوية الكبيرة، الأخلاق والأمان، التطبيقات، الذكاء الرمزي الكلاسيكي، التعلم المعزز، الذكاء الاحتمالي، وتاريخ الذكاء الاصطناعي.
+
+## مختبرات تفاعلية
+
+![عرض مختبر الشبكة العصبية ثلاثي الأبعاد والمختبر التفاعلي](assets/demos/labs-showcase.gif)
 
 ## التشغيل محليا
 

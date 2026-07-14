@@ -11,7 +11,6 @@ const MIME = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; cha
 createServer((req, res) => {
   let p = decodeURIComponent((req.url || "/").split("?")[0].split("#")[0]);
   if (p === "/" || p === "/ai-how-ai-works.html") p = "/pages/ai-how-ai-works.html";
-  if (p === "/llm-how-llms-work.html" || p === "/llm-how-llms-work-standalone.html") p = "/pages" + p;
   let file = resolve(ROOT, "." + p);
   const rel = relative(ROOT, file);
   if (rel.startsWith("..") || isAbsolute(rel)) { res.writeHead(403); res.end(); return; }

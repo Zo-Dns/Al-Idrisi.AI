@@ -1,4 +1,4 @@
-// يبني الأطلس الموحد في ملف HTML نهائي واحد + ملفات إعادة التوجيه للروابط القديمة
+// يبني الأطلس الموحد في ملف HTML نهائي واحد
 import { readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -210,17 +210,5 @@ const fragmentPreamble = '<meta charset="utf-8">\n<title>Al-Idrisi.AI — كيف
 if (!t.startsWith(fragmentPreamble)) throw new Error("atlas document preamble missing");
 const wrap = (b) => '<!doctype html>\n<html lang="ar" dir="rtl">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n<meta name="description" content="Al-Idrisi.AI أطلس عربي تفاعلي يشرح مفاهيم الذكاء الاصطناعي وعلاقاتها، مع عوالم غوص ومختبرات حية ومصادر رسمية وأكاديمية موثقة.">\n<meta name="theme-color" content="#070b15">\n<meta name="color-scheme" content="dark">\n<meta property="og:type" content="website">\n<meta property="og:locale" content="ar_AR">\n<meta property="og:title" content="Al-Idrisi.AI">\n<meta property="og:description" content="أطلس عربي تفاعلي للذكاء الاصطناعي، مع عوالم غوص ومختبرات حية ومكتبة مصادر موثقة.">\n<meta name="twitter:card" content="summary_large_image">\n<link rel="canonical" href="https://zo-dns.github.io/Al-Idrisi.AI/">\n<title>Al-Idrisi.AI — كيف يعمل الذكاء الاصطناعي</title>\n</head>\n<body>\n' + b + "\n</body>\n</html>\n";
 writeFileSync(join(PAGE_DIR, "ai-how-ai-works.html"), wrap(t.slice(fragmentPreamble.length)), "utf8");
-
-/* الرابط القديم لخريطة LLM يصير بوابة تحويل الى العالم الثاني داخل الاطلس */
-const stub = (target) =>
-  "<title>كيف تعمل النماذج اللغوية الكبيرة</title>\n" +
-  '<div dir="rtl" style="font-family:Segoe UI,Tahoma,sans-serif; background:#070b15; color:#e9eef8; min-height:100vh; display:flex; align-items:center; justify-content:center; text-align:center; padding:24px">' +
-  '<div><div style="font-size:18px; font-weight:700">خريطة النماذج اللغوية انتقلت الى داخل الاطلس الموحد</div>' +
-  '<div style="margin-top:10px; font-size:14px; color:#8792ac">يجري تحويلك الان...</div>' +
-  '<a href="' + target + '" style="display:inline-block; margin-top:14px; color:#9fdcff; font-size:14.5px">اذا لم يحدث التحويل انقر هنا</a></div></div>\n' +
-  "<script>location.replace(" + JSON.stringify(target) + ");</script>";
-const legacyLlmRedirect = wrap(stub("ai-how-ai-works.html#llm"));
-writeFileSync(join(PAGE_DIR, "llm-how-llms-work.html"), legacyLlmRedirect, "utf8");
-writeFileSync(join(PAGE_DIR, "llm-how-llms-work-standalone.html"), legacyLlmRedirect, "utf8");
 
 console.log(`atlas: ai=${ai.count} + llm=${llm.count} + dl=${dl.count} + ml=${ml.count} + data=${data.count} + ethics=${ethics.count} + apps=${apps.count} + classic=${classic.count} + rl=${rl.count} + prob=${prob.count} + history=${history.count} nodes, size=${Math.round(t.length / 1024)}KB — OK`);

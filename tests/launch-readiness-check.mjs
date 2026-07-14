@@ -29,7 +29,6 @@ for (const name of required) {
 
 const html = read("pages/ai-how-ai-works.html");
 const build = read("scripts/atlas-build.mjs");
-const redirect = read("pages/llm-how-llms-work.html");
 const server = read("scripts/dev-server.mjs");
 const pages = read(".github/workflows/pages.yml");
 
@@ -41,8 +40,8 @@ const checks = [
   [html.includes("Al-Idrisi.AI"), "Al-Idrisi.AI project identity"],
   [html.includes("https://zo-dns.github.io/Al-Idrisi.AI/"), "renamed canonical URL"],
   [!build.includes("claude.ai/code/artifact"), "no Claude Artifact redirect in builder"],
-  [!redirect.includes("claude.ai/code/artifact"), "no Claude Artifact redirect in legacy page"],
-  [redirect.includes("ai-how-ai-works.html#llm"), "legacy LLM link stays local"],
+  [!existsSync(join(ROOT, "pages/llm-how-llms-work.html")), "no obsolete LLM redirect page"],
+  [!existsSync(join(ROOT, "pages/llm-how-llms-work-standalone.html")), "no duplicate obsolete LLM redirect page"],
   [server.includes("fileURLToPath(import.meta.url)"), "portable development root"],
   [!/(?:^|[\s"'(=])[A-Za-z]:[\\/]/m.test(server), "no machine-specific server path"],
   [pages.includes("npm run verify"), "Pages waits for verification"],

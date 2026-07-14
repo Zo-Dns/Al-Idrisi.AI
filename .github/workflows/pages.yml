@@ -35,7 +35,6 @@ jobs:
           mkdir -p _site
           cp pages/ai-how-ai-works.html _site/index.html
           cp pages/ai-how-ai-works.html _site/ai-how-ai-works.html
-          cp pages/llm-how-llms-work.html pages/llm-how-llms-work-standalone.html _site/
           cp LICENSE docs/legal/CONTENT_LICENSE.md docs/legal/THIRD_PARTY_NOTICES.md docs/legal/PRIVACY.md _site/
           cp -R licenses _site/licenses
           rsync -a experiments/ _site/experiments/ \

@@ -1,5 +1,5 @@
 <meta charset="utf-8">
-<title>Al-Idrisi.AI — كيف يعمل الذكاء الاصطناعي</title>
+<title>الإدريسي — Al-Idrisi.AI — كيف يعمل الذكاء الاصطناعي</title>
 <style>
   /* Cairo المتغير مضمن لكل نصوص فهرس المختبرات بأوزانها المختلفة. */
   @font-face {
@@ -81,7 +81,6 @@
 
   #titlebox {
     top: 18px; right: 18px;
-    box-sizing: border-box;
     direction: rtl;
     background: var(--panel);
     border: 1px solid var(--panel-border);
@@ -89,14 +88,12 @@
     padding: 14px 18px;
     width: 290px;
     max-width: calc(100vw - 36px);
-    max-height: calc(100vh - 100px);
-    overflow-y: auto;
-    overflow-x: hidden;
     backdrop-filter: blur(8px);
     box-shadow: 0 8px 30px rgba(0,0,0,0.45);
     transition: width 0.2s ease, padding 0.2s ease;
   }
   html.deep-world #titlebox {
+    box-sizing: border-box;
     width: 328px;
     max-height: calc(100vh - 36px);
     overflow-y: auto;
@@ -117,11 +114,12 @@
     display: flex; align-items: center; justify-content: center; gap: 8px;
     overflow: hidden;
   }
-  #titlebox.collapsed > *:not(#titleboxToggle):not(#titleboxLabel) { display: none; }
+  #titlebox.collapsed > *:not(#titleboxToggle):not(#titleboxLabel) { display: none !important; }
   #titlebox.collapsed #titleboxToggle { position: static; }
   #titlebox.collapsed #titleboxLabel { display: inline; }
-  #titleboxHeading { display: flex; align-items: baseline; gap: 8px; padding-left: 26px; }
-  #titlebox h1 { margin: 0 0 2px; font-size: 19px; font-weight: 700; }
+  #titlebox h1 { margin: 0 0 2px; padding-left: 26px; display: flex; align-items: baseline; gap: 6px; font-size: 19px; font-weight: 700; }
+  #titlebox h1 .brandEn { direction: ltr; unicode-bidi: isolate; }
+  #titlebox h1 .brandSep { color: var(--muted); font-weight: 400; }
   #titlebox .sub { font-size: 13px; color: var(--muted); line-height: 1.5; }
   #stats { display: flex; gap: 14px; margin-top: 10px; font-size: 13px; color: var(--muted); }
   #stats b { color: var(--ink); font-variant-numeric: tabular-nums; }
@@ -188,7 +186,15 @@
   #btns button:hover { background: rgba(79, 200, 248, 0.16); border-color: rgba(79,200,248,0.4); }
   button:focus-visible, #search:focus-visible, .lg:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
   #btns label { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); cursor: pointer; padding: 6px 2px; }
-  #jeelPixelCredit { color: var(--muted); font-size: 11.5px; line-height: 1.55; white-space: nowrap; }
+  #jeelPixelCredit {
+    bottom: 16px; left: 50%; transform: translateX(-50%);
+    direction: rtl; white-space: nowrap;
+    color: var(--muted); font-size: 11.5px; line-height: 1.55;
+    background: rgba(10, 14, 25, 0.7);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 8px; padding: 5px 10px;
+    backdrop-filter: blur(8px);
+  }
   #jeelPixelCredit a { color: #bfeeff; font-weight: 700; text-decoration: none; direction: ltr; unicode-bidi: isolate; }
   #jeelPixelCredit a:hover { color: #fff; text-decoration: underline; text-underline-offset: 3px; }
 
@@ -629,14 +635,97 @@
   .refEmpty { color: var(--muted); font-size: 14px; padding: 22px 0; text-align: center; }
 
   @media (max-width: 720px) {
-    #hint { display: none; }
-    #card { bottom: auto; top: 18px; left: 18px; }
-    #refPanel { top: 2vh; max-height: 96vh; }
-    #labsDirectoryPanel { top: 2vh; max-height: 96vh; }
+    #hint, #tip { display: none !important; }
+
+    #titlebox:not(.collapsed) {
+      top: max(8px, env(safe-area-inset-top));
+      right: max(8px, env(safe-area-inset-right));
+      left: max(8px, env(safe-area-inset-left));
+      width: auto; max-width: none;
+      max-height: calc(100vh - 16px);
+      max-height: calc(100dvh - 16px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+      box-sizing: border-box; overflow-y: auto; overflow-x: hidden;
+      padding: 12px 14px;
+    }
+    #titlebox.collapsed,
+    html.deep-world #titlebox.collapsed {
+      top: max(8px, env(safe-area-inset-top));
+      right: max(8px, env(safe-area-inset-right));
+      left: auto; width: auto; max-width: calc(100vw - 16px);
+      min-height: 44px; box-sizing: border-box;
+    }
+    #titlebox:not(.collapsed) #titleboxToggle {
+      top: 8px; right: -1px; left: auto;
+      width: 36px; height: 36px;
+    }
+    #titlebox:not(.collapsed) h1 { padding-right: 38px; padding-left: 0; font-size: 17px; gap: 5px; }
+    #titlebox .sub { font-size: 12.5px; }
+    #stats { gap: 10px; flex-wrap: wrap; }
+    #journeyBtn, #search, #btns button, #btns label { min-height: 44px; box-sizing: border-box; }
+    #titlebox:not(.collapsed) ~ #jeelPixelCredit { display: none; }
+
+    #card {
+      top: max(8px, env(safe-area-inset-top)); bottom: auto;
+      right: max(8px, env(safe-area-inset-right)); left: max(8px, env(safe-area-inset-left));
+      width: auto; max-width: none; box-sizing: border-box;
+      max-height: calc(100vh - 16px);
+      max-height: calc(100dvh - 16px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+      overflow-y: auto; padding: 14px;
+    }
+    #cardClose { width: 42px; height: 42px; flex: 0 0 42px; }
+    #branchBtn, #labBtn, #mapBtn, #lab3dBtn { min-height: 44px; }
+
+    #journey {
+      right: max(8px, env(safe-area-inset-right)); left: max(8px, env(safe-area-inset-left));
+      bottom: max(8px, env(safe-area-inset-bottom));
+      width: auto; max-width: none; transform: none; box-sizing: border-box;
+      max-height: calc(100vh - 16px);
+      max-height: calc(100dvh - 16px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+      overflow-y: auto; padding: 14px;
+    }
+    #journey .jbtns { flex-wrap: wrap; }
+    #journey button { min-height: 44px; }
+    #journey #jExit { margin-inline-start: 0; }
+
+    #jeelPixelCredit {
+      bottom: max(8px, env(safe-area-inset-bottom));
+      max-width: calc(100vw - 24px); box-sizing: border-box;
+      font-size: 10.5px; padding: 4px 9px;
+    }
+    html.deep-world #jeelPixelCredit { bottom: calc(122px + env(safe-area-inset-bottom)); }
+
+    #sourcesPanel,
+    #labsDirectoryPanel,
+    #refPanel {
+      top: max(8px, env(safe-area-inset-top));
+      right: max(8px, env(safe-area-inset-right));
+      bottom: max(8px, env(safe-area-inset-bottom));
+      left: max(8px, env(safe-area-inset-left));
+      width: auto; max-width: none; max-height: none;
+      transform: none; box-sizing: border-box;
+    }
+    #sourcesPanel { padding: 13px; }
+    #sourcesHead h2, #refHead h2, #labsDirectoryHead h2 { font-size: 17px; }
+    #sourcesHead p, #refHead p, #labsDirectoryIntro { font-size: 12.5px; }
+    #sourcesClose, #refClose, #labsDirectoryClose { min-width: 42px; min-height: 42px; }
+    #refHead, #labsDirectoryHead { padding: 13px 14px 10px; }
+    #refTools { padding: 9px 14px; }
+    #refSearch { min-width: 0; width: 100%; min-height: 44px; box-sizing: border-box; }
+    #refBody, #labsDirectoryList { padding-right: 14px; padding-left: 14px; }
     .labDirectoryGrid { grid-template-columns: 1fr; }
-    html.deep-world #titlebox { max-height: calc(100vh - 166px); }
-    html.deep-world #sourcesBtn { top: auto; bottom: 68px; left: 12px; }
-    html.deep-world #labsDirectoryBtn { top: auto; bottom: 14px; left: 12px; }
+    .labDirectoryCard { min-height: 0; }
+
+    #labHead { padding: 8px 10px; gap: 8px; }
+    #labHead h2 { font-size: 15px; }
+    #labTabs { width: 100%; margin-inline-start: 0; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 2px; }
+    #labTabs button, #labClose { min-height: 44px; white-space: nowrap; }
+    #labBody { padding: 10px; }
+    .labCols { display: block; }
+    .labCanvasWrap { margin-bottom: 10px; }
+    .labPanel { min-width: 0; max-width: none; width: 100%; }
+
+    html.deep-world #sourcesBtn { top: auto; bottom: calc(68px + env(safe-area-inset-bottom)); left: max(10px, env(safe-area-inset-left)); min-height: 44px; }
+    html.deep-world #labsDirectoryBtn { top: auto; bottom: calc(14px + env(safe-area-inset-bottom)); left: max(10px, env(safe-area-inset-left)); min-height: 44px; }
   }
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
@@ -644,12 +733,9 @@
 <canvas id="stage"></canvas>
 
 <div class="hud" id="titlebox" dir="rtl">
-  <button id="titleboxToggle" type="button" aria-label="طي اللوحة">‹</button>
-  <span id="titleboxLabel">Al-Idrisi.AI</span>
-  <div id="titleboxHeading">
-    <h1>Al-Idrisi.AI</h1>
-    <div id="jeelPixelCredit">من <a href="https://jeelpixel.com/" target="_blank" rel="noopener noreferrer">JeelPixel</a></div>
-  </div>
+  <button id="titleboxToggle" type="button" aria-label="طي لوحة التحكم" aria-expanded="true">‹</button>
+  <span id="titleboxLabel">الإدريسي · Al-Idrisi.AI</span>
+  <h1><span>الإدريسي</span><span class="brandSep" aria-hidden="true">·</span><span class="brandEn" dir="ltr">Al-Idrisi.AI</span></h1>
   <div class="sub">كيف يعمل الذكاء الاصطناعي — شبكة تفاعلية من البيانات الى الجواب؛ اسحب، قرب، وانقر اي مفهوم لشرحه</div>
   <div id="stats"></div>
   <div id="stamp">آخر تحديث علمي: يوليو 2026 · مراجعة متعددة النماذج موثقة</div>
@@ -666,6 +752,8 @@
     <button id="refBtn" type="button">📚 المصادر الرسمية والأكاديمية</button>
   </div>
 </div>
+
+<div class="hud" id="jeelPixelCredit">مشروع مفتوح المصدر من <a href="https://jeelpixel.com/" target="_blank" rel="noopener noreferrer">JeelPixel</a></div>
 
 <div class="hud" id="hint">
   <b>اسحب اي عقدة</b> لتحريكها مثل العصبونات · <b>عجلة الفارة</b> للتقريب ·
@@ -2206,9 +2294,10 @@ function draw(now) {
   ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
   ctx.textAlign = "center";
   ctx.textBaseline = "top";
-  const showLeaf = scale > 0.75;
-  const showEnLeaf = scale > 1.2;
-  const showEnHub = true;   /* المصطلحات الرئيسية (المحورية) تظهر بالعربي والانجليزي دائما، بلا عتبة تقريب */
+  const mobileLabels = W <= 720;
+  const showLeaf = scale > (mobileLabels ? 1.35 : 0.75);
+  const showEnLeaf = scale > (mobileLabels ? 1.75 : 1.2);
+  const showEnHub = !mobileLabels || scale > 1.1;
   for (const n of visNodes) {
     const isMatch = matchSet && matchSet.has(n.id);
     if (nodeDimmed(n) && !isMatch) continue;
@@ -2219,7 +2308,7 @@ function draw(now) {
     let label = n.name;
     if (n.collapsed) label += " (+" + descCount(n) + ")";
     const hub = n.isHub || n === root;
-    ctx.font = (hub ? "600 13.5px" : "12px") + " 'Segoe UI', sans-serif";
+    ctx.font = (hub ? (mobileLabels ? "600 12.5px" : "600 13.5px") : (mobileLabels ? "11.5px" : "12px")) + " 'Segoe UI', sans-serif";
     ctx.fillStyle = isMatch ? "#ffe08a" : (hub ? "#e6ecfa" : "rgba(196, 208, 232, 0.85)");
     ctx.fillText(label, sx, sy + n.r * scale + 4);
     const englishVisible = n.en && (hub ? showEnHub : showEnLeaf);
@@ -2683,6 +2772,7 @@ function showStep() {
 function startJourney() {
   closeCard();
   closeSourcesPanel();
+  if (mobileTitleboxQuery.matches) setTitleboxCollapsed(true);
   jIdx = 0;
   journeyEl.style.display = "block";
   hintEl.style.display = "none";
@@ -2697,11 +2787,20 @@ function exitJourney() {
   fitView();
   updateSourcesVisibility();
 }
-document.getElementById("titleboxToggle").addEventListener("click", (e) => {
+const titleboxEl = document.getElementById("titlebox");
+const titleboxToggleEl = document.getElementById("titleboxToggle");
+const mobileTitleboxQuery = window.matchMedia("(max-width: 720px)");
+function setTitleboxCollapsed(collapsed) {
+  titleboxEl.classList.toggle("collapsed", collapsed);
+  titleboxToggleEl.textContent = collapsed ? "›" : "‹";
+  titleboxToggleEl.setAttribute("aria-expanded", String(!collapsed));
+  titleboxToggleEl.setAttribute("aria-label", collapsed ? "فتح لوحة التحكم" : "طي لوحة التحكم");
+}
+if (mobileTitleboxQuery.matches) setTitleboxCollapsed(true);
+mobileTitleboxQuery.addEventListener("change", (e) => setTitleboxCollapsed(e.matches));
+titleboxToggleEl.addEventListener("click", (e) => {
   e.stopPropagation();
-  const box = document.getElementById("titlebox");
-  const collapsed = box.classList.toggle("collapsed");
-  document.getElementById("titleboxToggle").textContent = collapsed ? "›" : "‹";
+  setTitleboxCollapsed(!titleboxEl.classList.contains("collapsed"));
 });
 document.getElementById("journeyBtn").addEventListener("click", startJourney);
 document.getElementById("jExit").addEventListener("click", exitJourney);
@@ -2765,15 +2864,20 @@ document.getElementById("stats").innerHTML =
   "<span>رحلة من <b>" + JOURNEY.length + "</b> خطوة</span>";
 
 /* ============ الازرار ============ */
+function fittedScale(x0, y0, x1, y1) {
+  const mobile = W <= 720;
+  const pad = mobile ? 36 : 70;
+  const raw = Math.min((W - pad * 2) / Math.max(1, x1 - x0), (H - pad * 2) / Math.max(1, y1 - y0));
+  /* على الهاتف نعطي أولوية لقراءة العقد والتنقل بالسحب، لا لضغط الخريطة كلها في شاشة ضيقة. */
+  return Math.min(2.5, Math.max(0.1, raw * (mobile ? 2.1 : 1)));
+}
 function fitView() {
   let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
   for (const n of visNodes) {
     if (n.x < x0) x0 = n.x; if (n.x > x1) x1 = n.x;
     if (n.y < y0) y0 = n.y; if (n.y > y1) y1 = n.y;
   }
-  const pad = 70;
-  const s = Math.min((W - pad * 2) / Math.max(1, x1 - x0), (H - pad * 2) / Math.max(1, y1 - y0));
-  const ns = Math.min(2.5, Math.max(0.1, s));
+  const ns = fittedScale(x0, y0, x1, y1);
   camTarget = {
     scale: ns,
     tx: W / 2 - ((x0 + x1) / 2) * ns,
@@ -2799,8 +2903,7 @@ for (let i = 0; i < 160; i++) tick();
     if (n.x < x0) x0 = n.x; if (n.x > x1) x1 = n.x;
     if (n.y < y0) y0 = n.y; if (n.y > y1) y1 = n.y;
   }
-  const pad = 70;
-  scale = Math.min(2.5, Math.max(0.1, Math.min((W - pad * 2) / Math.max(1, x1 - x0), (H - pad * 2) / Math.max(1, y1 - y0))));
+  scale = fittedScale(x0, y0, x1, y1);
   tx = W / 2 - ((x0 + x1) / 2) * scale;
   ty = H / 2 - ((y0 + y1) / 2) * scale;
 }

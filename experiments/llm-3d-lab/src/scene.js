@@ -318,7 +318,7 @@ function showFatal(err) {
   const box = document.getElementById("loading");
   box.classList.remove("hide");
   box.innerHTML = `تعذر تحميل المختبر: <b style="color:#ffb3b3">${String((err && err.message) || err)}</b>
-    <br><span style="font-size:12px;color:#8ba3c2">تاكد ان الخادم المحلي يعمل (node dev-server.mjs) ثم اعد المحاولة</span>
+    <br><span style="font-size:12px;color:#8ba3c2">تاكد ان الخادم المحلي يعمل (npm run serve) ثم اعد المحاولة</span>
     <br><button id="retryBtn" style="margin-top:12px;background:rgba(105,201,255,.15);border:1px solid rgba(105,201,255,.5);color:#cfeaff;border-radius:9px;padding:8px 16px;cursor:pointer;font-family:inherit">اعادة المحاولة</button>`;
   box.style.flexDirection = "column";
   box.style.textAlign = "center";

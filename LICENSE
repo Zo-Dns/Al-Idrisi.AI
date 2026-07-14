@@ -4,8 +4,8 @@ Copyright (c) 2026 Al-Idrisi.AI contributors
 
 The source code and software documentation in this repository are licensed
 under the MIT License below. Original educational content is licensed
-separately under CONTENT_LICENSE.md. Third-party materials are excluded from
-both grants and are documented in THIRD_PARTY_NOTICES.md.
+separately under docs/legal/CONTENT_LICENSE.md. Third-party materials are
+excluded from both grants and are documented in docs/legal/THIRD_PARTY_NOTICES.md.
 
 MIT License
 

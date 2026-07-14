@@ -5,10 +5,10 @@
   "type": "module",
   "description": "Al-Idrisi.AI — أطلس عربي تفاعلي لمفاهيم الذكاء الاصطناعي ومختبراته",
   "scripts": {
-    "build": "node make-atlas.mjs && node atlas-build.mjs",
-    "test": "node test-all.mjs",
-    "verify": "npm run build && npm test && node launch-readiness-check.mjs",
-    "serve": "node dev-server.mjs"
+    "build": "node scripts/make-atlas.mjs && node scripts/atlas-build.mjs",
+    "test": "node tests/test-all.mjs",
+    "verify": "npm run build && npm test && node tests/launch-readiness-check.mjs",
+    "serve": "node scripts/dev-server.mjs"
   },
   "engines": {
     "node": ">=20"

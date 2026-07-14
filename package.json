@@ -1,9 +1,9 @@
 {
-  "name": "ai-atlas",
+  "name": "al-idrisi-ai",
   "version": "1.0.0-rc.1",
   "private": true,
   "type": "module",
-  "description": "أطلس عربي تفاعلي لمفاهيم الذكاء الاصطناعي ومختبراته",
+  "description": "Al-Idrisi.AI — أطلس عربي تفاعلي لمفاهيم الذكاء الاصطناعي ومختبراته",
   "scripts": {
     "build": "node make-atlas.mjs && node atlas-build.mjs",
     "test": "node test-all.mjs",

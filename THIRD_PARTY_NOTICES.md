@@ -1,6 +1,6 @@
 # Third-party notices
 
-The project licenses apply only to material the AI Atlas contributors have the
+The project licenses apply only to material the Al-Idrisi.AI contributors have the
 right to license. Citations, names, trademarks, linked videos, papers and books
 remain the property of their respective owners.
 
@@ -62,7 +62,7 @@ responsible for confirming the terms applicable to their use.
 ## External academic and learning resources
 
 The source library contains bibliographic metadata and links. The cited works
-themselves are not distributed by the AI Atlas unless a file is explicitly
+themselves are not distributed by Al-Idrisi.AI unless a file is explicitly
 identified and licensed in this notice. YouTube content is linked or embedded
 from YouTube's privacy-enhanced domain and remains subject to YouTube and the
 publisher's terms.

@@ -1,11 +1,11 @@
-# أطلس الذكاء الاصطناعي التفاعلي
+# Al-Idrisi.AI
 
-[![Build and test](https://github.com/Zo-Dns/AI-Atlas/actions/workflows/ci.yml/badge.svg)](https://github.com/Zo-Dns/AI-Atlas/actions/workflows/ci.yml)
-[![GitHub Pages](https://github.com/Zo-Dns/AI-Atlas/actions/workflows/pages.yml/badge.svg)](https://github.com/Zo-Dns/AI-Atlas/actions/workflows/pages.yml)
+[![Build and test](https://github.com/Zo-Dns/Al-Idrisi.AI/actions/workflows/ci.yml/badge.svg)](https://github.com/Zo-Dns/Al-Idrisi.AI/actions/workflows/ci.yml)
+[![GitHub Pages](https://github.com/Zo-Dns/Al-Idrisi.AI/actions/workflows/pages.yml/badge.svg)](https://github.com/Zo-Dns/Al-Idrisi.AI/actions/workflows/pages.yml)
 
-أطلس عربي مفتوح المصدر يشرح مفاهيم الذكاء الاصطناعي وعلاقاتها بصريا، مع عوالم غوص متخصصة ومختبرات تفاعلية ومكتبة مصادر رسمية وأكاديمية.
+**Al-Idrisi.AI** أطلس عربي مفتوح المصدر يشرح مفاهيم الذكاء الاصطناعي وعلاقاتها بصريا، مع عوالم غوص متخصصة ومختبرات تفاعلية ومكتبة مصادر رسمية وأكاديمية.
 
-**[استكشف الأطلس مباشرة](https://zo-dns.github.io/AI-Atlas/)**
+**[استكشف Al-Idrisi.AI مباشرة](https://zo-dns.github.io/Al-Idrisi.AI/)**
 
 ## ماذا يقدم المشروع؟
 
@@ -24,8 +24,8 @@
 يتطلب المشروع Node.js 20 أو أحدث:
 
 ```bash
-git clone https://github.com/Zo-Dns/AI-Atlas.git
-cd AI-Atlas
+git clone https://github.com/Zo-Dns/Al-Idrisi.AI.git
+cd Al-Idrisi.AI
 npm run serve
 ```
 

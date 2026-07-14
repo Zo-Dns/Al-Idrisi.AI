@@ -111,7 +111,7 @@ const legacyContextLocations = [
   ["ملف الأطلس النهائي", finalAtlas]
 ].filter(([, source]) => source.includes(legacyContextPhrase)).map(([label]) => label);
 check(legacyContextLocations.length === 0, "لا تعود عبارة العلاقة المجردة «وجه سياقي»", legacyContextLocations.join("، "));
-check(finalAtlas.startsWith('<!doctype html>\n<html lang="ar" dir="rtl">') && finalAtlas.includes('<head>\n<meta charset="utf-8">') && finalAtlas.includes('<meta name="description"') && finalAtlas.includes('<title>كيف يعمل الذكاء الاصطناعي</title>\n</head>\n<body>\n<style>'), "ملف الأطلس النهائي وثيقة HTML معيارية كاملة بترميز UTF-8 ووصف وعنوان داخل head");
+check(finalAtlas.startsWith('<!doctype html>\n<html lang="ar" dir="rtl">') && finalAtlas.includes('<head>\n<meta charset="utf-8">') && finalAtlas.includes('<meta name="description"') && finalAtlas.includes('<title>Al-Idrisi.AI — كيف يعمل الذكاء الاصطناعي</title>\n</head>\n<body>\n<style>'), "ملف الأطلس النهائي وثيقة HTML معيارية كاملة بترميز UTF-8 ووصف وعنوان داخل head");
 check(!existsSync("ai-how-ai-works-standalone.html"), "لا توجد نسخة أطلس مكررة باسم standalone");
 check(finalAtlas.includes("مدعوم جزئيا بـ"), "صياغة علاقة الدعم مشحونة في ملف الأطلس النهائي");
 check(finalAtlas.includes("324 مدخلا") === false, "عدد المكتبة يحسب من البيانات لا من نص واجهة ثابت");

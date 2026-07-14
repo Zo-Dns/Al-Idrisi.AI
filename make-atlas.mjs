@@ -102,8 +102,8 @@ t = replaceOnce(t, '<canvas id="stage"></canvas>',
 
 /* 3) زر العودة داخل لوحة العنوان */
 t = replaceOnce(t,
-  '<div class="sub">شبكة تفاعلية من البيانات الى الجواب — اسحب، قرب، وانقر اي مفهوم لشرحه</div>',
-  '<div class="sub">شبكة تفاعلية من البيانات الى الجواب — اسحب، قرب، وانقر اي مفهوم لشرحه</div>\n  <button id="worldBack" type="button" style="display:none">◂ عودة الى خريطة الذكاء الاصطناعي الام</button>',
+  '<div class="sub">كيف يعمل الذكاء الاصطناعي — شبكة تفاعلية من البيانات الى الجواب؛ اسحب، قرب، وانقر اي مفهوم لشرحه</div>',
+  '<div class="sub">كيف يعمل الذكاء الاصطناعي — شبكة تفاعلية من البيانات الى الجواب؛ اسحب، قرب، وانقر اي مفهوم لشرحه</div>\n  <button id="worldBack" type="button" style="display:none">◂ عودة الى خريطة الذكاء الاصطناعي الام</button>',
   "back-button");
 
 /* 4) تشغيل العالمين: يستبدل سطر RAW */
@@ -142,61 +142,61 @@ function enterWorld(hash, focusNode) {
   setTimeout(() => { location.hash = hash; location.reload(); }, 620);
 }
 if (WORLD === "llm") {
-  document.title = "كيف تعمل النماذج اللغوية الكبيرة";
+  document.title = "كيف تعمل النماذج اللغوية الكبيرة — Al-Idrisi.AI";
   document.querySelector("#titlebox h1").textContent = "كيف تعمل النماذج اللغوية الكبيرة";
   document.querySelector("#titlebox .sub").textContent = "فرع متعمق انبثق من عقدة النماذج اللغوية في الخريطة الام — يفتح الصندوق الاسود لنماذج مثل ChatGPT وClaude";
   document.getElementById("journeyBtn").textContent = "🪐 ابدأ رحلة النموذج اللغوي: من بنائه وتدريبه الى جوابه";
 }
 if (WORLD === "dl") {
-  document.title = "كيف يعمل التعلم العميق";
+  document.title = "كيف يعمل التعلم العميق — Al-Idrisi.AI";
   document.querySelector("#titlebox h1").textContent = "كيف يعمل التعلم العميق";
   document.querySelector("#titlebox .sub").textContent = "فرع متعمق انبثق من عقدة التعلم العميق في الخريطة الام — من العصبون الى الشبكة الالتفافية";
   document.getElementById("journeyBtn").textContent = "🪐 ابدأ رحلة التعلم العميق: من العصبون الى النماذج التوليدية";
 }
 if (WORLD === "ml") {
-  document.title = "كيف يعمل تعلم الآلة";
+  document.title = "كيف يعمل تعلم الآلة — Al-Idrisi.AI";
   document.querySelector("#titlebox h1").textContent = "كيف يعمل تعلم الآلة";
   document.querySelector("#titlebox .sub").textContent = "الاب الذي تفرع منه التعلم العميق والنماذج اللغوية — الخوارزميات الكلاسيكية والتقييم والمقايضات";
   document.getElementById("journeyBtn").textContent = "🪐 ابدأ رحلة النموذج: من مشكلة الى اداة موثوقة";
 }
 if (WORLD === "data") {
-  document.title = "البيانات: وقود الذكاء الاصطناعي";
+  document.title = "البيانات: وقود الذكاء الاصطناعي — Al-Idrisi.AI";
   document.querySelector("#titlebox h1").textContent = "البيانات: وقود الذكاء الاصطناعي";
   document.querySelector("#titlebox .sub").textContent = "المادة الخام التي يتعلم منها كل نظام — من فوضى العالم الى وقود جاهز للتدريب";
   document.getElementById("journeyBtn").textContent = "🪐 ابدأ رحلة البيانات: من العالم الى النموذج";
 }
 if (WORLD === "ethics") {
-  document.title = "الاخلاق والامان في الذكاء الاصطناعي";
+  document.title = "الاخلاق والامان في الذكاء الاصطناعي — Al-Idrisi.AI";
   document.querySelector("#titlebox h1").textContent = "الاخلاق والامان في الذكاء الاصطناعي";
   document.querySelector("#titlebox .sub").textContent = "فرع متعمق انبثق من عقدة الاخلاق والامان في الخريطة الام — من التحيز والخصوصية الى المواءمة والحوكمة ومخاطر الحدود";
   document.getElementById("journeyBtn").textContent = "🪐 ابدأ رحلة المسؤولية: من الحوكمة الى المراجعة المستمرة";
 }
 if (WORLD === "apps") {
-  document.title = "تطبيقات الذكاء الاصطناعي";
+  document.title = "تطبيقات الذكاء الاصطناعي — Al-Idrisi.AI";
   document.querySelector("#titlebox h1").textContent = "تطبيقات الذكاء الاصطناعي";
   document.querySelector("#titlebox .sub").textContent = "فرع متعمق انبثق من عقدة التطبيقات في الخريطة الام — اين يستخدم الذكاء الاصطناعي في العالم الحقيقي";
   document.getElementById("journeyBtn").textContent = "🪐 ابدأ جولة التطبيقات: اين يستخدم الذكاء الاصطناعي";
 }
 if (WORLD === "classic") {
-  document.title = "الذكاء الاصطناعي الكلاسيكي: البحث والمنطق";
+  document.title = "الذكاء الاصطناعي الكلاسيكي: البحث والمنطق — Al-Idrisi.AI";
   document.querySelector("#titlebox h1").textContent = "الذكاء الاصطناعي الكلاسيكي: البحث والمنطق";
   document.querySelector("#titlebox .sub").textContent = "فرع متعمق انبثق من عقدة الذكاء الرمزي في الخريطة الام — البحث والمنطق والتخطيط قبل موجة التعلم، والجسر العصبي-الرمزي الى اليوم";
   document.getElementById("journeyBtn").textContent = "🪐 ابدأ جولة الذكاء الرمزي: من البحث الى الجسر العصبي-الرمزي";
 }
 if (WORLD === "rl") {
-  document.title = "التعلم المعزز: التعلم بالتجربة والمكافأة";
+  document.title = "التعلم المعزز: التعلم بالتجربة والمكافأة — Al-Idrisi.AI";
   document.querySelector("#titlebox h1").textContent = "التعلم المعزز: التعلم بالتجربة والمكافأة";
   document.querySelector("#titlebox .sub").textContent = "فرع متعمق انبثق من عقدة التعلم المعزز في الخريطة الام — من الوكيل والمكافأة ومعادلات بلمان الى Q-Learning والتعلم المعزز العميق وAlphaGo";
   document.getElementById("journeyBtn").textContent = "🪐 ابدأ رحلة الوكيل: من المكافأة وQ-Learning الى دمج التعلم والبحث في AlphaGo";
 }
 if (WORLD === "prob") {
-  document.title = "الذكاء الاحتمالي: الاستدلال تحت اللايقين";
+  document.title = "الذكاء الاحتمالي: الاستدلال تحت اللايقين — Al-Idrisi.AI";
   document.querySelector("#titlebox h1").textContent = "الذكاء الاحتمالي: الاستدلال تحت اللايقين";
   document.querySelector("#titlebox .sub").textContent = "فرع متعمق انبثق من عقدة الذكاء الاحتمالي في الخريطة الام — من قاعدة بايز والشبكات البايزية الى الاستدلال والنماذج الزمنية والقرار";
   document.getElementById("journeyBtn").textContent = "🪐 ابدأ رحلة الاستدلال: من قاعدة بايز الى الشبكات البايزية الى القرار";
 }
 if (WORLD === "history") {
-  document.title = "تاريخ الذكاء الاصطناعي";
+  document.title = "تاريخ الذكاء الاصطناعي — Al-Idrisi.AI";
   document.querySelector("#titlebox h1").textContent = "تاريخ الذكاء الاصطناعي";
   document.querySelector("#titlebox .sub").textContent = "فرع متعمق انبثق من عقدة محطات تاريخية في الخريطة الام — القصة الكاملة من الجذور المنطقية قبل 1950 الى الذكاء التوليدي ونوبل 2024";
   document.getElementById("journeyBtn").textContent = "🪐 ابدأ رحلة التاريخ: من آلة تورينغ الى نوبل 2024";
